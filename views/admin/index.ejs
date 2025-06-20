@@ -1,0 +1,306 @@
+<%- include('partials/header') %>
+    <div id="sidebar"
+        class="md:pt-32 mt-16 bg-white w-64 border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 -translate-x-full md:relative fixed z-30 h-full">
+        <div class="flex items-center justify-between p-4 border-b border-gray-200 md:hidden">
+            <span class="text-lg font-semibold">Menu</span>
+            <button id="sidebarCloseBtn" class="text-gray-600 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <nav class="flex flex-col flex-grow p-4 space-y-2">
+            <button
+                class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
+                data-target="search-user">SEARCH USER</button>
+            <button
+                class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
+                data-target="deposit-request">DEPOSIT REQUEST</button>
+            <button
+                class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
+                data-target="withdrawal-request">WITHDRAWAL REQUEST</button>
+            <button
+                class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
+                data-target="view-admin-wallets">VIEW ADMIN WALLETS</button>
+            <button
+                class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
+                data-target="add-new-wallet">ADD NEW WALLET</button>
+            <button
+                class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
+                data-target="view-all-users">VIEW ALL USERS</button>
+            <button
+                class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
+                data-target="webmail">WEBMAIL</button>
+        </nav>
+    </div>
+
+    <!-- Main content -->
+    <div class="flex-1 flex flex-col md:mt-32 mt-16">
+        <header class="flex items-center justify-between bg-white p-4 border-b border-gray-200 md:hidden">
+            <button id="sidebarToggleBtn" class="text-gray-600 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <h1 class="text-lg font-semibold">Admin Dashboard</h1>
+            <div></div>
+        </header>
+        <main class="flex-1 p-6 overflow-auto bg-gray-50">
+            <section id="search-user" class="content-section hidden">
+                <h2 class="text-xl font-bold mb-4">Search User</h2>
+                <input type="text" placeholder="Search users..."
+                    class="w-full mb-4 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                <div class="overflow-x-auto shadow-lg rounded-lg">
+                    <table class="min-w-full bg-white border border-gray-300 whitespace-nowrap rounded-lg">
+                        <thead>
+                            <tr class="bg-blue-600 text-white">
+                                <th class="py-3 px-4 border-r border-gray-300 whitespace-nowrap text-left whitespace-nowrap">Full Name
+                                </th>
+                                <th class="py-3 px-4 border-r border-gray-300 whitespace-nowrap text-left whitespace-nowrap">Email</th>
+                                <th class="py-3 px-4 border-r border-gray-300 whitespace-nowrap text-left whitespace-nowrap">Phone</th>
+                                <th class="py-3 px-4 border-r border-gray-300 whitespace-nowrap text-right whitespace-nowrap">Account
+                                    Balance</th>
+                                <th class="py-3 px-4 border-gray-300 whitespace-nowrap text-left whitespace-nowrap">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                <td class="py-3 px-4 border-r border-gray-200 whitespace-nowrap">John Doe Long Name Here
+                                </td>
+                                <td class="py-3 px-4 border-r border-gray-200 whitespace-nowrap">
+                                    john.doe.example@verylongemail.com</td>
+                                <td class="py-3 px-4 border-r border-gray-200 whitespace-nowrap">123-456-7890 Ext.12345
+                                </td>
+                                <td class="py-3 px-4 border-r border-gray-200 text-right whitespace-nowrap">
+                                    $1,000,000.55</td>
+                                <td class="py-3 px-4">
+                                    <button
+                                        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors duration-200 whitespace-nowrap">View
+                                        User</button>
+                                </td>
+                            </tr>
+                            <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                <td class="py-3 px-4 border-r border-gray-200 whitespace-nowrap">Jane Smith</td>
+                                <td class="py-3 px-4 border-r border-gray-200 whitespace-nowrap">jane@email.com</td>
+                                <td class="py-3 px-4 border-r border-gray-200 whitespace-nowrap">098-765-4321</td>
+                                <td class="py-3 px-4 border-r border-gray-200 text-right whitespace-nowrap">$5,000.00
+                                </td>
+                                <td class="py-3 px-4">
+                                    <button
+                                        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors duration-200 whitespace-nowrap">View
+                                        User</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section id="deposit-request" class="content-section hidden">
+                <h2 class="text-xl font-bold mb-4">Deposit Request</h2>
+                <div class="overflow-x-auto max-w-full">
+                    <table class="min-w-full bg-white border border-gray-300 whitespace-nowrap rounded-lg">
+                        <thead>
+                            <tr class="bg-blue-600 text-white">
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Email</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Wallet</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Amount</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Payment-proof</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Time Stamp</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Approve</th>
+                                <th class="py-2 px-4 border-gray-300 whitespace-nowrap">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Example row -->
+                            <tr class="text-center border-t border-gray-300">
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">jane@example.com</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Wallet 1</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$500</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                    <a href="#" class="text-blue-600 hover:underline">View Proof</a>
+                                </td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">2024-06-01 10:00</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                    <button
+                                        class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Approve</button>
+                                </td>
+                                <td class="py-2 px-4">
+                                    <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section id="withdrawal-request" class="content-section hidden">
+                <h2 class="text-xl font-bold mb-4">Withdrawal Request</h2>
+                <div class="overflow-x-auto max-w-full">
+                    <table class="min-w-full bg-white border border-gray-300 whitespace-nowrap rounded-lg">
+                        <thead>
+                            <tr class="bg-blue-600 text-white">
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Email</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Amount</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Wallet Type</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Wallet Address</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Date Requested</th>
+                                <th class="py-2 px-4 border-gray-300 whitespace-nowrap">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Example row -->
+                            <tr class="text-center border-t border-gray-300 ">
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">mark@example.com</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$300</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Bitcoin</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">1A2b3C4d5E6f7G8h9I0j</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">2024-06-02</td>
+                                <td class="py-2 px-4">
+                                    <button
+                                        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">View</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="view-admin-wallets" class="content-section hidden">
+                <h2 class="text-xl font-bold mb-4">View Admin Wallets</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-300 whitespace-nowrap rounded-lg">
+                        <thead>
+                            <tr class="bg-blue-600 text-white">
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">S/N</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Wallet Name</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Network</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Wallet Address</th>
+                                <th class="py-2 px-4 border-gray-300 whitespace-nowrap">Delete Wallet</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Example row -->
+                            <tr class="text-center border-t border-gray-300 ">
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">1</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Main Wallet</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Ethereum</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">0x123456789abcdef</td>
+                                <td class="py-2 px-4">
+                                    <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section id="add-new-wallet" class="content-section hidden">
+                <h2 class="text-xl font-bold mb-4">Add New Wallet</h2>
+                <form class="space-y-4 max-w-md">
+                    <div>
+                        <label for="walletName" class="block font-semibold mb-1">Wallet Name:</label>
+                        <input type="text" id="walletName" name="walletName"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                            required />
+                    </div>
+                    <div>
+                        <label for="network" class="block font-semibold mb-1">Network:</label>
+                        <input type="text" id="network" name="network"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                            required />
+                    </div>
+                    <div>
+                        <label for="walletAddress" class="block font-semibold mb-1">Wallet Address:</label>
+                        <input type="text" id="walletAddress" name="walletAddress"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                            required />
+                    </div>
+                    <div>
+                        <label for="walletQRCode" class="block font-semibold mb-1">Wallet QRCode:</label>
+                        <input type="file" id="walletQRCode" name="walletQRCode" accept="image/*" class="w-full" />
+                    </div>
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Add
+                        Wallet</button>
+                </form>
+            </section>
+            <section id="view-all-users" class="content-section hidden">
+                <h2 class="text-xl font-bold mb-4">View All Users</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-300 whitespace-nowrap rounded-lg">
+                        <thead>
+                            <tr class="bg-blue-600 text-white">
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Full Name</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Email</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Phone</th>
+                                <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Account Balance</th>
+                                <th class="py-2 px-4 border-gray-300 whitespace-nowrap">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Example row -->
+                            <tr class="text-center border-t border-gray-300">
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Alice Smith</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">alice@example.com</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">987-654-3210</td>
+                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$2,500</td>
+                                <td class="py-2 px-4">
+                                    <button class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">View
+                                        User</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section id="webmail" class="content-section hidden">
+                <h2 class="text-xl font-bold mb-4">Webmail</h2>
+                <p>Content for Webmail goes here.</p>
+            </section>
+        </main>
+    </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+            const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            function hideAllSections() {
+                contentSections.forEach(section => section.classList.add('hidden'));
+            }
+
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    hideAllSections();
+                    const targetId = item.getAttribute('data-target');
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.classList.remove('hidden');
+                    }
+                    // Close sidebar on small screens after selection
+                    if (window.innerWidth < 768) {
+                        sidebar.classList.add('-translate-x-full');
+                    }
+                });
+            });
+
+            sidebarToggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+
+            sidebarCloseBtn.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+            });
+
+            // Show the first section by default
+            if (contentSections.length > 0) {
+                contentSections[0].classList.remove('hidden');
+            }
+        });
+    </script>
+    <%- include('partials/footer') %>
