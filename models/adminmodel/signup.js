@@ -1,16 +1,9 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 
 // Define schema
-const UserSchema = new mongoose.Schema(
+const AdminSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: [true, "Full name is required"],
-      trim: true,
-      minlength: 2,
-      maxlength: 100,
-    },
     email: {
       type: String,
       required: [true, "Email address is required"],
@@ -29,15 +22,10 @@ const UserSchema = new mongoose.Schema(
       expiresAt: { type: Date, default: null },
       otpCreatedAt: { type: Date, default: Date.now },
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     timestamps: true,
   }
 );
 
-
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model("Admin", AdminSchema);

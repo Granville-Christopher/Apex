@@ -4,9 +4,9 @@
             <div class="flex flex-col items-center mb-8">
                 <img src="https://placehold.co/40x40/fff/3B82F6?text=AM" alt="Bucci Logo"
                     class="h-10 w-10 rounded-full object-cover shadow-xl border-blue-200 border">
-                <h1 class="text-2xl font-extrabold text-gray-900">Admin Login</h1>
+                <h1 class="text-2xl font-extrabold text-gray-900">Admin Signup</h1>
             </div>
-            <form id="loginForm" class="space-y-6">
+            <form id="signup" class="space-y-6">
                 <div>
                     <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address</label>
                     <input type="email" id="email" name="email"
@@ -24,16 +24,13 @@
                     </span>
                 </div>
                 <button type="submit"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">Login</button>
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">Signup</button>
             </form>
             <div class="text-center mt-6">
-                <a href="/admin/resetpassword"
-                    class="text-blue-600 hover:underline font-semibold text-sm mb-2 block">Forgotten password?</a>
-                <span class="text-gray-600 text-sm">Don't have an account?</span>
-                <a href="/admin/signup" class="text-blue-600 hover:underline font-semibold ml-1">Sign Up</a>
+                <a href="/admin/Login" class="text-blue-600 hover:underline font-semibold ml-1">Login</a>
             </div>
         </div>
     </section>
-    <script src="/js/adminlogin.js"></script>
+    <script src="/js/adminsignup.js"></script>
     <script src="/js/alert.js"></script>
     <%- include('partials/footer') %>
