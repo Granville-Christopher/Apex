@@ -14,7 +14,7 @@ document.getElementById("getOtpForm").addEventListener("submit", async (e) => {
     return;
   }
 
-  const response = await fetch("/get-reset-otp", {
+  const response = await fetch("/admin/get-reset-otp", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const response = await fetch("/reset-password", {
+      const response = await fetch("/admin/resetpassword", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         showAlert(data.message || "Password reset successful!");
-        window.location.href = "/";
+        window.location.href = "/admin/login";
       } else {
         showAlert(data.error || "Password reset failed.");
       }

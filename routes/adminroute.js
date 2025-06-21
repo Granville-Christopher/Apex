@@ -1,5 +1,5 @@
 const express = require("express");
-const { Signup, Login } = require("../controllers/admincontroller");
+const { Signup, Login, sendOtp, resetPassword } = require("../controllers/admincontroller");
 const router = express.Router();
 
 
@@ -32,6 +32,8 @@ router.get("/signup", async (req, res) => {
 
 router.post("/admin-signup", Signup)
 router.post("/admin-login", Login)
+router.post("/get-reset-otp", sendOtp)
+router.post("/resetpassword", resetPassword )
 
 router.get("/resetpassword", async (req, res) => {
 
