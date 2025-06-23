@@ -4,6 +4,14 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
 
+  res.render("user/index", {
+    title: "Apex Meridian - Dashboard",
+    page: "Dashboard",
+    loaded: "Dashboard",
+  });
+});
+router.get("/login", async (req, res) => {
+
   res.render("user/login", {
     title: "Apex Meridian - Login",
     page: "Login",

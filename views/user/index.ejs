@@ -1,0 +1,242 @@
+<%- include('partials/dashboardhead') %>
+      <!-- Main Page Content -->
+      <main class=" md:max-w-7xl md:ml-64">
+         <main class="space-y-10">
+          <!-- Dashboard Section -->
+          <section id="dashboard" class="section active pt-20">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <!-- Portfolio Summary -->
+              <div class="bg-gray-800 p-4 rounded shadow col-span-2">
+                <h2 class="text-xl font-bold mb-2">Portfolio Summary</h2>
+                <p class="text-sm text-gray-400">Total Balance: $25,380.45</p>
+                <p class="text-sm text-green-500">+5.72% this month</p>
+                <div class="h-64 mt-4 bg-gray-700 rounded flex items-center justify-center text-gray-400">
+                  [ Pie Chart Placeholder ]
+                </div>
+              </div>
+              <!-- Watchlist -->
+              <div class="bg-gray-800 p-4 rounded shadow">
+                <h2 class="text-xl font-bold mb-2">Watchlist</h2>
+                <ul class="space-y-2">
+                  <li class="flex justify-between">
+                    <span>BTC/USD</span><span class="text-green-500">$67,120</span>
+                  </li>
+                  <li class="flex justify-between">
+                    <span>ETH/USD</span><span class="text-red-500">$3,480</span>
+                  </li>
+                  <li class="flex justify-between">
+                    <span>Gold</span><span class="text-green-500">$2,410</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- Market News -->
+            <div class="bg-gray-800 mt-6 p-4 rounded shadow">
+              <h2 class="text-xl font-bold mb-2">Latest Market News</h2>
+              <ul class="list-disc pl-5 text-sm text-gray-300">
+                <li>Bitcoin hits new all-time high amidst ETF approval rumors.</li>
+                <li>US Fed signals no further rate hikes in 2025.</li>
+                <li>Gold rallies as inflation expectations increase.</li>
+              </ul>
+            </div>
+          </section>
+
+        <!-- Markets Section with TradingView Widgets -->
+        <section id="markets" class="section hidden pt-8">
+          <h1 class="text-sm md:text-2xl text-center font-bold mb-2">Markets</h1>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Market Cards -->
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=COMEX%3AGC1!" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=COMEX%3ASI1!" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=NYMEX%3ACL1!" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=COMEX%3AAH1!" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=ICEUS%3ACC1!" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=NYMEX%3ARB1!" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=COINBASE%3ABTCUSD" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=COINBASE%3AETHUSD" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=BINANCE%3ASOLUSDT" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=NYMEX%3ANG1!" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=ICEUS%3ASB1!" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl shadow">
+              <div class="tradingview-widget-container h-72">
+                <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=ICEUS%3ACT1!" frameborder="0" class="w-full h-52"></iframe>
+              </div>
+              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="trade" class="section hidden mt-16">
+          <h2 class="text-2xl font-bold mb-4">Trade</h2>
+  <div class="bg-gray-800 p-4 rounded shadow">
+    <label for="marketSelect" class="block mb-2 text-sm font-medium">Select Market:</label>
+    <select id="marketSelect" onchange="loadChart(this.value)" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white">
+      <option value="">-- Select Market --</option>
+      <option value="COMEX:GC1!">Gold</option>
+      <option value="TVC:SILVER">Silver</option>
+      <option value="NYMEX:CL1!">Crude Oil</option>
+      <option value="LME:ALI1!">Aluminium</option>
+      <option value="ICEUSA:CC1!">Cocoa</option>
+      <option value="NYMEX:NG1!">Natural Gas</option>
+      <option value="ICEUSA:SB1!">Sugar</option>
+      <option value="NYBOT:CT1!">Cotton</option>
+      <option value="NYMEX:RB1!">Gasoline</option>
+      <option value="BINANCE:BTCUSDT">Bitcoin</option>
+      <option value="BINANCE:ETHUSDT">Ethereum</option>
+      <option value="BINANCE:SOLUSDT">Solana</option>
+    </select>
+
+    <div id="chartContainer" class="h-96 mt-6 bg-gray-700 rounded flex items-center justify-center text-gray-400">
+  <span>Select a market to view its chart.</span>
+</div>
+
+<!-- Trade Form Below Chart -->
+<form class="mt-6 space-y-4">
+  <div>
+    <label for="tradeTime" class="block text-sm font-medium mb-1">Trade Time</label>
+    <select id="tradeTime" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white">
+      <option value="30s">30 seconds</option>
+      <option value="1m">1 minute</option>
+      <option value="2m">2 minutes</option>
+      <option value="5m">5 minutes</option>
+      <option value="10m">10 minutes</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="leverage" class="block text-sm font-medium mb-1">Leverage</label>
+    <select id="leverage" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white">
+      <option value="1x">1x</option>
+      <option value="2x">2x</option>
+      <option value="3x">3x</option>
+      <option value="5x">5x</option>
+    </select>
+  </div>
+  <div>
+    <label for="amount" class="block text-sm font-medium mb-1">Amount</label>
+    <input type="number" id="amount" placeholder="Enter amount" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" />
+  </div>
+
+  <div class="flex gap-4 pt-2">
+    <button type="button" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded">Buy</button>
+    <button type="button" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded">Sell</button>
+  </div>
+</form>
+  </div>
+        </section>
+        <section id="wallets" class="section hidden">
+          <h1 class="text-2xl font-bold mb-4">Wallets</h1>
+        </section>
+        <section id="analytics" class="section hidden">
+          <h1 class="text-2xl font-bold mb-4">Analytics</h1>
+        </section>
+        <section id="settings" class="section hidden">
+          <h1 class="text-2xl font-bold mb-4">Settings</h1>
+        </section>
+        <section id="support" class="section hidden">
+          <h1 class="text-2xl font-bold mb-4">Support</h1>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <style>
+
+    .dashlogo{margin-right:850px;} 
+
+    @media screen and (max-width: 768px){
+        .dashlogo{margin-right: 100px} 
+    }
+    </style>
+  <script>
+    document.getElementById('toggleSidebar').addEventListener('click', () => {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('hidden');
+    });
+
+    const toggleTheme = document.getElementById('toggleTheme');
+    toggleTheme.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const storedTheme = localStorage.getItem('theme');
+      if (storedTheme === 'dark') document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+    });
+
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+      function loadChart(symbol) {
+    const container = document.getElementById('chartContainer');
+    if (!symbol) {
+      container.innerHTML = '<span>Select a market to view its chart.</span>';
+      return;
+    }
+    container.innerHTML = `
+      <iframe src="https://s.tradingview.com/widgetembed/?symbol=${symbol}&interval=60&theme=dark"
+        width="100%" height="100%" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+    `;
+  }
+  </script>
+</body>
+</html>
