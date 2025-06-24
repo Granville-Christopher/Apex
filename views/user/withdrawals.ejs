@@ -11,13 +11,31 @@
         <div class="bg-gray-800 p-4 rounded shadow mt-16">
 
           <!-- Withdrawal Form -->
-          <form class="bg-gray-700 p-4 rounded mb-8 space-y-4 max-w-md mx-auto mt-12">
+          <form class="bg-gray-700 p-4 rounded mb-8 space-y-4 max-w-md mx-auto mt-12" action="/withdrawals" method="POST">
+            <% if (message) { %>
+              <div class="text-center"><%= message %></div>
+            <% } %>
             <h4 class="text-white text-lg font-semibold">Make a Withdrawal</h4>
             <div>
               <label for="withdrawAmount" class="block text-gray-300 text-sm mb-1">Amount</label>
-              <input type="number" id="withdrawAmount" name="withdrawAmount" placeholder="Enter amount"
+              <input type="number" id="withdrawAmount" name="amount" placeholder="Enter amount"
                 class="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required />
+
+              <input type="hidden" name="email" value="<%= userEmail %>" id="">
+
+
+              <label for="withdrawAmount" class="block text-gray-300 text-sm mb-1">Select Wallet Address</label>
+              <select name="waddress" id="" class="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <% if (!wallets || wallets.length===0) { %>
+                  <option value=""></option>
+                <% } else { %>
+                  <% wallets.forEach(function(wallet, index) { %>
+                    <option value="<%= wallet.waddress %>"><%= wallet.walletname %> (<%= wallet.waddress %>)</option>
+                      <% }); %>
+                <% } %>
+              </select>
+
             </div>
             <button type="submit"
               class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-semibold">
@@ -32,8 +50,7 @@
                 <tr>
                   <th class="py-2 px-4 whitespace-nowrap">ID</th>
                   <th class="py-2 px-4 whitespace-nowrap">Date</th>
-                  <th class="py-2 px-4 whitespace-nowrap">Method</th>
-                  <th class="py-2 px-4 whitespace-nowrap">Wallet/Bank A/c</th>
+                  <th class="py-2 px-4 whitespace-nowrap">Wallet</th>
                   <th class="py-2 px-4 whitespace-nowrap">Amount</th>
                   <th class="py-2 px-4 whitespace-nowrap">Status</th>
                   <th class="py-2 px-4 whitespace-nowrap">Action</th>
@@ -43,7 +60,6 @@
                 <tr>
                   <td class="py-2 px-4 whitespace-nowrap">001</td>
                   <td class="py-2 px-4 whitespace-nowrap">2025-06-23</td>
-                  <td class="py-2 px-4 whitespace-nowrap">Crypto</td>
                   <td class="py-2 px-4 whitespace-nowrap">bc1qxy2k...0wlh</td>
                   <td class="py-2 px-4 whitespace-nowrap">$200</td>
                   <td class="py-2 px-4 whitespace-nowrap text-yellow-400">Pending</td>

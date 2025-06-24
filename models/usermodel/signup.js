@@ -33,6 +33,11 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    balance: {
+      type: Number,
+      default: 0,
+      required: false
+    },
   },
   {
     timestamps: true,

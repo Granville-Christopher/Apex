@@ -4,23 +4,28 @@
       <section id="deposit" class="section mt-20">
         <h2 class="text-lg md:text-xl font-semibold text-center md:text-start mb-4">Deposit</h2>
         <div class="bg-gray-800 p-4 rounded shadow space-y-4">
-          <form class="space-y-4">
+          <form class="space-y-4" action="/deposit" method="POST" enctype="multipart/form-data">
+            <% if (message) { %>
+              <div class="text-center"><%= message %></div>
+            <% } %>
             <div>
               <label class="block text-sm font-medium mb-1">Amount</label>
               <input type="number" placeholder="Enter amount"
-                class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" />
+                class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" name="amount" min="100" required/>
+            </div>
+
+            <input type="hidden" name="email" value="<%= userEmail %>" id="">
+       
+            <div>
+              <label class="block text-sm font-medium mb-1">Network</label>
+              <input type="text" value="Bitcoin"
+                class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-gray-400" name="network" readonly/>
             </div>
 
             <div>
               <label class="block text-sm font-medium mb-1">Wallet Address</label>
-              <input type="text" value="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" disabled
-                class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-gray-400" />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-1">Network</label>
-              <input type="text" value="Bitcoin" disabled
-                class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-gray-400" />
+              <input type="text" value="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+                class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-gray-400" name="waddress"  readonly/>
             </div>
 
             <div>
@@ -32,23 +37,17 @@
               </div>
             </div>
             <div class="bg-gray-800 p-4 rounded shadow">
-              <h3 class="text-xl font-semibold mb-4 text-white">Upload deposit proof</h3>
-              <form>
+              <h3 class="text-xl font-semibold mb-4 text-white">Deposit into wallet above & upload deposit proof</h3>
+              
                 <!-- File Input -->
                 <input type="file" class="block w-full text-sm text-gray-300 mb-3
                 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0
                 file:text-sm file:font-semibold
-                file:bg-blue-500 file:text-white hover:file:bg-blue-600" />
-
-                <!-- Upload Button -->
-                <button type="submit"
-                  class="mt-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded">
-                  Upload
-                </button>
+                file:bg-blue-500 file:text-white hover:file:bg-blue-600" name="file" required/>
 
                 <!-- Help Text -->
                 <p class="text-xs text-gray-400 mt-2">Allowed JPG, GIF, HEIC or PNG. Max size of 2Mb.</p>
-              </form>
+              
             </div>
             <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded">Deposit</button>
           </form>

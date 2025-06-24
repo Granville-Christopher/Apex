@@ -23,8 +23,11 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   if (response.ok) {
     showAlert(data.message || "Login successful!", "success");
-    window.location.href = "/otp";
+    // window.location.href = "/otp";
+    window.location.href = "/dashboard";
+
   } else {
     showAlert(data.error || "Login failed", "error");
+    window.location.href = "/";
   }
 });

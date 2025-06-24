@@ -3,6 +3,9 @@ const sendOtpEmail = require("../config/mail");
 const sendOtpResetEmail = require("../config/passwordresetmail");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
+const Deposit = require('../models/usermodel/deposit')
+const Wallet = require('../models/usermodel/userwallets')
+const Withdraw = require('../models/usermodel/withdraw')
 
 const Signup = async (req, res) => {
   try {
@@ -33,7 +36,7 @@ const Signup = async (req, res) => {
 
     await newUser.save();
 
-    return res.status(201).json({ message: "Signup successful" });
+    return res.status(201).json({ message: "Signup successful" })
   } catch (error) {
     console.error("Signup error:", error);
     return res
@@ -142,9 +145,10 @@ const login = async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000);
     const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
 
-    user.otp = { code: otp, expiresAt: otpExpires };
-    await sendOtpEmail(email, otp);
-    await user.save();
+    // uncomment after work is completed
+    // user.otp = { code: otp, expiresAt: otpExpires };
+    // await sendOtpEmail(email, otp);
+    // await user.save();
 
     req.session.user = {
       id: user._id,
@@ -222,6 +226,132 @@ const resetPassword = async (req, res) => {
 };
 
 
+// deposit sub
+const depositSub = async (req, res) => {
+    try{
+      let info = {
+        email: req.body.email ?? "",
+        amount: req.body.amount ?? "",
+        network: req.body.network ?? "",
+        waddress: req.body.waddress ?? "",
+        subData: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+      }
+
+      const deposit = await new Deposit(info).save()
+      if(deposit !== null){
+          req.session.message = "deposit request successful";
+          res.redirect("/deposit");
+      }else{
+          req.session.message = "error making deposit";
+          res.redirect("/deposit");
+      }
+
+    }catch(error){
+        console.log(error)
+        req.session.message = "error completing request";
+        res.redirect("/deposit");
+    }
+}
+
+// deposit sub
+const withdrawalSub = async (req, res) => {
+    try{
+      const { waddress, amount, email } = req.body
+
+      if (!waddress || waddress.trim() === "") {
+        req.session.message = "no address entered";
+        res.redirect("/withdrawals");
+      }
+
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        req.session.message = "invalid account";
+        res.redirect("/withdrawals");
+      }
+
+      const withdrawalAmount = parseFloat(amount);
+      if (isNaN(withdrawalAmount) || withdrawalAmount <= 0) {
+        req.session.message = "Invalid withdrawal amount.";
+        res.redirect("/withdrawals");
+      }
+
+      if (user.balance < withdrawalAmount) {
+        req.session.message = "Insufficient balance";
+        res.redirect("/withdrawals");
+      }
+
+      const withdrawal = new Withdrawal({
+        email,
+        amount: withdrawalAmount,
+        waddress,
+        status: "pending",
+        requestedAt: new Date().toISOString().slice(0, 10)
+      });
+
+      await withdrawal.save();
+
+      user.balance -= withdrawalAmount;
+      await user.save();
+      
+      req.session.message = "withdrawal request successful";
+      res.redirect("/withdrawals");
+
+    }catch(error){
+        console.log(error)
+        req.session.message = "error completing request";
+        res.redirect("/withdrawals");
+    }
+}
+
+// wallet sub
+const walletSub = async (req, res) => {
+    try{
+      console.log(req.body);
+      
+
+        let info = {
+          email: req.body.email ?? "",
+          walletname: req.body.walletname ?? "",
+          network: req.body.network ?? "",
+          waddress: req.body.waddress ?? "",
+        }
+
+        const wallet = await new Wallet(info).save()
+        if(wallet !== null){
+            req.session.message = "wallet uploaded successful";
+            res.redirect("/wallets");
+        }else{
+            req.session.message = "error uploading wallet";
+            res.redirect("/wallets");
+        }
+
+    }catch(error){
+        console.log(error)
+        req.session.message = "error completing request";
+        res.redirect("/wallets");
+    }
+}
+
+// delete wallet
+const deleteWalletSub = async (req, res) => {
+    try{
+        let id = req.params.id
+
+        if(!id){
+            res.redirect("/");
+        }
+
+        await Wallet.deleteOne({ _id: id });
+        
+        res.redirect("/wallets");
+            
+    }catch (error) {
+        console.log(error)
+        res.redirect("/wallets");
+    }
+}
+
 module.exports = {
   Signup,
   otpAuth,
@@ -230,4 +360,5 @@ module.exports = {
   verifyOtp,
   sendOtp,
   resetPassword,
+  depositSub, walletSub, deleteWalletSub, withdrawalSub
 };
