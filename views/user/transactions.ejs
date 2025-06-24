@@ -1,0 +1,54 @@
+<%- include('partials/dashboardhead') %>
+  <script src="/js/userdashboard.js"></script>
+  <main class="md:max-w-7xl md:ml-64 md:px-2">
+    <main class="space-y-10">
+      <section id="transactions" class="section">
+        <!-- Heading -->
+        <h3 class="text-lg md:text-xl md:text-start pb-2 pt-4 fixed bg-gray-800 md:bg-gray-900 w-full text-center font-semibold mb-2">
+          Transactions
+        </h3>
+
+        <!-- TABLE VIEW (Desktop & Tablet) -->
+        <div class="overflow-x-auto w-full hidden sm:block mt-20 pt-12">
+          <table class="min-w-full w-full text-left text-sm">
+            <thead class="text-gray-300 border-b border-gray-600">
+              <tr>
+                <th class="py-2 px-4 whitespace-nowrap">SN</th>
+                <th class="py-2 px-4 whitespace-nowrap">Transaction Type</th>
+                <th class="py-2 px-4 whitespace-nowrap">Date</th>
+                <th class="py-2 px-4 whitespace-nowrap">Amount</th>
+                <th class="py-2 px-4 whitespace-nowrap">Status</th>
+                <th class="py-2 px-4 whitespace-nowrap">Action</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-200">
+              <tr>
+                <td class="py-2 px-4 whitespace-nowrap">1</td>
+                <td class="py-2 px-4 whitespace-nowrap">Deposit</td>
+                <td class="py-2 px-4 whitespace-nowrap">2025-06-22</td>
+                <td class="py-2 px-4 whitespace-nowrap">$500</td>
+                <td class="py-2 px-4 whitespace-nowrap text-green-500">Completed</td>
+                <td class="py-2 px-4 whitespace-nowrap">
+                  <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- CARD VIEW (Mobile only) -->
+        <div class="sm:hidden space-y-1 pt-12 mt-16">
+          <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+            <p><strong>SN:</strong> 1</p>
+            <p><strong>Transaction Type:</strong> Deposit</p>
+            <p><strong>Date:</strong> 2025-06-22</p>
+            <p><strong>Amount:</strong> $500</p>
+            <p><strong>Status:</strong> <span class="text-green-500">Completed</span></p>
+            <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </main>
+  <%- include('partials/footer') %>

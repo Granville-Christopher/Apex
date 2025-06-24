@@ -1,0 +1,67 @@
+<%- include('partials/dashboardhead') %>
+<main class="md:max-w-7xl md:ml-64 md:px-2">
+  <main class="space-y-10">
+    <section id="trade" class="section mt-16">
+      <h2 class="text-lg fixed w-full bg-gray-900 md:py-4 py-2 md:text-xl text-center md:text-start font-semibold ">Trade</h2>
+      <div class="bg-gray-800 p-4 rounded shadow pt-12 md:pt-20">
+        <label for="marketSelect" class="block mb-2 text-sm font-medium">Select Market:</label>
+        <select id="marketSelect" onchange="loadChart(this.value)"
+          class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white">
+          <option value="">-- Select Market --</option>
+          <option value="COMEX:GC1!">Gold</option>
+          <option value="TVC:SILVER">Silver</option>
+          <option value="NYMEX:CL1!">Crude Oil</option>
+          <option value="LME:ALI1!">Aluminium</option>
+          <option value="ICEUSA:CC1!">Cocoa</option>
+          <option value="NYMEX:NG1!">Natural Gas</option>
+          <option value="ICEUSA:SB1!">Sugar</option>
+          <option value="NYBOT:CT1!">Cotton</option>
+          <option value="NYMEX:RB1!">Gasoline</option>
+          <option value="BINANCE:BTCUSDT">Bitcoin</option>
+          <option value="BINANCE:ETHUSDT">Ethereum</option>
+          <option value="BINANCE:SOLUSDT">Solana</option>
+        </select>
+
+        <div id="chartContainer" class="h-96 mt-6 bg-gray-700 rounded flex items-center justify-center text-gray-400">
+          <span>Select a market to view its chart.</span>
+        </div>
+
+        <!-- Trade Form Below Chart -->
+        <form class="mt-6 space-y-4">
+          <div>
+            <label for="tradeTime" class="block text-sm font-medium mb-1">Trade Time</label>
+            <select id="tradeTime" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white">
+              <option value="30s">30 seconds</option>
+              <option value="1m">1 minute</option>
+              <option value="2m">2 minutes</option>
+              <option value="5m">5 minutes</option>
+              <option value="10m">10 minutes</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="leverage" class="block text-sm font-medium mb-1">Leverage</label>
+            <select id="leverage" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white">
+              <option value="1x">1x</option>
+              <option value="2x">2x</option>
+              <option value="3x">3x</option>
+              <option value="5x">5x</option>
+            </select>
+          </div>
+          <div>
+            <label for="amount" class="block text-sm font-medium mb-1">Amount</label>
+            <input type="number" id="amount" placeholder="Enter amount"
+              class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" />
+          </div>
+
+          <div class="flex gap-4 pt-2">
+            <button type="button" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded">Buy</button>
+            <button type="button" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded">Sell</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+</main>
+<script src="/js/userdashboard.js"></script>
+<%- include('partials/footer') %>

@@ -1,0 +1,47 @@
+<%- include('partials/dashboardhead') %>
+<main class="md:max-w-7xl md:ml-64 md:px-2">
+  <main class="space-y-10">
+    <section id="wallets" class="section pt-20">
+      <div class="bg-gray-800 p-4 rounded shadow">
+        <form class="space-y-4">
+          <div>
+            <label for="walletAddress" class="block text-sm font-medium mb-1">Wallet Address</label>
+            <input type="text" id="walletAddress" placeholder="Enter wallet address"
+              class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" />
+          </div>
+          <div>
+            <label for="network" class="block text-sm font-medium mb-1">Network</label>
+            <input type="text" id="network" placeholder="e.g. Ethereum, BSC"
+              class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" />
+          </div>
+          <div>
+            <label for="walletName" class="block text-sm font-medium mb-1">Wallet Name</label>
+            <input type="text" id="walletName" placeholder="e.g. My Metamask"
+              class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" />
+          </div>
+          <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
+        </form>
+      </div>
+
+      <div class="mt-6 bg-gray-800 p-4 rounded shadow">
+        <h3 class="text-xl font-semibold mb-3">Uploaded Wallets</h3>
+        <div class="space-y-3">
+          <div class="bg-gray-700 p-3 rounded">
+            <p><span class="font-medium text-gray-300">Name:</span> My Metamask</p>
+            <p><span class="font-medium text-gray-300">Address:</span> 0xABC123456789...</p>
+            <p><span class="font-medium text-gray-300">Network:</span> Ethereum</p>
+            <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Delete Wallet</button>
+          </div>
+          <div class="bg-gray-700 p-3 rounded">
+            <p><span class="font-medium text-gray-300">Name:</span> Binance Wallet</p>
+            <p><span class="font-medium text-gray-300">Address:</span> 0xBSC987654321...</p>
+            <p><span class="font-medium text-gray-300">Network:</span> BSC</p>
+            <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Delete Wallet</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</main>
+<script src="/js/userdashboard.js"></script>
+<%- include('partials/footer') %>

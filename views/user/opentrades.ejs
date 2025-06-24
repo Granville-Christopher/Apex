@@ -1,0 +1,81 @@
+<%- include('partials/dashboardhead') %>
+  <script src="/js/userdashboard.js"></script>
+  <main class="md:max-w-7xl md:ml-64 md:px-2">
+    <main class="pt-20">
+      <!-- Current Trades Heading -->
+      <h3 class="text-lg md:text-xl md:text-start text-center font-semibold fixed w-full bg-gray-900 mb-2">Current Trades</h3>
+
+      <!-- TABLE VIEW (Desktop & Tablet) -->
+      <div class="overflow-x-auto w-full hidden sm:block mt-8">
+        <table class="min-w-full w-full text-left text-sm">
+          <thead class="text-gray-300 border-b border-gray-600">
+            <tr>
+              <th class="py-2 px-4 whitespace-nowrap">ID</th>
+              <th class="py-2 px-4 whitespace-nowrap">Date</th>
+              <th class="py-2 px-4 whitespace-nowrap">Asset</th>
+              <th class="py-2 px-4 whitespace-nowrap">Trade type</th>
+              <th class="py-2 px-4 whitespace-nowrap">Outcome</th>
+              <th class="py-2 px-4 whitespace-nowrap">Status</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-200">
+            <tr>
+              <td class="py-2 px-4 whitespace-nowrap">#001</td>
+              <td class="py-2 px-4 whitespace-nowrap">2025-06-23</td>
+              <td class="py-2 px-4 whitespace-nowrap">BTC</td>
+              <td class="py-2 px-4 whitespace-nowrap">Buy</td>
+              <td class="py-2 px-4 whitespace-nowrap">+2.4%</td>
+              <td class="py-2 px-4 whitespace-nowrap text-green-500">Open</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 whitespace-nowrap">#002</td>
+              <td class="py-2 px-4 whitespace-nowrap">2025-06-22</td>
+              <td class="py-2 px-4 whitespace-nowrap">ETH</td>
+              <td class="py-2 px-4 whitespace-nowrap">Sell</td>
+              <td class="py-2 px-4 whitespace-nowrap">-0.5%</td>
+              <td class="py-2 px-4 whitespace-nowrap text-green-500">Open</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 whitespace-nowrap">#003</td>
+              <td class="py-2 px-4 whitespace-nowrap">2025-06-21</td>
+              <td class="py-2 px-4 whitespace-nowrap">LTC</td>
+              <td class="py-2 px-4 whitespace-nowrap">Buy</td>
+              <td class="py-2 px-4 whitespace-nowrap">+1.1%</td>
+              <td class="py-2 px-4 whitespace-nowrap text-green-500">Open</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CARD VIEW (Mobile only) -->
+      <div class="sm:hidden space-y-1 mt-8">
+        <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+          <p><strong>ID:</strong> #001</p>
+          <p><strong>Date:</strong> 2025-06-23</p>
+          <p><strong>Asset:</strong> BTC</p>
+          <p><strong>Trade Type:</strong> Buy</p>
+          <p><strong>Outcome:</strong> +2.4%</p>
+          <p><strong>Status:</strong> <span class="text-green-500">Open</span></p>
+        </div>
+        <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+          <p><strong>ID:</strong> #002</p>
+          <p><strong>Date:</strong> 2025-06-22</p>
+          <p><strong>Asset:</strong> ETH</p>
+          <p><strong>Trade Type:</strong> Sell</p>
+          <p><strong>Outcome:</strong> -0.5%</p>
+          <p><strong>Status:</strong> <span class="text-green-500">Open</span></p>
+        </div>
+        <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+          <p><strong>ID:</strong> #003</p>
+          <p><strong>Date:</strong> 2025-06-21</p>
+          <p><strong>Asset:</strong> LTC</p>
+          <p><strong>Trade Type:</strong> Buy</p>
+          <p><strong>Outcome:</strong> +1.1%</p>
+          <p><strong>Status:</strong> <span class="text-green-500">Open</span></p>
+        </div>
+      </div>
+
+
+    </main>
+  </main>
+  <%- include('partials/footer') %>

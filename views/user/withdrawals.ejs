@@ -1,0 +1,56 @@
+<%- include('partials/dashboardhead') %>
+  <script src="/js/userdashboard.js"></script>
+  <main class="md:max-w-7xl md:ml-64 md:px-2">
+    <main class="space-y-10 mt-20">
+      <h3 class="text-lg md:text-xl px-4 fixed w-full bg-gray-800 text-center md:text-start pt-4 font-semibold mb-2">Withdrawal history</h3>
+      <section id="withdrawal" class="section w-full md:mt-20">
+        <div class="bg-gray-800 p-4 rounded shadow mt-16">
+
+          <!-- TABLE VIEW (Desktop & Tablet) -->
+          <div class="overflow-x-auto w-full hidden sm:block mt-12">
+            <table class="min-w-full text-left text-sm">
+              <thead class="text-gray-300 border-b border-gray-600">
+                <tr>
+                  <th class="py-2 px-4 whitespace-nowrap">ID</th>
+                  <th class="py-2 px-4 whitespace-nowrap">Date</th>
+                  <th class="py-2 px-4 whitespace-nowrap">Method</th>
+                  <th class="py-2 px-4 whitespace-nowrap">Wallet/Bank A/c</th>
+                  <th class="py-2 px-4 whitespace-nowrap">Amount</th>
+                  <th class="py-2 px-4 whitespace-nowrap">Status</th>
+                  <th class="py-2 px-4 whitespace-nowrap">Action</th>
+                </tr>
+              </thead>
+              <tbody class="text-gray-200">
+                <tr>
+                  <td class="py-2 px-4 whitespace-nowrap">001</td>
+                  <td class="py-2 px-4 whitespace-nowrap">2025-06-23</td>
+                  <td class="py-2 px-4 whitespace-nowrap">Crypto</td>
+                  <td class="py-2 px-4 whitespace-nowrap">bc1qxy2k...0wlh</td>
+                  <td class="py-2 px-4 whitespace-nowrap">$200</td>
+                  <td class="py-2 px-4 whitespace-nowrap text-yellow-400">Pending</td>
+                  <td class="py-2 px-4 whitespace-nowrap">
+                    <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Cancel</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- CARD VIEW (Mobile only) -->
+          <div class="sm:hidden space-y-4 mt-8">
+            <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+              <p><strong>ID:</strong> 001</p>
+              <p><strong>Date:</strong> 2025-06-23</p>
+              <p><strong>Method:</strong> Crypto</p>
+              <p><strong>Wallet/Bank A/c:</strong> bc1qxy2k...0wlh</p>
+              <p><strong>Amount:</strong> $200</p>
+              <p><strong>Status:</strong> <span class="text-yellow-400">Pending</span></p>
+              <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </main>
+  <%- include('partials/footer') %>

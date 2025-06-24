@@ -1,0 +1,33 @@
+<%- include('partials/dashboardhead') %>
+<main class="md:max-w-7xl md:ml-64 md:px-2">
+  <main class="space-y-10">
+    <section id="analytics" class="section mt-16">
+      <h2 class="text-lg md:text-xl fixed py-2 text-center md:text-start w-full bg-gray-800 md:bg-gray-900 font-semibold">Analytics & Reports</h2>
+      
+      <!-- Performance Chart Placeholder -->
+      <div class="h-64 bg-gray-700 pt-8 rounded flex items-center justify-center text-gray-400">
+        [ Performance Chart Placeholder ]
+      </div>
+      
+      <!-- Realized & Unrealized PnL -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <div class="bg-gray-800 p-4 rounded">
+          <h3 class="text-lg font-bold mb-2">Realized PnL</h3>
+          <p class="text-green-500">$+1,240.75</p>
+        </div>
+        <div class="bg-gray-800 p-4 rounded">
+          <h3 class="text-lg font-bold mb-2">Unrealized PnL</h3>
+          <p class="text-red-500">$-350.20</p>
+        </div>
+      </div>
+      
+      <!-- Export Buttons -->
+      <div class="mt-6 flex gap-4">
+        <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Export CSV</button>
+        <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Generate PDF</button>
+      </div>
+    </section>
+  </main>
+</main>
+<script src="/js/userdashboard.js"></script>
+<%- include('partials/footer') %>
