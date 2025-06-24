@@ -1,48 +1,40 @@
-<%- include('partials/dashboardhead') %>
-  <!-- Main Page Content -->
-  <main class=" md:max-w-7xl md:ml-64 md:px-2">
-    <main class="space-y-10 md:mt-4">
-      <!-- Dashboard Section -->
-      <section id="dashboard" class="section active pt-16 ">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <!-- Portfolio Summary -->
-          <div class="bg-gray-800 p-4 rounded shadow col-span-2">
-            <h2 class="text-xl font-bold mb-2">Portfolio Summary</h2>
-            <p class="text-sm text-gray-400">Total Balance: $25,380.45</p>
-            <p class="text-sm text-green-500">+5.72% this month</p>
-            <div class="h-64 mt-4 bg-gray-700 rounded flex items-center justify-center text-gray-400">
-              <canvas id="portfolioPieChart" class="py-4"></canvas>
+<%- include('partials/header') %>
+    <section class="md:overflow-hidden relative bg-white min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto bg-white rounded-3xl p-8 md:p-12 mt-16">
+            <div class="flex flex-col items-center mb-8">
+                <img src="https://placehold.co/40x40/fff/3B82F6?text=AM" alt="Apex meridian"
+                    class="h-10 w-10 rounded-full object-cover shadow-xl border-blue-200 border">
+                <h1 class="text-lg md:text-2xl font-extrabold text-gray-900">Welcome Back</h1>
             </div>
-          </div>
-          <!-- Watchlist -->
-          <div class="bg-gray-800 p-4 rounded shadow">
-            <h2 class="text-xl font-bold mb-2">Watchlist</h2>
-            <ul class="space-y-2">
-              <li class="flex justify-between">
-                <span>BTC/USD</span><span class="text-green-500">$67,120</span>
-              </li>
-              <li class="flex justify-between">
-                <span>ETH/USD</span><span class="text-red-500">$3,480</span>
-              </li>
-              <li class="flex justify-between">
-                <span>Gold</span><span class="text-green-500">$2,410</span>
-              </li>
-            </ul>
-          </div>
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address</label>
+                    <input type="email" id="email" name="email"
+                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-200"
+                        placeholder="johndoe@gmail.com" required>
+                </div>
+                
+                <div class="relative">
+                    <label for="password" class="block text-gray-700 font-semibold mb-2">Password</label>
+                    <input type="password" id="password" name="password"
+                        class="w-full px-4 py-3 pr-12 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-200"
+                        placeholder="Create a password" required>
+                    <span onclick="togglePassword('password', this)"
+                        class="absolute right-4 top-11 cursor-pointer text-gray-500">
+                        👁️
+                    </span>
+                </div>
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">Login</button>
+            </form>
+            <div class="text-center mt-6">
+                <a href="/resetpassword"
+                    class="text-blue-600 hover:underline font-semibold text-sm mb-2 block">Forgotten password?</a>
+                <span class="text-gray-600 text-sm">Don't have an account?</span>
+                <a href="/signup" class="text-blue-600 hover:underline font-semibold ml-1">Sign Up</a>
+            </div>
         </div>
-        <!-- Market News -->
-        <div class="bg-gray-800 mt-6 p-4 rounded shadow">
-          <h2 class="text-xl font-bold mb-2">Latest Market News</h2>
-          <ul class="list-disc pl-5 text-sm text-gray-300">
-            <li>Bitcoin hits new all-time high amidst ETF approval rumors.</li>
-            <li>US Fed signals no further rate hikes in 2025.</li>
-            <li>Gold rallies as inflation expectations increase.</li>
-          </ul>
-        </div>
-      </section>
-    </main>
-  </main>
-  <script src="/js/userdashboard.js"></script>
-  <script src="/js/index.js"></script>
-
-  <%- include('partials/footer') %>
+    </section>
+    <script src="/js/login.js"></script>
+    <script src="/js/alert.js"></script>
+    <%- include('partials/footer') %>

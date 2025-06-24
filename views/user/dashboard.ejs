@@ -1,7 +1,10 @@
 <%- include('partials/dashboardhead') %>
-  <main class="md:max-w-7xl md:ml-64 md:px-2">
-    <main class="space-y-10">
-      <section id="analytics" class="section mt-16">
+  <!-- Main Page Content -->
+  <main class=" md:max-w-7xl md:ml-64 md:px-2">
+    <main class="space-y-10 md:mt-4">
+      <!-- Dashboard Section -->
+      <section id="dashboard" class="section active pt-16 ">
+        <!-- TradingView Widget BEGIN -->
         <div class="tradingview-widget-container">
           <div class="tradingview-widget-container__widget"></div>
           <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js"
@@ -62,34 +65,49 @@
               }
             </script>
         </div>
-        <h2
-          class="text-lg md:text-xl fixed py-2 text-center md:text-start w-full bg-gray-800 md:bg-gray-900 font-semibold">
-          Analytics & Reports</h2>
-
-        <!-- Performance Chart Placeholder -->
-        <div class="h-64 bg-gray-700 pt-8 rounded flex items-center justify-center text-gray-400">
-          [ Performance Chart Placeholder ]
-        </div>
-
-        <!-- Realized & Unrealized PnL -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-          <div class="bg-gray-800 p-4 rounded">
-            <h3 class="text-lg font-bold mb-2">Realized PnL</h3>
-            <p class="text-green-500">$+1,240.75</p>
+        <!-- TradingView Widget END -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <!-- Portfolio Summary -->
+          <div class="bg-gray-800 p-4 rounded shadow col-span-2">
+            <h2 class="text-xl font-bold mb-2">Portfolio Summary</h2>
+            <div class="flex justify-between">
+              <p class="text-sm text-gray-400">Total Balance:</p>
+              <p class="text-2xl text-gray-400"> $25,380.45</p>
+            </div>
+            <p class="text-sm text-green-500">+5.72% this month</p>
+            <div class="h-64 mt-4 bg-gray-700 rounded flex items-center justify-center text-gray-400">
+              <canvas id="portfolioPieChart"></canvas>
+            </div>
           </div>
-          <div class="bg-gray-800 p-4 rounded">
-            <h3 class="text-lg font-bold mb-2">Unrealized PnL</h3>
-            <p class="text-red-500">$-350.20</p>
+          <!-- Watchlist -->
+          <div class="bg-gray-800 p-4 rounded shadow">
+            <h2 class="text-xl font-bold mb-2">Watchlist</h2>
+            <ul class="space-y-2">
+              <li class="flex justify-between">
+                <span>BTC/USD</span><span class="text-green-500">$67,120</span>
+              </li>
+              <li class="flex justify-between">
+                <span>ETH/USD</span><span class="text-red-500">$3,480</span>
+              </li>
+              <li class="flex justify-between">
+                <span>Gold</span><span class="text-green-500">$2,410</span>
+              </li>
+            </ul>
           </div>
         </div>
-
-        <!-- Export Buttons -->
-        <div class="mt-6 flex gap-4 justify-center">
-          <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Export CSV</button>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Generate PDF</button>
+        <!-- Market News -->
+        <div class="bg-gray-800 mt-6 p-4 rounded shadow">
+          <h2 class="text-xl font-bold mb-2">Latest Market News</h2>
+          <ul class="list-disc pl-5 text-sm text-gray-300">
+            <li>Bitcoin hits new all-time high amidst ETF approval rumors.</li>
+            <li>US Fed signals no further rate hikes in 2025.</li>
+            <li>Gold rallies as inflation expectations increase.</li>
+          </ul>
         </div>
       </section>
     </main>
   </main>
   <script src="/js/userdashboard.js"></script>
+  <script src="/js/index.js"></script>
+
   <%- include('partials/footer') %>
