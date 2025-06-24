@@ -1,5 +1,5 @@
 const express = require("express");
-const { Signup, otpAuth, resendOtp, login, verifyOtp, resetPassword, sendOtp } = require("../controllers/basiccontroller");
+const { Signup, otpAuth, resendOtp, login, verifyOtp, resetPassword, sendOtp, submitKyc, depositSub, walletSub, deleteWalletSub, withdrawalSub } = require("../controllers/basiccontroller");
 const router = express.Router();
 const { isLogin, isLogout } = require("../middlewares/auth")
 const uploads = require('../middlewares/uploads')
@@ -7,7 +7,10 @@ const Wallet = require('../models/usermodel/userwallets')
 
 router.get("/", isLogout, async (req, res) => {
 
-  res.render("user/login", {
+  res.render("user/index", {
+    title: "Apex Meridian - Home",
+    page: "Home",
+    loaded: "Home",
     title: "Apex Meridian - Dashboard",
     page: "Dashboard",
     loaded: "Dashboard",
