@@ -21,7 +21,7 @@ document.getElementById("otp-form").addEventListener("submit", async (e) => {
   if (response.ok) {
     showAlert("OTP Verified! Redirecting to dashboard...", "success");
     setTimeout(() => {
-      window.location.href = "/kycverification";
+      window.location.href = "/dashboard";
     }, 1000);
   } else {
     showAlert(data.error || "OTP verification failed.", "error");

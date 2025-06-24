@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (response.ok) {
           showAlert(data.message || "Signup successful!", "success");
-          window.location.href = "/otp";
+          window.location.href = "/kycverification";
         } else {
           showAlert(data.error || "Signup failed.", "error");
         }

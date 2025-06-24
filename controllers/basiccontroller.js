@@ -3,9 +3,11 @@ const sendOtpEmail = require("../config/mail");
 const sendOtpResetEmail = require("../config/passwordresetmail");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
-const Deposit = require('../models/usermodel/deposit')
-const Wallet = require('../models/usermodel/userwallets')
-const Withdraw = require('../models/usermodel/withdraw')
+const Deposit = require("../models/usermodel/deposit");
+const Wallet = require("../models/usermodel/userwallets");
+const Withdraw = require("../models/usermodel/withdraw");
+const Kyc = require("../models/usermodel/kyc");
+const uploadAuth = require("../middlewares/uploads");
 
 const Signup = async (req, res) => {
   try {
@@ -28,15 +30,14 @@ const Signup = async (req, res) => {
       password: hashedPassword,
     });
 
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
-
-    newUser.otp = { code: otp, expiresAt: otpExpires };
-    await sendOtpEmail(email, otp);
-
     await newUser.save();
+    req.session.user = {
+      id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+    };
 
-    return res.status(201).json({ message: "Signup successful" })
+    return res.status(201).json({ message: "Signup successful" });
   } catch (error) {
     console.error("Signup error:", error);
     return res
@@ -160,13 +161,19 @@ const submitKyc = (req, res) => {
 
       await newKyc.save();
 
-      res.status(200).json({ message: "KYC submitted successfully" });
+      res
+        .status(200)
+        .json({
+          message:
+            "KYC submitted successfully! Your details are under review, we'll get back to you within 24 hours with a response.",
+        });
     } catch (error) {
       console.error("KYC error:", error);
       res.status(500).json({ error: "Server error" });
     }
   });
 };
+
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -183,13 +190,49 @@ const login = async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
+    const kycRecord = await Kyc.findOne({ userId: user._id });
+
+    if (!kycRecord) {
+      return res.status(403).json({
+        error:
+          "Please verify your KYC to proceed. Redirecting to verification page...",
+        redirect: "/kycverification",
+        delay: 5000,
+      });
+    }
+
+    if (kycRecord.status === "pending") {
+      return res.status(403).json({
+        error:
+          "Your KYC has not been approved. Please contact support if not approved after 24 hours.",
+      });
+    }
+
+    if (kycRecord.status === "rejected") {
+      return res.status(403).json({
+        error:
+          "Your KYC verification was rejected. Please verify again. Redirecting...",
+        redirect: "/kycverification",
+      });
+    }
+
     const otp = Math.floor(100000 + Math.random() * 900000);
     const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
 
-    // uncomment after work is completed
-    // user.otp = { code: otp, expiresAt: otpExpires };
-    // await sendOtpEmail(email, otp);
-    // await user.save();
+    user.otp = {
+      code: otp,
+      expiresAt: otpExpires,
+      otpCreatedAt: new Date(),
+    };
+
+    try {
+      await sendOtpEmail(email, otp);
+    } catch (mailError) {
+      console.error("Email error:", mailError);
+      return res.status(500).json({ error: "Failed to send OTP email" });
+    }
+
+    await user.save();
 
     req.session.user = {
       id: user._id,
@@ -197,7 +240,7 @@ const login = async (req, res) => {
       email: user.email,
     };
 
-    res.status(200).json({ message: "Login successful" });
+    res.status(200).json({ message: "Login successful, OTP sent" });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Server error" });
@@ -210,9 +253,7 @@ const sendOtp = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ error: "User with this email not found." });
+      return res.status(404).json({ error: "User with this email not found." });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
@@ -266,132 +307,128 @@ const resetPassword = async (req, res) => {
   }
 };
 
-
 // deposit sub
 const depositSub = async (req, res) => {
-    try{
-      let info = {
-        email: req.body.email ?? "",
-        amount: req.body.amount ?? "",
-        network: req.body.network ?? "",
-        waddress: req.body.waddress ?? "",
-        subData: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
-      }
+  try {
+    let info = {
+      email: req.body.email ?? "",
+      amount: req.body.amount ?? "",
+      network: req.body.network ?? "",
+      waddress: req.body.waddress ?? "",
+      subData: `${req.protocol}://${req.get("host")}/uploads/${
+        req.file.filename
+      }`,
+    };
 
-      const deposit = await new Deposit(info).save()
-      if(deposit !== null){
-          req.session.message = "deposit request successful";
-          res.redirect("/deposit");
-      }else{
-          req.session.message = "error making deposit";
-          res.redirect("/deposit");
-      }
-
-    }catch(error){
-        console.log(error)
-        req.session.message = "error completing request";
-        res.redirect("/deposit");
+    const deposit = await new Deposit(info).save();
+    if (deposit !== null) {
+      req.session.message = "deposit request successful";
+      res.redirect("/deposit");
+    } else {
+      req.session.message = "error making deposit";
+      res.redirect("/deposit");
     }
-}
+  } catch (error) {
+    console.log(error);
+    req.session.message = "error completing request";
+    res.redirect("/deposit");
+  }
+};
 
 // deposit sub
 const withdrawalSub = async (req, res) => {
-    try{
-      const { waddress, amount, email } = req.body
+  try {
+    const { waddress, amount, email } = req.body;
 
-      if (!waddress || waddress.trim() === "") {
-        req.session.message = "no address entered";
-        res.redirect("/withdrawals");
-      }
-
-      const user = await User.findOne({ email });
-
-      if (!user) {
-        req.session.message = "invalid account";
-        res.redirect("/withdrawals");
-      }
-
-      const withdrawalAmount = parseFloat(amount);
-      if (isNaN(withdrawalAmount) || withdrawalAmount <= 0) {
-        req.session.message = "Invalid withdrawal amount.";
-        res.redirect("/withdrawals");
-      }
-
-      if (user.balance < withdrawalAmount) {
-        req.session.message = "Insufficient balance";
-        res.redirect("/withdrawals");
-      }
-
-      const withdrawal = new Withdraw({
-        email,
-        amount: withdrawalAmount,
-        waddress,
-        status: "pending",
-        requestedAt: new Date().toISOString().slice(0, 10)
-      });
-
-      await withdrawal.save();
-
-      user.balance -= withdrawalAmount;
-      await user.save();
-      
-      req.session.message = "withdrawal request successful";
+    if (!waddress || waddress.trim() === "") {
+      req.session.message = "no address entered";
       res.redirect("/withdrawals");
-
-    }catch(error){
-        console.log(error)
-        req.session.message = "error completing request";
-        res.redirect("/withdrawals");
     }
-}
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      req.session.message = "invalid account";
+      res.redirect("/withdrawals");
+    }
+
+    const withdrawalAmount = parseFloat(amount);
+    if (isNaN(withdrawalAmount) || withdrawalAmount <= 0) {
+      req.session.message = "Invalid withdrawal amount.";
+      res.redirect("/withdrawals");
+    }
+
+    if (user.balance < withdrawalAmount) {
+      req.session.message = "Insufficient balance";
+      res.redirect("/withdrawals");
+    }
+
+    const withdrawal = new Withdraw({
+      email,
+      amount: withdrawalAmount,
+      waddress,
+      status: "pending",
+      requestedAt: new Date().toISOString().slice(0, 10),
+    });
+
+    await withdrawal.save();
+
+    user.balance -= withdrawalAmount;
+    await user.save();
+
+    req.session.message = "withdrawal request successful";
+    res.redirect("/withdrawals");
+  } catch (error) {
+    console.log(error);
+    req.session.message = "error completing request";
+    res.redirect("/withdrawals");
+  }
+};
 
 // wallet sub
 const walletSub = async (req, res) => {
-    try{
-      console.log(req.body);
-      
+  try {
+    console.log(req.body);
 
-        let info = {
-          email: req.body.email ?? "",
-          walletname: req.body.walletname ?? "",
-          network: req.body.network ?? "",
-          waddress: req.body.waddress ?? "",
-        }
+    let info = {
+      email: req.body.email ?? "",
+      walletname: req.body.walletname ?? "",
+      network: req.body.network ?? "",
+      waddress: req.body.waddress ?? "",
+    };
 
-        const wallet = await new Wallet(info).save()
-        if(wallet !== null){
-            req.session.message = "wallet uploaded successful";
-            res.redirect("/wallets");
-        }else{
-            req.session.message = "error uploading wallet";
-            res.redirect("/wallets");
-        }
-
-    }catch(error){
-        console.log(error)
-        req.session.message = "error completing request";
-        res.redirect("/wallets");
+    const wallet = await new Wallet(info).save();
+    if (wallet !== null) {
+      req.session.message = "wallet uploaded successful";
+      res.redirect("/wallets");
+    } else {
+      req.session.message = "error uploading wallet";
+      res.redirect("/wallets");
     }
-}
+  } catch (error) {
+    console.log(error);
+    req.session.message = "error completing request";
+    res.redirect("/wallets");
+  }
+};
 
 // delete wallet
 const deleteWalletSub = async (req, res) => {
-    try{
-        let id = req.params.id
+  try {
+    let id = req.params.id;
 
-        if(!id){
-            res.redirect("/");
-        }
-
-        await Wallet.deleteOne({ _id: id });
-        
-        res.redirect("/wallets");
-            
-    }catch (error) {
-        console.log(error)
-        res.redirect("/wallets");
+    if (!id) {
+      res.redirect("/");
     }
-}
+
+    await Wallet.deleteOne({ _id: id });
+
+    res.redirect("/wallets");
+  } catch (error) {
+    console.log(error);
+    res.redirect("/wallets");
+  }
+};
 
 module.exports = {
   Signup,
@@ -401,5 +438,9 @@ module.exports = {
   verifyOtp,
   sendOtp,
   resetPassword,
-  depositSub, walletSub, deleteWalletSub, withdrawalSub, submitKyc
+  depositSub,
+  walletSub,
+  deleteWalletSub,
+  withdrawalSub,
+  submitKyc,
 };

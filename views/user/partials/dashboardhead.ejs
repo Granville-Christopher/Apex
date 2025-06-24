@@ -83,7 +83,7 @@
               </div>
               <div class="px-4 py-2">
                 <a href="/settings"><button class="w-full text-left hover:bg-gray-100 py-1">My Profile</button></a>
-                <a href="/signout"> <button class="w-full text-left hover:bg-gray-100 py-1">Logout</button></a>
+                <a href="/logout"> <button class="w-full text-left hover:bg-gray-100 py-1">Logout</button></a>
               </div>
             </div>
           </div>
@@ -108,7 +108,7 @@
           const toggleSidebarBtn = document.getElementById('toggleSidebar');
 
           toggleSidebarBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('block');
           });
 
           document.addEventListener('click', (e) => {
