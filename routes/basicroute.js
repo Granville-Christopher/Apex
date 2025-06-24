@@ -1,5 +1,5 @@
 const express = require("express");
-const { Signup, otpAuth, resendOtp, login, verifyOtp, resetPassword, sendOtp, depositSub, walletSub, deleteWalletSub, withdrawalSub } = require("../controllers/basiccontroller");
+const { Signup, otpAuth, resendOtp, login, verifyOtp, resetPassword, sendOtp } = require("../controllers/basiccontroller");
 const router = express.Router();
 const { isLogin, isLogout } = require("../middlewares/auth")
 const uploads = require('../middlewares/uploads')
@@ -7,10 +7,10 @@ const Wallet = require('../models/usermodel/userwallets')
 
 router.get("/", isLogout, async (req, res) => {
 
-  res.render("user/index", {
-    title: "Apex Meridian - Home",
-    page: "Home",
-    loaded: "Home",
+  res.render("user/login", {
+    title: "Apex Meridian - Dashboard",
+    page: "Dashboard",
+    loaded: "Dashboard",
   });
 });
 
@@ -154,7 +154,7 @@ router.get("/otp", async (req, res) => {
     page: "Otp",
     loaded: "Otp",
   });
-})
+});
 
 router.post("/signup", Signup)
 router.post("/", login)
@@ -163,6 +163,7 @@ router.post("/resend-otp", resendOtp)
 router.post("/verify-otp", verifyOtp)
 router.post("/get-reset-otp", sendOtp)
 router.post("/reset-password", resetPassword)
+router.post("/verification/submit", submitKyc);
 
 
 
