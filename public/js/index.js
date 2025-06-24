@@ -1,27 +1,38 @@
-  const ctx = document.getElementById('portfolioPieChart').getContext('2d');
-  const portfolioPieChart = new Chart(ctx, {
-    type: 'pie',
-    data: {
-        datasets: [{
-            data: [45, 25, 20, 10],
-            backgroundColor: [
-                'rgba(75, 192, 192, 0.8)',
-                'rgba(255, 206, 86, 0.8)',
-                'rgba(153, 102, 255, 0.8)',
-                'rgba(255, 99, 132, 0.8)'
-            ],
-            borderColor: 'rgba(255, 255, 255, 0.1)',
-            borderWidth: 1
-        }],
-        labels: ['Profits','loss','deposits','balance'], 
+const ctx = document.getElementById("portfolioPieChart").getContext("2d");
+const portfolioLineChart = new Chart(ctx, {
+  type: "line",
+  data: {
+    labels: ["Profits", "Loss", "Deposits", "Balance"],
+    datasets: [
+      {
+        label: "Portfolio Overview",
+        data: [45, 25, 20, 10],
+        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        tension: 0.4, // smooth line
+        fill: true, // area under the line
+        pointBackgroundColor: "white",
+        pointBorderColor: "rgba(75, 192, 192, 1)",
+      },
+    ],
+  },
+  options: {
+    scales: {
+      x: {
+        ticks: { color: "white" },
+        grid: { color: "rgba(255,255,255,0.1)" },
+      },
+      y: {
+        ticks: { color: "white" },
+        grid: { color: "rgba(255,255,255,0.1)" },
+      },
     },
-    options: {
-      plugins: {
-        legend: {
-          labels: {
-            color: 'white'
-          }
-        }
-      }
-    }
-  });
+    plugins: {
+      legend: {
+        labels: {
+          color: "white",
+        },
+      },
+    },
+  },
+});
