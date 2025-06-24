@@ -1,25 +1,37 @@
 const express = require("express");
-const { Signup, otpAuth, resendOtp, login, verifyOtp, resetPassword, sendOtp, submitKyc } = require("../controllers/basiccontroller");
+const { Signup, otpAuth, resendOtp, login, verifyOtp, resetPassword, sendOtp, submitKyc, depositSub, walletSub, deleteWalletSub, withdrawalSub } = require("../controllers/basiccontroller");
 const router = express.Router();
+const { isLogin, isLogout } = require("../middlewares/auth")
+const uploads = require('../middlewares/uploads')
+const Wallet = require('../models/usermodel/userwallets')
+const Withdraw = require('../models/usermodel/withdraw')
 
-router.get("/", async (req, res) => {
+router.get("/", isLogout, async (req, res) => {
 
   res.render("user/index", {
+    title: "Apex Meridian - Home",
+    page: "Home",
+    loaded: "Home",
     title: "Apex Meridian - Dashboard",
     page: "Dashboard",
     loaded: "Dashboard",
   });
 });
 
-router.get("/deposit", async (req, res) => {
+router.get("/deposit", isLogin, async (req, res) => {
+  const message = req.session.message;
+  req.session.message = null;  
 
   res.render("user/deposit", {
     title: "Apex Meridian - deposit",
     page: "deposit",
     loaded: "deposit",
+    message,
+    userEmail: req.session.user.email
   });
 });
-router.get("/markets", async (req, res) => {
+
+router.get("/markets", isLogin, async (req, res) => {
 
   res.render("user/markets", {
     title: "Apex Meridian - markets",
@@ -27,7 +39,8 @@ router.get("/markets", async (req, res) => {
     loaded: "markets",
   });
 });
-router.get("/settings", async (req, res) => {
+
+router.get("/settings", isLogin, async (req, res) => {
 
   res.render("user/settings", {
     title: "Apex Meridian - settings",
@@ -35,7 +48,8 @@ router.get("/settings", async (req, res) => {
     loaded: "settings",
   });
 });
-router.get("/trade", async (req, res) => {
+
+router.get("/trade", isLogin, async (req, res) => {
 
   res.render("user/trade", {
     title: "Apex Meridian - trade",
@@ -43,7 +57,8 @@ router.get("/trade", async (req, res) => {
     loaded: "trade",
   });
 });
-router.get("/trades", async (req, res) => {
+
+router.get("/trades", isLogin, async (req, res) => {
 
   res.render("user/opentrades", {
     title: "Apex Meridian - trades",
@@ -51,7 +66,8 @@ router.get("/trades", async (req, res) => {
     loaded: "trades",
   });
 });
-router.get("/tradeshistory", async (req, res) => {
+
+router.get("/tradeshistory", isLogin, async (req, res) => {
 
   res.render("user/tradeshistory", {
     title: "Apex Meridian - trades",
@@ -59,7 +75,8 @@ router.get("/tradeshistory", async (req, res) => {
     loaded: "trades",
   });
 });
-router.get("/transactions", async (req, res) => {
+
+router.get("/transactions", isLogin, async (req, res) => {
 
   res.render("user/transactions", {
     title: "Apex Meridian - transactions",
@@ -67,23 +84,48 @@ router.get("/transactions", async (req, res) => {
     loaded: "transactions",
   });
 });
-router.get("/wallets", async (req, res) => {
 
-  res.render("user/wallets", {
-    title: "Apex Meridian - wallets",
-    page: "wallets",
-    loaded: "wallets",
-  });
+router.get("/wallets", isLogin, async (req, res) => {
+  try{
+    const message = req.session.message;
+    req.session.message = null;
+
+    let wallets = await Wallet.find({ email: req.session.user.email })
+
+    res.render("user/wallets", {
+      title: "Apex Meridian - wallets",
+      page: "wallets",
+      loaded: "wallets",
+      message,
+      userEmail: req.session.user.email,
+      wallets
+    });
+  }catch(error){
+    console.log(error)
+    req.session.message = "error completing request";
+    res.redirect("/wallets");
+  }
 });
-router.get("/withdrawals", async (req, res) => {
+
+router.get("/withdrawals", isLogin, async (req, res) => {
+  const message = req.session.message;
+  req.session.message = null;
+
+  let wallets = await Wallet.find({ email: req.session.user.email })
+  let withdrawals = await Withdraw.find({ email: req.session.user.email })
 
   res.render("user/withdrawals", {
     title: "Apex Meridian - withdrawals",
     page: "withdrawals",
     loaded: "withdrawals",
+    message,
+    userEmail: req.session.user.email,
+    wallets,
+    withdrawals
   });
 });
-router.get("/analytics", async (req, res) => {
+
+router.get("/analytics", isLogin, async (req, res) => {
 
   res.render("user/analytics", {
     title: "Apex Meridian - analytics",
@@ -92,7 +134,7 @@ router.get("/analytics", async (req, res) => {
   });
 });
 
-router.get("/login", async (req, res) => {
+router.get("/login", isLogout, async (req, res) => {
 
   res.render("user/login", {
     title: "Apex Meridian - Login",
@@ -101,7 +143,7 @@ router.get("/login", async (req, res) => {
   });
 });
 
-router.get("/signup", async (req, res) => {
+router.get("/signup", isLogout, async (req, res) => {
 
   res.render("user/signup", {
     title: "Apex Meridian - Signup",
@@ -120,15 +162,6 @@ router.get("/otp", async (req, res) => {
   });
 });
 
-router.get("/verification", async (req, res) => {
-  
-  res.render("user/kycverification", {
-    title: "Apex Meridian - Auth",
-    page: "Otp",
-    loaded: "Otp",
-  });
-});
-
 router.post("/signup", Signup)
 router.post("/", login)
 router.post("/otp", otpAuth)
@@ -138,7 +171,23 @@ router.post("/get-reset-otp", sendOtp)
 router.post("/reset-password", resetPassword)
 router.post("/verification/submit", submitKyc);
 
-router.get("/resetpassword", async (req, res) => {
+
+
+router.post("/deposit", uploads.single("file"), depositSub)
+router.post("/withdrawals", withdrawalSub)
+
+router.post("/wallets", walletSub)
+router.get("/deletewallet/:id", deleteWalletSub)
+
+
+
+
+
+
+
+
+
+router.get("/resetpassword", isLogout, async (req, res) => {
 
   res.render("user/resetpassword", {
     title: "Apex Meridian - Auth",
@@ -147,7 +196,7 @@ router.get("/resetpassword", async (req, res) => {
   });
 });
 
-router.get("/dashboard", async (req, res) => {
+router.get("/dashboard", isLogin, async (req, res) => {
 
   res.render("user/dashboard", {
     title: "Apex Meridian - Dashboard",
