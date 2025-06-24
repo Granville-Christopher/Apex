@@ -1,0 +1,131 @@
+<%- include('partials/header') %>
+<section class="min-h-screen bg-gray-50 mt-16">
+    <div class="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <!-- User Info -->
+        <div class="mb-6">
+            <h2 class="text-lg md:text-2xl font-bold text-gray-900">Username: <span id="username">GranvilleUdoeze</span></h2>
+            <p class="text-gray-700">Email: <span id="useremail">granville@example.com</span></p>
+        </div>
+
+        <!-- Account Balance Management -->
+        <div class="mb-8">
+            <h3 class="text-lg md:text-xl font-semibold mb-4">Increase User Account Balance</h3>
+            <p class="text-lg md:text-xl font-extrabold text-gray-900 mb-4">Current Balance: <span id="userBalance">₦0.00</span></p>
+            <form id="increaseBalanceForm" class="flex flex-col md:flex-row md:items-center md:space-x-4 mb-6">
+                <input type="number" name="increaseAmount" placeholder="Amount to increase" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-200 mb-4 md:mb-0" />
+                <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300">
+                    Submit
+                </button>
+            </form>
+
+            <h3 class="text-lg md:text-xl font-semibold mb-4">Decrease User Account Balance</h3>
+            <p class="text-lg md:text-xl font-extrabold text-gray-900 mb-4">Current Balance: <span id="userBalanceDecrease">₦0.00</span></p>
+            <form id="decreaseBalanceForm" class="flex flex-col md:flex-row md:items-center md:space-x-4">
+                <input type="number" name="decreaseAmount" placeholder="Amount to decrease" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0" />
+                <button type="submit"
+                    class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300">
+                    Submit
+                </button>
+            </form>
+        </div>
+
+        <!-- User Details -->
+        <div class="mb-8">
+            <h3 class="text-xl font-semibold mb-4">User Details</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <p><span class="font-semibold">Full Name:</span> Granville Udoeze</p>
+                </div>
+                <div>
+                    <p><span class="font-semibold">Phone Number:</span> +2349076262053</p>
+                </div>
+                <div>
+                    <p><span class="font-semibold">Country:</span> Nigeria</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KYC Documents -->
+        <div class="mb-8">
+            <h3 class="text-xl font-semibold mb-4">KYC Documents Uploaded</h3>
+            <div class="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0 mb-4">
+                <div class="flex-1">
+                    <div class="border rounded-lg overflow-hidden shadow-sm">
+                        <img src="/path/to/kyc-front.jpg" alt="KYC Front" class="w-full h-auto object-cover" />
+                    </div>
+                    <div class="border rounded-lg overflow-hidden shadow-sm">
+                        <img src="/path/to/kyc-back.jpg" alt="KYC Back" class="w-full h-auto object-cover" />
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <button id="approveKycBtn" class="mt-2 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg shadow transition duration-300">
+                        Approve KYC
+                    </button>
+                    <button id="rejectKycBtn" class="mt-2 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg shadow transition duration-300">
+                        Reject KYC
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Block User Login -->
+        <div class="mb-8">
+            <button id="blockUserBtn" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300">
+                Block User Login
+            </button>
+        </div>
+
+        <!-- User Transaction Details -->
+        <div>
+            <h3 class="md:text-xl text-lg font-semibold mb-4">Click to see user transaction details</h3>
+            <button id="toggleTransactionsBtn" class="mb-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-300">
+                Toggle Transactions
+            </button>
+            <div id="transactionDetails" class="overflow-x-auto hidden">
+                <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 border-b border-gray-300">
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Date</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Type</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Amount</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Status</th>
+                            <th class="text-left py-2 px-4">Reference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Example transaction rows -->
+                        <tr class="border-b border-gray-300">
+                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">2024-06-01</td>
+                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Deposit</td>
+                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">₦50,000</td>
+                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Completed</td>
+                            <td class="py-2 px-4">REF123456</td>
+                        </tr>
+                        <tr class="border-b border-gray-300 ">
+                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">2024-05-28</td>
+                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Withdrawal</td>
+                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">₦20,000</td>
+                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Pending</td>
+                            <td class="py-2 px-4">REF654321</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.getElementById('toggleTransactionsBtn').addEventListener('click', function () {
+        const details = document.getElementById('transactionDetails');
+        if (details.classList.contains('hidden')) {
+            details.classList.remove('hidden');
+        } else {
+            details.classList.add('hidden');
+        }
+    });
+</script>
+<%- include('partials/footer') %>

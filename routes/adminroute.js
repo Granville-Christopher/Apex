@@ -30,6 +30,15 @@ router.get("/signup", async (req, res) => {
   });
 });
 
+router.get("/usersingle", async (req, res) => {
+
+  res.render("admin/usersingle", {
+    title: "Apex Meridian - Admin usersingle",
+    page: "usersingle",
+    loaded: "usersingle",
+  });
+});
+
 router.post("/admin-signup", Signup)
 router.post("/admin-login", Login)
 router.post("/get-reset-otp", sendOtp)
