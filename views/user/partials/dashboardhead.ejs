@@ -1,41 +1,59 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trading Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- <link rel="stylesheet" href="/css/style.css"> -->
   <script>
     tailwind.config = {
       darkMode: 'class'
     }
   </script>
 </head>
+
 <body class="bg-gray-900 text-white dark:text-white">
   <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <aside id="sidebar" class="w-64  bg-gray-800 z-50 fixed h-full dark:bg-gray-900 hidden md:block transition-transform duration-300 ease-in-out">
+    <aside id="sidebar"
+      class="w-64  bg-gray-800 z-50 fixed h-full dark:bg-gray-900 hidden md:block transition-transform duration-300 ease-in-out">
       <div class="p-4 text-xl font-bold">TradePro</div>
       <nav class="space-y-2 px-4">
-        <a href="#dashboard" class="block py-2 px-3 rounded hover:bg-gray-700" onclick="showSection('dashboard')">Dashboard</a>
-        <a href="#markets" class="block py-2 px-3 rounded hover:bg-gray-700" onclick="showSection('markets')">Markets</a>
+        <a href="#dashboard" class="block py-2 px-3 rounded hover:bg-gray-700"
+          onclick="showSection('dashboard')">Dashboard</a>
+        <a href="#markets" class="block py-2 px-3 rounded hover:bg-gray-700"
+          onclick="showSection('markets')">Markets</a>
+        <button onclick="showSection('deposit')"
+          class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Deposit</button>
+        <button onclick="showSection('withdrawal')"
+          class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Withdrawal</button>
         <a href="#trade" class="block py-2 px-3 rounded hover:bg-gray-700" onclick="showSection('trade')">Trade</a>
-        <a href="#wallets" class="block py-2 px-3 rounded hover:bg-gray-700" onclick="showSection('wallets')">Wallets</a>
-        <a href="#analytics" class="block py-2 px-3 rounded hover:bg-gray-700" onclick="showSection('analytics')">Analytics</a>
-        <a href="#settings" class="block py-2 px-3 rounded hover:bg-gray-700" onclick="showSection('settings')">Settings</a>
-        <a href="#support" class="block py-2 px-3 rounded hover:bg-gray-700" onclick="showSection('support')">Support</a>
+        <a href="#trades" class="block py-2 px-3 rounded hover:bg-gray-700" onclick="showSection('trades')">Trades</a>
+        <button onclick="showSection('wallets')"
+          class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Wallets</button>
+        <a href="#analytics" class="block py-2 px-3 rounded hover:bg-gray-700"
+          onclick="showSection('analytics')">Analytics</a>
+        <button onclick="showSection('transactions')"
+          class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Transactions</button>
+        <a href="#settings" class="block py-2 px-3 rounded hover:bg-gray-700"
+          onclick="showSection('settings')">Settings</a>
+        <a href="#support" class="block py-2 px-3 rounded hover:bg-gray-700"
+          onclick="showSection('support')">Support</a>
       </nav>
     </aside>
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col">
       <!-- Topbar -->
-      <header class="flex fixed top-0 w-full justify-end gap-2 items-center p-4 bg-gray-800 dark:bg-gray-900 shadow">
-       <div class="flex gap-2 dashlogo" >
-         <img src="https://placehold.co/40x40/fff/3B82F6?text=AM" alt="Apex Meridian Logo"
-                    class="h-10 w-10 rounded-full object-cover shadow-xl border-blue-200 border" />
-        <h2 class="text-xs md:text-2xl font-semibold">Apex Meridian</h2>
-       </div>
+      <header
+        class="flex fixed top-0 w-full m-0 justify-end gap-2 items-center p-4 bg-gray-800 dark:bg-gray-900 shadow">
+        <div class="flex gap-2 dashlogo">
+          <img src="https://placehold.co/40x40/fff/3B82F6?text=AM" alt="Apex Meridian Logo"
+            class="h-10 w-10 rounded-full object-cover shadow-xl border-blue-200 border" />
+          <h2 class="text-xs md:text-2xl font-semibold">Apex Meridian</h2>
+        </div>
         <div class="flex items-center space-x-8">
           <button id="toggleTheme" class="p-2 rounded bg-blue-500 text-white">Dark</button>
           <img src="avatar.png" alt="User Avatar" class="w-8 h-8 rounded-full">
