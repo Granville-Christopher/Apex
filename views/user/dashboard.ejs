@@ -5,7 +5,7 @@
       <!-- Dashboard Section -->
       <section id="dashboard" class="section active pt-16 ">
         <!-- TradingView Widget BEGIN -->
-        <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container fixed w-full z-20 bg-gray-800">
           <div class="tradingview-widget-container__widget"></div>
           <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js"
             async>
@@ -50,10 +50,6 @@
                   {
                     "proName": "ACTIVTRADES:SUGARN2025",
                     "title": "Sugar"
-                  },
-                  {
-                    "proName": "NSE:GREAVESCOT",
-                    "title": "Cotton"
                   }
                 ],
                   "colorTheme": "dark",
@@ -66,7 +62,7 @@
             </script>
         </div>
         <!-- TradingView Widget END -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-16">
           <!-- Portfolio Summary -->
           <div class="bg-gray-800 p-4 rounded shadow col-span-2">
             <h2 class="text-xl font-bold mb-2">Portfolio Summary</h2>

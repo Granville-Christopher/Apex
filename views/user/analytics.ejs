@@ -1,8 +1,12 @@
 <%- include('partials/dashboardhead') %>
-  <main class="md:max-w-7xl md:ml-64 md:px-2">
+  <main class="md:max-w-full md:ml-64 md:px-2">
     <main class="space-y-10">
       <section id="analytics" class="section mt-16">
-        <div class="tradingview-widget-container">
+
+        <h2
+          class="text-lg md:text-xl fixed py-2 text-center md:text-start w-full bg-gray-800 md:bg-gray-900 font-semibold">
+          Analytics & Reports</h2>
+        <div class="tradingview-widget-container pt-12 bg-gray-900 ">
           <div class="tradingview-widget-container__widget"></div>
           <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js"
             async>
@@ -47,10 +51,6 @@
                   {
                     "proName": "ACTIVTRADES:SUGARN2025",
                     "title": "Sugar"
-                  },
-                  {
-                    "proName": "NSE:GREAVESCOT",
-                    "title": "Cotton"
                   }
                 ],
                   "colorTheme": "dark",
@@ -62,13 +62,9 @@
               }
             </script>
         </div>
-        <h2
-          class="text-lg md:text-xl fixed py-2 text-center md:text-start w-full bg-gray-800 md:bg-gray-900 font-semibold">
-          Analytics & Reports</h2>
-
         <!-- Performance Chart Placeholder -->
-        <div class="h-64 bg-gray-700 pt-8 rounded flex items-center justify-center text-gray-400">
-          [ Performance Chart Placeholder ]
+        <div class=" h-64 md:h-96 bg-gray-700 pt-8 rounded text-gray- mt-20">
+          <canvas id="performanceChart" class="h-64 w-full bg-gray-700 rounded p-4"></canvas>
         </div>
 
         <!-- Realized & Unrealized PnL -->
@@ -92,4 +88,5 @@
     </main>
   </main>
   <script src="/js/userdashboard.js"></script>
+  <script src="/js/analytics.js"></script>
   <%- include('partials/footer') %>

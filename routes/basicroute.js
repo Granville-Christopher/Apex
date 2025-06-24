@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
 
-  res.render("user/index", {
+  res.render("user/login", {
     title: "Apex Meridian - Dashboard",
     page: "Dashboard",
     loaded: "Dashboard",
@@ -127,9 +127,6 @@ router.post("/resend-otp", resendOtp)
 router.post("/verify-otp", verifyOtp)
 router.post("/get-reset-otp", sendOtp)
 router.post("/reset-password", resetPassword)
-
-
-
 
 router.get("/resetpassword", async (req, res) => {
 

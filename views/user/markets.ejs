@@ -6,31 +6,30 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Market Cards -->
           <div class="bg-gray-800 p-4 rounded-xl shadow">
-            <div class="tradingview-widget-container h-50">
-              <!-- TradingView Widget BEGIN -->
-              <div class="tradingview-widget-container">
-                <div id="tradingview_btc"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                <script type="text/javascript">
-                  new TradingView.widget({
-                    "width": "100%",
-                    "height": 300,
-                    "symbol": "BINANCE:BTCUSDT",
-                    "interval": "15",
-                    "timezone": "Etc/UTC",
-                    "theme": "dark",
-                    "style": "1",
-                    "locale": "en",
-                    "toolbar_bg": "#f1f3f6",
-                    "enable_publishing": false,
-                    "hide_top_toolbar": false,
-                    "save_image": false,
-                    "container_id": "tradingview_btc"
-                  });
-                </script>
-              </div>
 
+            <div class="bg-gray-800 rounded shadow overflow-hidden">
+              <div id="tradingview_btc"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+              <script type="text/javascript">
+                new TradingView.widget({
+                  "width": "100%",
+                  "height": 300,
+                  "symbol": "BINANCE:BTCUSDT",
+                  "interval": "15",
+                  "timezone": "Etc/UTC",
+                  "theme": "dark",
+                  "style": "1",
+                  "locale": "en",
+                  "toolbar_bg": "#f1f3f6",
+                  "enable_publishing": false,
+                  "hide_top_toolbar": false,
+                  "save_image": false,
+                  "container_id": "tradingview_btc"
+                });
+              </script>
             </div>
+
+
             <div class="justify-between flex gap-4 items-center">
               <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
               <i class="mt-4 bg-blue-500 py-3 rounded px-2 text-white fas fa-star"></i>
@@ -39,7 +38,7 @@
 
           <div class="bg-gray-800 p-4 rounded-xl shadow">
             <div class="tradingview-widget-container h-64">
-              <!-- TradingView Widget BEGIN -->
+
               <div class="bg-gray-800 rounded shadow overflow-hidden h-64">
                 <iframe
                   src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22BINANCE%3ASOLUSDT%22%2C%22chartOnly%22%3Afalse%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22noTimeScale%22%3Afalse%7D"
@@ -47,7 +46,7 @@
                 </iframe>
               </div>
 
-              <!-- TradingView Widget END -->
+
 
             </div>
             <div class="justify-between flex gap-4 items-center">
@@ -57,14 +56,14 @@
           </div>
           <div class="bg-gray-800 p-4 rounded-xl shadow">
             <div class="tradingview-widget-container h-64">
-              <!-- TradingView Widget BEGIN -->
+
               <div class="bg-gray-800 rounded shadow overflow-hidden h-64">
                 <iframe
                   src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22BINANCE%3AETHUSDT%22%2C%22chartOnly%22%3Afalse%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22noTimeScale%22%3Afalse%7D"
                   style="width: 100%; height: 100%;" frameborder="0" allowtransparency="true" scrolling="no">
                 </iframe>
               </div>
-              <!-- TradingView Widget END -->
+
 
             </div>
             <div class="justify-between flex gap-4 items-center">
@@ -74,8 +73,15 @@
           </div>
           <div class="bg-gray-800 p-4 rounded-xl shadow">
             <div class="tradingview-widget-container h-64">
-              <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=COMEX%3AAH1!" frameborder="0"
-                class="w-full h-52"></iframe>
+
+              <div class="bg-gray-800 rounded shadow overflow-hidden h-64">
+                <iframe
+                  src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22OANDA%3AXAUUSD%22%2C%22chartOnly%22%3Afalse%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22noTimeScale%22%3Afalse%7D"
+                  style="width: 100%; height: 100%;" frameborder="0" allowtransparency="true" scrolling="no">
+                </iframe>
+              </div>
+
+
             </div>
             <div class="justify-between flex gap-4 items-center">
               <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
@@ -84,8 +90,15 @@
           </div>
           <div class="bg-gray-800 p-4 rounded-xl shadow">
             <div class="tradingview-widget-container h-64">
-              <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=ICEUS%3ACC1!" frameborder="0"
-                class="w-full h-52"></iframe>
+
+              <div class="bg-gray-800 rounded shadow overflow-hidden h-64">
+                <iframe
+                  src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22SPARKS%3ASILVER%22%2C%22chartOnly%22%3Afalse%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22noTimeScale%22%3Afalse%7D"
+                  style="width: 100%; height: 100%;" frameborder="0" allowtransparency="true" scrolling="no">
+                </iframe>
+              </div>
+
+
             </div>
             <div class="justify-between flex gap-4 items-center">
               <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
@@ -94,8 +107,15 @@
           </div>
           <div class="bg-gray-800 p-4 rounded-xl shadow">
             <div class="tradingview-widget-container h-64">
-              <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=NYMEX%3ARB1!" frameborder="0"
-                class="w-full h-52"></iframe>
+
+              <div class="bg-gray-800 rounded shadow overflow-hidden h-64">
+                <iframe
+                  src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22TVC%3AUSOIL%22%2C%22chartOnly%22%3Afalse%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22noTimeScale%22%3Afalse%7D"
+                  style="width: 100%; height: 100%;" frameborder="0" allowtransparency="true" scrolling="no">
+                </iframe>
+              </div>
+
+
             </div>
             <div class="justify-between flex gap-4 items-center">
               <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
@@ -104,59 +124,67 @@
           </div>
           <div class="bg-gray-800 p-4 rounded-xl shadow">
             <div class="tradingview-widget-container h-64">
-              <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=COINBASE%3ABTCUSD"
-                frameborder="0" class="w-full h-52"></iframe>
+
+              <div class="bg-gray-800 rounded shadow overflow-hidden h-64">
+                <iframe
+                  src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22VANTAGE%3AGAS%22%2C%22chartOnly%22%3Afalse%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22noTimeScale%22%3Afalse%7D"
+                  style="width: 100%; height: 100%;" frameborder="0" allowtransparency="true" scrolling="no">
+                </iframe>
+              </div>
+
+
             </div>
             <div class="justify-between flex gap-4 items-center">
               <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
               <i class="mt-4 bg-blue-500 py-3 rounded px-2 text-white fas fa-star"></i>
             </div>
           </div>
+
           <div class="bg-gray-800 p-4 rounded-xl shadow">
             <div class="tradingview-widget-container h-64">
-              <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=COINBASE%3AETHUSD"
-                frameborder="0" class="w-full h-52"></iframe>
+
+              <div class="bg-gray-800 rounded shadow overflow-hidden h-64">
+                <iframe
+                  src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22CAPITALCOM%3AGASOLINE%22%2C%22chartOnly%22%3Afalse%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22noTimeScale%22%3Afalse%7D"
+                  style="width: 100%; height: 100%;" frameborder="0" allowtransparency="true" scrolling="no">
+                </iframe>
+              </div>
+
+
             </div>
             <div class="justify-between flex gap-4 items-center">
               <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
               <i class="mt-4 bg-blue-500 py-3 rounded px-2 text-white fas fa-star"></i>
             </div>
           </div>
+
           <div class="bg-gray-800 p-4 rounded-xl shadow">
             <div class="tradingview-widget-container h-64">
-              <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=BINANCE%3ASOLUSDT"
-                frameborder="0" class="w-full h-52"></iframe>
+
+              <div class="bg-gray-800 rounded shadow overflow-hidden h-64">
+                <iframe
+                  src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22ACTIVTRADES%3ASUGARN2025%22%2C%22chartOnly%22%3Afalse%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22noTimeScale%22%3Afalse%7D"
+                  style="width: 100%; height: 100%;" frameborder="0" allowtransparency="true" scrolling="no">
+                </iframe>
+              </div>
+
+
             </div>
             <div class="justify-between flex gap-4 items-center">
               <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
               <i class="mt-4 bg-blue-500 py-3 rounded px-2 text-white fas fa-star"></i>
             </div>
           </div>
+
           <div class="bg-gray-800 p-4 rounded-xl shadow">
-            <div class="tradingview-widget-container h-64">
-              <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=NYMEX%3ANG1!" frameborder="0"
-                class="w-full h-52"></iframe>
+
+            <div class="bg-gray-800 rounded shadow overflow-hidden h-64">
+              <iframe
+                src="https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=en#%7B%22symbol%22%3A%22AMEX%3ASPY%22%2C%22chartOnly%22%3Afalse%2C%22dateRange%22%3A%2212M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22noTimeScale%22%3Afalse%7D"
+                style="width: 100%; height: 100%;" frameborder="0" allowtransparency="true" scrolling="no">
+              </iframe>
             </div>
-            <div class="justify-between flex gap-4 items-center">
-              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
-              <i class="mt-4 bg-blue-500 py-3 rounded px-2 text-white fas fa-star"></i>
-            </div>
-          </div>
-          <div class="bg-gray-800 p-4 rounded-xl shadow">
-            <div class="tradingview-widget-container h-64">
-              <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=ICEUS%3ASB1!" frameborder="0"
-                class="w-full h-52"></iframe>
-            </div>
-            <div class="justify-between flex gap-4 items-center">
-              <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
-              <i class="mt-4 bg-blue-500 py-3 rounded px-2 text-white fas fa-star"></i>
-            </div>
-          </div>
-          <div class="bg-gray-800 p-4 rounded-xl shadow">
-            <div class="tradingview-widget-container h-64">
-              <iframe src="https://s.tradingview.com/embed-widget/symbol-overview/?symbols=ICEUS%3ACT1!" frameborder="0"
-                class="w-full h-52"></iframe>
-            </div>
+
             <div class="justify-between flex gap-4 items-center">
               <button class="mt-4 w-full bg-blue-500 py-2 rounded text-white">View</button>
               <i class="mt-4 bg-blue-500 py-3 rounded px-2 text-white fas fa-star"></i>

@@ -9,8 +9,8 @@ const portfolioLineChart = new Chart(ctx, {
         data: [45, 25, 20, 10],
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
-        tension: 0.4, // smooth line
-        fill: true, // area under the line
+        tension: 0.4,
+        fill: true,
         pointBackgroundColor: "white",
         pointBorderColor: "rgba(75, 192, 192, 1)",
       },
