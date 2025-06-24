@@ -1,7 +1,7 @@
 document.getElementById("otp-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const otp = document.getElementById("otp").value.trim();
-  const email = localStorage.getItem("userEmail"); // get saved email
+  const email = localStorage.getItem("userEmail");
 
   if (!email) {
     showAlert("Session expired. Please sign up again.", "error");
@@ -21,7 +21,7 @@ document.getElementById("otp-form").addEventListener("submit", async (e) => {
   if (response.ok) {
     showAlert("OTP Verified! Redirecting to dashboard...", "success");
     setTimeout(() => {
-      window.location.href = "/dashboard";
+      window.location.href = "/kycverification";
     }, 1000);
   } else {
     showAlert(data.error || "OTP verification failed.", "error");

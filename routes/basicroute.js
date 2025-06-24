@@ -1,10 +1,10 @@
 const express = require("express");
-const { Signup, otpAuth, resendOtp, login, verifyOtp, resetPassword, sendOtp } = require("../controllers/basiccontroller");
+const { Signup, otpAuth, resendOtp, login, verifyOtp, resetPassword, sendOtp, submitKyc } = require("../controllers/basiccontroller");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
 
-  res.render("user/login", {
+  res.render("user/index", {
     title: "Apex Meridian - Dashboard",
     page: "Dashboard",
     loaded: "Dashboard",
@@ -120,6 +120,15 @@ router.get("/otp", async (req, res) => {
   });
 });
 
+router.get("/verification", async (req, res) => {
+  
+  res.render("user/kycverification", {
+    title: "Apex Meridian - Auth",
+    page: "Otp",
+    loaded: "Otp",
+  });
+});
+
 router.post("/signup", Signup)
 router.post("/", login)
 router.post("/otp", otpAuth)
@@ -127,6 +136,7 @@ router.post("/resend-otp", resendOtp)
 router.post("/verify-otp", verifyOtp)
 router.post("/get-reset-otp", sendOtp)
 router.post("/reset-password", resetPassword)
+router.post("/verification/submit", submitKyc);
 
 router.get("/resetpassword", async (req, res) => {
 

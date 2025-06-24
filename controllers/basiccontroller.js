@@ -3,6 +3,8 @@ const sendOtpEmail = require("../config/mail");
 const sendOtpResetEmail = require("../config/passwordresetmail");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
+const uploadAuth = require("../middlewares/upload");
+const KycVerification = require("../models/usermodel/kyc");
 
 const Signup = async (req, res) => {
   try {
@@ -124,6 +126,47 @@ const verifyOtp = async (req, res) => {
   }
 };
 
+const submitKyc = (req, res) => {
+  uploadAuth.fields([
+    { name: "cardFront", maxCount: 1 },
+    { name: "cardBack", maxCount: 1 },
+  ])(req, res, async (err) => {
+    if (err) {
+      console.error("Multer error:", err);
+      return res.status(400).json({ error: "File upload failed" });
+    }
+
+    try {
+      const userId = req.session.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized, please login" });
+      }
+
+      const { verificationType } = req.body;
+      const cardFront = req.files?.cardFront?.[0]?.filename;
+      const cardBack = req.files?.cardBack?.[0]?.filename;
+
+      if (!cardFront || !cardBack) {
+        return res.status(400).json({ error: "Both card images are required" });
+      }
+
+      const newKyc = new Kyc({
+        userId,
+        verificationType,
+        cardFront,
+        cardBack,
+      });
+
+      await newKyc.save();
+
+      res.status(200).json({ message: "KYC submitted successfully" });
+    } catch (error) {
+      console.error("KYC error:", error);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -165,9 +208,7 @@ const sendOtp = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ error: "User with this email not found." });
+      return res.status(404).json({ error: "User with this email not found." });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
@@ -221,7 +262,6 @@ const resetPassword = async (req, res) => {
   }
 };
 
-
 module.exports = {
   Signup,
   otpAuth,
@@ -230,4 +270,5 @@ module.exports = {
   verifyOtp,
   sendOtp,
   resetPassword,
+  submitKyc,
 };
