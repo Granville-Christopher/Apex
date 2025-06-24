@@ -4,6 +4,7 @@ const router = express.Router();
 const { isLogin, isLogout } = require("../middlewares/auth")
 const uploads = require('../middlewares/uploads')
 const Wallet = require('../models/usermodel/userwallets')
+const Withdraw = require('../models/usermodel/withdraw')
 
 router.get("/", isLogout, async (req, res) => {
 
@@ -111,6 +112,7 @@ router.get("/withdrawals", isLogin, async (req, res) => {
   req.session.message = null;
 
   let wallets = await Wallet.find({ email: req.session.user.email })
+  let withdrawals = await Withdraw.find({ email: req.session.user.email })
 
   res.render("user/withdrawals", {
     title: "Apex Meridian - withdrawals",
@@ -118,7 +120,8 @@ router.get("/withdrawals", isLogin, async (req, res) => {
     loaded: "withdrawals",
     message,
     userEmail: req.session.user.email,
-    wallets
+    wallets,
+    withdrawals
   });
 });
 

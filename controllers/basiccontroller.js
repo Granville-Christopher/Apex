@@ -322,7 +322,7 @@ const withdrawalSub = async (req, res) => {
         res.redirect("/withdrawals");
       }
 
-      const withdrawal = new Withdrawal({
+      const withdrawal = new Withdraw({
         email,
         amount: withdrawalAmount,
         waddress,
@@ -401,5 +401,5 @@ module.exports = {
   verifyOtp,
   sendOtp,
   resetPassword,
-  depositSub, walletSub, deleteWalletSub, withdrawalSub
+  depositSub, walletSub, deleteWalletSub, withdrawalSub, submitKyc
 };
