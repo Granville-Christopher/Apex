@@ -18,20 +18,30 @@
                 <th class="py-2 px-4 whitespace-nowrap">Date</th>
                 <th class="py-2 px-4 whitespace-nowrap">Amount</th>
                 <th class="py-2 px-4 whitespace-nowrap">Status</th>
-                <th class="py-2 px-4 whitespace-nowrap">Action</th>
+                <!-- <th class="py-2 px-4 whitespace-nowrap">Action</th> -->
               </tr>
             </thead>
             <tbody class="text-gray-200">
-              <tr>
-                <td class="py-2 px-4 whitespace-nowrap">1</td>
-                <td class="py-2 px-4 whitespace-nowrap">Deposit</td>
-                <td class="py-2 px-4 whitespace-nowrap">2025-06-22</td>
-                <td class="py-2 px-4 whitespace-nowrap">$500</td>
-                <td class="py-2 px-4 whitespace-nowrap text-green-500">Completed</td>
-                <td class="py-2 px-4 whitespace-nowrap">
-                  <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button>
-                </td>
-              </tr>
+              <% if(transactions){ %>
+                <% transactions.forEach((txn, index) => { %>
+                  <tr>
+                    <td class="py-2 px-4 whitespace-nowrap"><%= index + 1 %></td>
+                    <td class="py-2 px-4 whitespace-nowrap"><%= txn.type %></td>
+                    <td class="py-2 px-4 whitespace-nowrap"><%= txn.date %></td>
+                    <td class="py-2 px-4 whitespace-nowrap">$<%= txn.amount %></td>
+                    <td class="py-2 px-4 whitespace-nowrap <%= txn.status === 1 ? 'text-green-500' : 'text-yellow-500' %>">
+                      <%= txn.status === 1 ? 'Completed' : 'Pending' %>
+                    </td>
+                    <!-- <td class="py-2 px-4 whitespace-nowrap">
+                      <a href="/deletetxn/<%= txn.id %>?type=<%= txn.type %>" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</a>
+                    </td> -->
+                  </tr>
+                <% }) %>
+              <% }else{ %>
+                  <tr>
+                    <td>no transactions yet...</td>
+                  </tr>
+              <% } %>
             </tbody>
           </table>
         </div>

@@ -14,13 +14,15 @@ const {
   withdrawalSub,
   settingsSub,
   changePassSub,
-  changePhoto
+  changePhoto,
+  deleteTransactionSub
 } = require("../controllers/basiccontroller");
 const router = express.Router();
 const { isLogin, isLogout } = require("../middlewares/auth");
 const { uploads, uploadsFour } = require("../middlewares/uploads");
 const Wallet = require("../models/usermodel/userwallets");
 const Withdraw = require("../models/usermodel/withdraw");
+const Deposit = require("../models/usermodel/deposit");
 const User = require("../models/usermodel/signup");
 
 router.get("/", isLogout, async (req, res) => {
@@ -38,20 +40,25 @@ router.get("/deposit", isLogin, async (req, res) => {
   const message = req.session.message;
   req.session.message = null;
 
+  const user = await User.findOne({ email: req.session.user.email });
+
   res.render("user/deposit", {
     title: "Apex Meridian - deposit",
     page: "deposit",
     loaded: "deposit",
     message,
-    userEmail: req.session.user.email,
+    user,
   });
 });
 
 router.get("/markets", isLogin, async (req, res) => {
+  const user = await User.findOne({ email: req.session.user.email });
+
   res.render("user/markets", {
     title: "Apex Meridian - markets",
     page: "markets",
     loaded: "markets",
+    user,
   });
 });
 
@@ -61,44 +68,104 @@ router.get("/settings", isLogin, async (req, res) => {
 
   const user = await User.findOne({ email: req.session.user.email });
 
+  const totalDepositResult = await Deposit.aggregate([
+    { $match: { email: req.session.user.email, status: 1 } },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: "$amount" }
+      }
+    }
+  ])
+  const totalDeposit = totalDepositResult[0]?.total || 0;
+
+  const totalWithdrawResult = await Withdraw.aggregate([
+    { $match: { email: req.session.user.email, status: 1 } },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: "$amount" }
+      }
+    }
+  ])
+  const totalWithdraw = totalWithdrawResult[0]?.total || 0;
+
+
   res.render("user/settings", {
     title: "Apex Meridian - settings",
     page: "settings",
     loaded: "settings",
     message,
-    user: user
+    user,
+    totalWithdraw,
+    totalDeposit
   });
 });
 
 router.get("/trade", isLogin, async (req, res) => {
+  const user = await User.findOne({ email: req.session.user.email });
+
   res.render("user/trade", {
     title: "Apex Meridian - trade",
     page: "trade",
     loaded: "trade",
+    user
   });
 });
 
 router.get("/trades", isLogin, async (req, res) => {
+  const user = await User.findOne({ email: req.session.user.email });
+
   res.render("user/opentrades", {
     title: "Apex Meridian - trades",
     page: "trades",
     loaded: "trades",
+    user
   });
 });
 
 router.get("/tradeshistory", isLogin, async (req, res) => {
+  const user = await User.findOne({ email: req.session.user.email });
+
   res.render("user/tradeshistory", {
     title: "Apex Meridian - trades",
     page: "trades",
     loaded: "trades",
+    user
   });
 });
 
 router.get("/transactions", isLogin, async (req, res) => {
+  const user = await User.findOne({ email: req.session.user.email });
+
+  const deposits = await Deposit.find({ email: user.email });
+  const withdrawals = await Withdraw.find({ email: user.email });
+
+  const transactions = [
+    ...deposits.map((d) => ({
+      id: d._id,
+      type: "Deposit",
+      date: d.createddate || "",
+      amount: d.amount,
+      status: d.status,
+    })),
+    ...withdrawals.map((w) => ({
+      id: w._id,
+      type: "Withdrawal",
+      date: w.createddate || "",
+      amount: w.amount,
+      status: w.status,
+    })),
+  ];
+
+  transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
   res.render("user/transactions", {
     title: "Apex Meridian - transactions",
     page: "transactions",
     loaded: "transactions",
+    user,
+    transactions
   });
 });
 
@@ -107,6 +174,7 @@ router.get("/wallets", isLogin, async (req, res) => {
     const message = req.session.message;
     req.session.message = null;
 
+    const user = await User.findOne({ email: req.session.user.email });
     let wallets = await Wallet.find({ email: req.session.user.email });
 
     res.render("user/wallets", {
@@ -114,7 +182,7 @@ router.get("/wallets", isLogin, async (req, res) => {
       page: "wallets",
       loaded: "wallets",
       message,
-      userEmail: req.session.user.email,
+      user,
       wallets,
     });
   } catch (error) {
@@ -128,6 +196,7 @@ router.get("/withdrawals", isLogin, async (req, res) => {
   const message = req.session.message;
   req.session.message = null;
 
+  const user = await User.findOne({ email: req.session.user.email });
   let wallets = await Wallet.find({ email: req.session.user.email });
   let withdrawals = await Withdraw.find({ email: req.session.user.email });
 
@@ -136,17 +205,20 @@ router.get("/withdrawals", isLogin, async (req, res) => {
     page: "withdrawals",
     loaded: "withdrawals",
     message,
-    userEmail: req.session.user.email,
+    user,
     wallets,
     withdrawals,
   });
 });
 
 router.get("/analytics", isLogin, async (req, res) => {
+  const user = await User.findOne({ email: req.session.user.email });
+
   res.render("user/analytics", {
     title: "Apex Meridian - analytics",
     page: "analytics",
     loaded: "analytics",
+    user
   });
 });
 
@@ -198,6 +270,9 @@ router.post("/wallets", walletSub);
 router.get("/deletewallet/:id", deleteWalletSub);
 
 
+router.get("/deletetxn/:id", deleteTransactionSub);
+
+
 router.post("/settings", settingsSub);
 router.post("/changepass", changePassSub);
 router.post("/changephoto", uploadsFour.single("file"), changePhoto);
@@ -217,10 +292,37 @@ router.get("/resetpassword", isLogout, async (req, res) => {
 });
 
 router.get("/dashboard", isLogin, async (req, res) => {
+  const user = await User.findOne({ email: req.session.user.email });
+
+  const totalDepositResult = await Deposit.aggregate([
+    { $match: { email: req.session.user.email, status: 1 } },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: "$amount" }
+      }
+    }
+  ])
+  const totalDeposit = totalDepositResult[0]?.total || 0;
+
+  const totalWithdrawResult = await Withdraw.aggregate([
+    { $match: { email: req.session.user.email, status: 1 } },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: "$amount" }
+      }
+    }
+  ])
+  const totalWithdraw = totalWithdrawResult[0]?.total || 0;
+
   res.render("user/dashboard", {
     title: "Apex Meridian - Dashboard",
     page: "Dashboard",
     loaded: "Dashboard",
+    user,
+    deposit: totalDeposit,
+    withdrawal: totalWithdraw
   });
 });
 

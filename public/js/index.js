@@ -2,7 +2,7 @@ const ctx = document.getElementById("portfolioPieChart").getContext("2d");
 const portfolioLineChart = new Chart(ctx, {
   type: "line",
   data: {
-    labels: ["Profits", "Loss", "Deposits", "Balance"],
+    labels: ["Profits", "Loss", "Deposits", "Withdrawal"],
     datasets: [
       {
         label: "Portfolio Overview",

@@ -314,12 +314,11 @@ const depositSub = async (req, res) => {
   try {
     let info = {
       email: req.body.email ?? "",
-      amount: req.body.amount ?? "",
+      amount: Number(req.body.amount) ?? "",
       network: req.body.network ?? "",
       waddress: req.body.waddress ?? "",
-      subData: `${req.protocol}://${req.get("host")}/uploads/${
-        req.file.filename
-      }`,
+      subData: req.file.filename,
+      createddate: new Date().toISOString().slice(0, 10)
     };
 
     const deposit = await new Deposit(info).save();
@@ -369,8 +368,8 @@ const withdrawalSub = async (req, res) => {
       email,
       amount: withdrawalAmount,
       waddress,
-      status: "pending",
-      requestedAt: new Date().toISOString().slice(0, 10),
+      createddate: new Date().toISOString().slice(0, 10),
+      status: "pending"
     });
 
     await withdrawal.save();
@@ -432,6 +431,29 @@ const deleteWalletSub = async (req, res) => {
   }
 };
 
+// delete transaction
+const deleteTransactionSub = async (req, res) => {
+  try {
+    let id = req.params.id;
+    let type = req.query.type;
+
+    if (!id) {
+      res.redirect("/");
+    }
+
+    if(type == 'Deposit'){
+      await Deposit.deleteOne({ _id: id });
+    }else{
+      await Withdraw.deleteOne({ _id: id });
+    }
+
+    res.redirect("/transactions");
+  } catch (error) {
+    console.log(error);
+    res.redirect("/transactions");
+  }
+};
+
 // update account
 const settingsSub = async (req, res) => {
     try{
@@ -490,15 +512,12 @@ const changePassSub = async (req, res) => {
 const changePhoto = async (req, res) => {
   try {
 
-    const photo = `${req.protocol}://${req.get("host")}/uploads/${
-        req.file.filename
-      }`
-
+    const photo = req.file.filename
       const user = await User.updateOne({ email: req.body.email }, 
         {
-            $set:{
-                photo: photo
-            }
+          $set:{
+              photo: photo
+          }
         }
       )
       
@@ -510,9 +529,9 @@ const changePhoto = async (req, res) => {
         res.redirect("/settings")
       }
   } catch (error) {
-    console.log(error);
+    console.log(error)
     req.session.message = "error completing request";
-    res.redirect("/deposit");
+    res.redirect("/settings")
   }
 }
 
@@ -531,5 +550,6 @@ module.exports = {
   submitKyc,
   settingsSub,
   changePassSub,
-  changePhoto
+  changePhoto,
+  deleteTransactionSub
 };

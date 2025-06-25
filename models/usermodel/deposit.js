@@ -5,7 +5,7 @@ const depositSchema = new mongoose.Schema({
         required: true,
     },
     amount: {
-        type: String,
+        type: Number,
         required: true,
     },
     network: {
@@ -19,7 +19,16 @@ const depositSchema = new mongoose.Schema({
     subData: {
         type: String,
         required: false
-    }
+    },
+    status: {
+        type: Number,
+        required: false,
+        default: 0
+    },
+    createddate: {
+        type: String,
+        required: false
+    },
 });
 
 // Create and export the User model

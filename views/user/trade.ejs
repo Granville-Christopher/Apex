@@ -83,7 +83,7 @@
           </div>
 
           <!-- Trade Form Below Chart -->
-          <form class="mt-6 space-y-4">
+          <div class="mt-6 space-y-4">
             <div>
               <label for="tradeTime" class="block text-sm font-medium mb-1">Trade Time</label>
               <select id="tradeTime" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white">
@@ -111,13 +111,32 @@
             </div>
 
             <div class="flex gap-4 pt-2">
-              <button type="button" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded">Buy</button>
-              <button type="button" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded">Sell</button>
+              <button type="button" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded" id="buy">Buy</button>
+              <button type="button" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded" id="sell">Sell</button>
             </div>
-          </form>
+          </div>
         </div>
       </section>
     </main>
   </main>
   <script src="/js/userdashboard.js"></script>
+  <script>
+    let buy1 = document.getElementById('buy')
+    let sell1 = document.getElementById('sell')
+
+    buy1.addEventListener('click', () => {
+      let marketSelect1 = document.getElementById('marketSelect').value
+      let tradeTime1 = document.getElementById('tradeTime').value
+      let leverage1 = document.getElementById('leverage').value
+      let amount1 = document.getElementById('amount').value
+    })
+
+    sell1.addEventListener('click', () => {
+      let marketSelect1 = document.getElementById('marketSelect').value
+      let tradeTime1 = document.getElementById('tradeTime').value
+      let leverage1 = document.getElementById('leverage').value
+      let amount1 = document.getElementById('amount').value
+    })
+
+  </script>
   <%- include('partials/footer') %>

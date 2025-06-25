@@ -16,27 +16,27 @@
             <ul class="space-y-2 text-gray-300">
               <li class="flex justify-between">
                 <span>Total Balance:</span>
-                <span>$0.00</span>
+                <span>$<%= parseFloat(user.balance).toFixed(2) %></span>
               </li>
-              <li class="flex justify-between">
+              <!-- <li class="flex justify-between">
                 <span>Main Balance:</span>
                 <span>$0.00</span>
-              </li>
+              </li> -->
               <li class="flex justify-between">
                 <span>Profit Balance:</span>
-                <span>$0.00</span>
+                <span>$<%= parseFloat(user.profit).toFixed(2) %></span>
               </li>
               <li class="flex justify-between">
                 <span>Total Deposits:</span>
-                <span>$0.00</span>
+                <span>$<%= parseFloat(totalDeposit).toFixed(2) %></span>
               </li>
-              <li class="flex justify-between">
+              <!-- <li class="flex justify-between">
                 <span>Total Bonus:</span>
                 <span>$0.00</span>
-              </li>
+              </li> -->
               <li class="flex justify-between">
                 <span>Pending Withdrawal:</span>
-                <span>$0.00</span>
+                <span>$<%= parseFloat(totalWithdraw).toFixed(2) %></span>
               </li>
             </ul>
           </div>
@@ -104,11 +104,15 @@
             <ul class="text-gray-300 space-y-2">
               <li class="flex justify-between">
                 <span>Account Type:</span>
-                <span class="text-white">Live Account</span>
+                <span class="text-white"><%= user.accountType %></span>
               </li>
               <li class="flex justify-between">
                 <span>Account Status:</span>
-                <span class="text-green-500">Active</span>
+                <% if (user.accountType == 'Live Account') { %>
+                  <span class="text-green-500"><%= user.accountStatus %></span>
+                <% }else { %>                
+                  <span class="text-red-500"><%= user.accountStatus %></span>
+                <% } %>                
               </li>
               <li class="flex justify-between">
                 <span>Email verification:</span>

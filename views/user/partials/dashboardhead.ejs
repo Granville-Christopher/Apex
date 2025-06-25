@@ -54,8 +54,15 @@
 
           <div class="relative">
             <button id="userAvatar" class="flex items-center space-x-1 focus:outline-none">
-              <img src="https://placehold.co/40x40/fff/3B82F6?text=user" alt="User Avatar"
+              <% if (!user.photo || user.photo == '') { %>
+                <img src="https://placehold.co/40x40/fff/3B82F6?text=user" alt="User Avatar"
                 class="w-10 h-10 rounded-full">
+              <% } else { %>
+                <img src="/dp/<%= user.photo %>" alt="User Avatar"
+                class="w-10 h-10 rounded-full">
+              <% } %>
+              
+
               <i class="fa-solid fa-chevron-down text-white text-sm"></i>
             </button>
 
@@ -63,9 +70,9 @@
               class="absolute right-0 mt-2 w-64 bg-white text-gray-800 rounded shadow-lg z-50 hidden">
               <div class="px-4 py-3 border-b">
                 <p class="text-sm font-semibold">Main Balance</p>
-                <p class="text-lg font-bold">$0.00</p>
-                <p class="text-sm mt-2">Status: <span class="text-green-500 font-medium">Active</span></p>
-                <p class="text-sm mt-2">Profit: <span class="font-semibold">$0.00</span></p>
+                <p class="text-lg font-bold">$<%= parseFloat(user.balance).toFixed(2) %></p>
+                <p class="text-sm mt-2">Status: <span class="text-green-500 font-medium"><%= user.accountStatus %></span></p>
+                <p class="text-sm mt-2">Profit: <span class="font-semibold">$<%= parseFloat(user.profit).toFixed(2) %></span></p>
               </div>
               <div class="px-4 py-3 border-b space-y-2">
                 <a href="/deposit">

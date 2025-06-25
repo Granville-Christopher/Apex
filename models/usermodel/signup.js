@@ -38,6 +38,11 @@ const UserSchema = new mongoose.Schema(
       default: 0,
       required: false
     },
+    profit: {
+      type: Number,
+      default: 0,
+      required: false
+    },
     phone: {
       type: String,
       required: false
