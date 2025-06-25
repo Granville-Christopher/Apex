@@ -107,7 +107,7 @@
             </div>
             <div>
               <label for="amount" class="block text-sm font-medium mb-1">Amount</label>
-              <input type="number" id="amount" placeholder="Enter amount"
+              <input type="number" id="amount" value="100"
                 class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" />
             </div>
 
@@ -121,30 +121,148 @@
     </main>
   </main>
   <script src="/js/userdashboard.js"></script>
+  <script src="/js/alert.js"></script>
   <script>
+    const leverageSelect = document.getElementById('leverage');
+    const amountInput = document.getElementById('amount');
+    
+    leverageSelect.addEventListener('change', () => {
+      let selectedValue = leverageSelect.value;
+      let minAmount = 0;
+
+      switch (selectedValue) {
+        case '1x':
+          minAmount = 100;
+          break;
+        case '2x':
+          minAmount = 200;
+          break;
+        case '3x':
+          minAmount = 500;
+          break;
+        case '4x':
+          minAmount = 1000;
+          break;
+        case '5x':
+          minAmount = 1500;
+          break;
+      }
+
+      amountInput.min = minAmount;
+      amountInput.value = minAmount;
+    });
+    
     let buy1 = document.getElementById('buy')
     let sell1 = document.getElementById('sell')
 
-    buy1.addEventListener('click', () => {
-      let marketSelect1 = document.getElementById('marketSelect').value
-      let tradeTime1 = document.getElementById('tradeTime').value
-      let leverage1 = document.getElementById('leverage').value
-      let amount1 = document.getElementById('amount').value
-      let cdate = new Date().toISOString().slice(0, 10)
-      let tType = 'Buy'
-      let balance = document.getElementById('balance').value
-      let email = document.getElementById('email').value
+    buy1.addEventListener('click', async () => {
+      let marketSelect1 = document.getElementById('marketSelect').value.trim();
+      let tradeTime1 = document.getElementById('tradeTime').value.trim();
+      let leverage1 = document.getElementById('leverage').value.trim();
+      let amount1 = document.getElementById('amount').value.trim();
+      let balance = document.getElementById('balance').value.trim();
+      let email = document.getElementById('email').value.trim();
+
+      if (
+        !marketSelect1 ||
+        !tradeTime1 ||
+        !leverage1 ||
+        !amount1
+      ) {
+        showAlert("All Fields Are Required", "error");
+        return;
+      }
+
+      let cdate = new Date().toISOString().slice(0, 10);
+      let tType = 'Buy';
+
+      amount1 = Number(amount1);
+      balance = Number(balance);
+
+      if(amount1 > balance){
+        alert("insufficient funds")
+        return false
+      }
+
+      balance -= amount1
+
+      const response = await fetch("/trade", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ marketSelect1, tradeTime1, leverage1, amount1, cdate, tType, balance, email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showAlert(data.message || "Trade Started", "success");
+        window.location.href = "/trades";
+      } else {
+        showAlert(data.error || "Error Starting Trade", "error");
+
+        if (data.redirect) {
+          setTimeout(() => {
+            window.location.href = data.redirect;
+          }, data.delay || 10000);
+        }
+      }
     })
 
-    sell1.addEventListener('click', () => {
-      let marketSelect1 = document.getElementById('marketSelect').value
-      let tradeTime1 = document.getElementById('tradeTime').value
-      let leverage1 = document.getElementById('leverage').value
-      let amount1 = document.getElementById('amount').value
-      let cdate = new Date().toISOString().slice(0, 10)
-      let tType = 'Sell'
-      let balance = document.getElementById('balance').value
-      let email = document.getElementById('email').value
+    sell1.addEventListener('click', async () => {
+      let marketSelect1 = document.getElementById('marketSelect').value.trim();
+      let tradeTime1 = document.getElementById('tradeTime').value.trim();
+      let leverage1 = document.getElementById('leverage').value.trim();
+      let amount1 = document.getElementById('amount').value.trim();
+      let balance = document.getElementById('balance').value.trim();
+      let email = document.getElementById('email').value.trim();
+
+      if (
+        !marketSelect1 ||
+        !tradeTime1 ||
+        !leverage1 ||
+        !amount1
+      ) {
+        showAlert("All Fields Are Required", "error");
+        return;
+      }
+
+      let cdate = new Date().toISOString().slice(0, 10);
+      let tType = 'Sell';
+
+      amount1 = Number(amount1);
+      balance = Number(balance);
+      
+      if(amount1 > balance){
+        alert("insufficient funds")
+        return false
+      }
+
+      balance -= amount1
+
+      const response = await fetch("/trade", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ marketSelect1, tradeTime1, leverage1, amount1, cdate, tType, balance, email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showAlert(data.message || "Trade Started", "success");
+        window.location.href = "/trades";
+      } else {
+        showAlert(data.error || "Error Starting Trade", "error");
+
+        if (data.redirect) {
+          setTimeout(() => {
+            window.location.href = data.redirect;
+          }, data.delay || 10000);
+        }
+      }
     })
 
   </script>

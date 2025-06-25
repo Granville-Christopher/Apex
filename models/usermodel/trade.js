@@ -5,8 +5,12 @@ const tradeSchema = new mongoose.Schema({
         required: true,
     },
     marketSelect: {
-        type: Number,
-        required: true,
+        type: String,
+        required: false,
+    },
+    tradeTime: {
+        type: String,
+        required: false,
     },
     leverage: {
         type: String,
@@ -27,9 +31,21 @@ const tradeSchema = new mongoose.Schema({
     status: {
         type: String,
         required: false,
-        default: 'Pending'
+        default: 'Open'
+    },
+    pnl: {
+        type: String,
+        required: false
     },
     outcome: {
+        type: String,
+        required: false
+    },
+    commission: {
+        type: String,
+        required: false
+    },
+    limitOrder: {
         type: String,
         required: false
     },

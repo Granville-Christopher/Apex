@@ -15,34 +15,39 @@
               <th class="py-2 px-4 whitespace-nowrap">Date</th>
               <th class="py-2 px-4 whitespace-nowrap">Outcome</th>
               <th class="py-2 px-4 whitespace-nowrap">Amount</th>
-              <th class="py-2 px-4 whitespace-nowrap">Action</th>
               <th class="py-2 px-4 whitespace-nowrap">Commission</th>
               <th class="py-2 px-4 whitespace-nowrap">Notes</th>
             </tr>
           </thead>
           <tbody class="text-gray-200">
-            <tr>
-              <td class="py-2 px-4 whitespace-nowrap">1</td>
-              <td class="py-2 px-4 whitespace-nowrap">2025-06-20</td>
-              <td class="py-2 px-4 whitespace-nowrap text-red-500">-1.2%</td>
-              <td class="py-2 px-4 whitespace-nowrap">$250</td>
-              <td class="py-2 px-4 whitespace-nowrap">
-                <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button>
-              </td>
-              <td class="py-2 px-4 whitespace-nowrap">$2.50</td>
-              <td class="py-2 px-4 whitespace-nowrap">Market order</td>
-            </tr>
-            <tr>
-              <td class="py-2 px-4 whitespace-nowrap">2</td>
-              <td class="py-2 px-4 whitespace-nowrap">2025-06-19</td>
-              <td class="py-2 px-4 whitespace-nowrap text-green-500">+3.0%</td>
-              <td class="py-2 px-4 whitespace-nowrap">$1000</td>
-              <td class="py-2 px-4 whitespace-nowrap">
-                <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button>
-              </td>
-              <td class="py-2 px-4 whitespace-nowrap">$10.00</td>
-              <td class="py-2 px-4 whitespace-nowrap">Limit order</td>
-            </tr>
+            <% if (!trades || trades.length===0) { %>
+              <tr>
+                <td class="py-2 px-4 whitespace-nowrap">no trade available now</td>
+              </tr>
+            <% } else { %>
+                <% trades.forEach(function(trade, index) { %>
+
+                  <tr>
+                    <td class="py-2 px-4 whitespace-nowrap"><%= index + 1 %></td>
+                    <td class="py-2 px-4 whitespace-nowrap"><%= trade.createddate %></td>
+                    
+                    <% if (!trade.outcome || trade.outcome == '') { %>
+                      <td class="py-2 px-4 whitespace-nowrap text-yellow-500">Pending</td>
+                    <% }else{ %>
+                      <% if (trade.pnl == 'Profit') { %>
+                        <td class="py-2 px-4 whitespace-nowrap text-green-500"><%= trade.outcome %></td>
+                      <% }else{ %>
+                        <td class="py-2 px-4 whitespace-nowrap text-red-500"><%= trade.outcome %></td>
+                    <% } } %>
+
+                    <td class="py-2 px-4 whitespace-nowrap">$<%= trade.amount %></td>
+                    <td class="py-2 px-4 whitespace-nowrap"><%= trade.commission %></td>
+                    <td class="py-2 px-4 whitespace-nowrap"><%= trade.limitOrder %></td>
+                  </tr>
+
+                <% }); %>
+            <% } %>
+
           </tbody>
         </table>
       </div>

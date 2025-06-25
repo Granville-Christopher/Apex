@@ -19,30 +19,33 @@
             </tr>
           </thead>
           <tbody class="text-gray-200">
+          <% if (!trades || trades.length===0) { %>
             <tr>
-              <td class="py-2 px-4 whitespace-nowrap">#001</td>
-              <td class="py-2 px-4 whitespace-nowrap">2025-06-23</td>
-              <td class="py-2 px-4 whitespace-nowrap">BTC</td>
-              <td class="py-2 px-4 whitespace-nowrap">Buy</td>
-              <td class="py-2 px-4 whitespace-nowrap">+2.4%</td>
-              <td class="py-2 px-4 whitespace-nowrap text-green-500">Open</td>
+              <td class="py-2 px-4 whitespace-nowrap">no trade available now</td>
             </tr>
-            <tr>
-              <td class="py-2 px-4 whitespace-nowrap">#002</td>
-              <td class="py-2 px-4 whitespace-nowrap">2025-06-22</td>
-              <td class="py-2 px-4 whitespace-nowrap">ETH</td>
-              <td class="py-2 px-4 whitespace-nowrap">Sell</td>
-              <td class="py-2 px-4 whitespace-nowrap">-0.5%</td>
-              <td class="py-2 px-4 whitespace-nowrap text-green-500">Open</td>
-            </tr>
-            <tr>
-              <td class="py-2 px-4 whitespace-nowrap">#003</td>
-              <td class="py-2 px-4 whitespace-nowrap">2025-06-21</td>
-              <td class="py-2 px-4 whitespace-nowrap">LTC</td>
-              <td class="py-2 px-4 whitespace-nowrap">Buy</td>
-              <td class="py-2 px-4 whitespace-nowrap">+1.1%</td>
-              <td class="py-2 px-4 whitespace-nowrap text-green-500">Open</td>
-            </tr>
+          <% } else { %>
+              <% trades.forEach(function(trade, index) { %>
+                <tr>
+                  <td class="py-2 px-4 whitespace-nowrap"><%= index + 1 %></td>
+                  <td class="py-2 px-4 whitespace-nowrap"><%= trade.createddate %></td>
+                  <td class="py-2 px-4 whitespace-nowrap"><%= trade.marketSelect %></td>
+                  <td class="py-2 px-4 whitespace-nowrap"><%= trade.tradeType %></td>
+                  
+                  <% if (!trade.outcome || trade.outcome == '') { %>
+                    <td class="py-2 px-4 whitespace-nowrap text-yellow-500">Pending</td>
+                  <% }else{ %>
+                    <td class="py-2 px-4 whitespace-nowrap"><%= trade.outcome %></td>
+                  <% } %>
+                  
+
+                  <% if (trade.status == 'Open') { %>
+                    <td class="py-2 px-4 whitespace-nowrap text-green-500">Open</td>
+                  <% }else{ %>
+                    <td class="py-2 px-4 whitespace-nowrap text-red-500">Closed</td>
+                  <% } %>
+                </tr>
+              <% }); %>
+          <% } %>
           </tbody>
         </table>
       </div>

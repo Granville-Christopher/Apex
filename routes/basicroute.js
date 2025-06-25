@@ -24,6 +24,7 @@ const { uploads, uploadsFour } = require("../middlewares/uploads");
 const Wallet = require("../models/usermodel/userwallets");
 const Withdraw = require("../models/usermodel/withdraw");
 const Deposit = require("../models/usermodel/deposit");
+const Trade = require("../models/usermodel/trade");
 const User = require("../models/usermodel/signup");
 
 router.get("/", isLogout, async (req, res) => {
@@ -116,23 +117,29 @@ router.get("/trade", isLogin, async (req, res) => {
 
 router.get("/trades", isLogin, async (req, res) => {
   const user = await User.findOne({ email: req.session.user.email });
+  
+  const trades = await Trade.find({ email: req.session.user.email });
 
   res.render("user/opentrades", {
     title: "Apex Meridian - trades",
     page: "trades",
     loaded: "trades",
-    user
+    user,
+    trades
   });
 });
 
 router.get("/tradeshistory", isLogin, async (req, res) => {
   const user = await User.findOne({ email: req.session.user.email });
 
+  const trades = await Trade.find({ email: req.session.user.email, status: "Closed" });
+
   res.render("user/tradeshistory", {
     title: "Apex Meridian - trades",
     page: "trades",
     loaded: "trades",
-    user
+    user,
+    trades
   });
 });
 
@@ -215,11 +222,36 @@ router.get("/withdrawals", isLogin, async (req, res) => {
 router.get("/analytics", isLogin, async (req, res) => {
   const user = await User.findOne({ email: req.session.user.email });
 
+  // get profits & loss
+  const totalProfitResult = await Trade.aggregate([
+    { $match: { email: req.session.user.email, pnl: "Profit" } },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: "$amount" }
+      }
+    }
+  ])
+  const totalProfit = totalProfitResult[0]?.total || 0;
+
+  const totalLossResult = await Trade.aggregate([
+    { $match: { email: req.session.user.email, pnl: "Loss" } },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: "$amount" }
+      }
+    }
+  ])
+  const totalLoss = totalLossResult[0]?.total || 0;
+
   res.render("user/analytics", {
     title: "Apex Meridian - analytics",
     page: "analytics",
     loaded: "analytics",
-    user
+    user,
+    totalProfit,
+    totalLoss
   });
 });
 
@@ -318,17 +350,42 @@ router.get("/dashboard", isLogin, async (req, res) => {
   ])
   const totalWithdraw = totalWithdrawResult[0]?.total || 0;
 
+  // get profits & loss
+  const totalProfitResult = await Trade.aggregate([
+    { $match: { email: req.session.user.email, pnl: "Profit" } },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: "$amount" }
+      }
+    }
+  ])
+  const totalProfit = totalProfitResult[0]?.total || 0;
+
+  const totalLossResult = await Trade.aggregate([
+    { $match: { email: req.session.user.email, pnl: "Loss" } },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: "$amount" }
+      }
+    }
+  ])
+  const totalLoss = totalLossResult[0]?.total || 0;
+
   res.render("user/dashboard", {
     title: "Apex Meridian - Dashboard",
     page: "Dashboard",
     loaded: "Dashboard",
     user,
     deposit: totalDeposit,
-    withdrawal: totalWithdraw
+    withdrawal: totalWithdraw,
+    profits: totalProfit,
+    loss: totalLoss
   });
 });
 
-router.post("/logout", (req, res) => {
+router.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return res.status(500).json({ error: "Could not log out." });

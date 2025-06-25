@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const Deposit = require("../models/usermodel/deposit");
 const Wallet = require("../models/usermodel/userwallets");
 const Withdraw = require("../models/usermodel/withdraw");
+const Trade = require("../models/usermodel/trade");
 const Kyc = require("../models/usermodel/kyc");
 const { uploadsTwo } = require("../middlewares/uploads");
 
@@ -190,51 +191,49 @@ const login = async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    // only uncomment when development is done
+    const kycRecord = await Kyc.findOne({ userId: user._id });
 
-    // const kycRecord = await Kyc.findOne({ userId: user._id });
+    if (!kycRecord) {
+      return res.status(403).json({
+        error:
+          "Please verify your KYC to proceed. Redirecting to verification page...",
+        redirect: "/kycverification",
+        delay: 5000,
+      });
+    }
 
-    // if (!kycRecord) {
-    //   return res.status(403).json({
-    //     error:
-    //       "Please verify your KYC to proceed. Redirecting to verification page...",
-    //     redirect: "/kycverification",
-    //     delay: 5000,
-    //   });
-    // }
+    if (kycRecord.status === "pending") {
+      return res.status(403).json({
+        error:
+          "Your KYC has not been approved. Please contact support if not approved after 24 hours.",
+      });
+    }
 
-    // if (kycRecord.status === "pending") {
-    //   return res.status(403).json({
-    //     error:
-    //       "Your KYC has not been approved. Please contact support if not approved after 24 hours.",
-    //   });
-    // }
+    if (kycRecord.status === "rejected") {
+      return res.status(403).json({
+        error:
+          "Your KYC verification was rejected. Please verify again. Redirecting...",
+        redirect: "/kycverification",
+      });
+    }
 
-    // if (kycRecord.status === "rejected") {
-    //   return res.status(403).json({
-    //     error:
-    //       "Your KYC verification was rejected. Please verify again. Redirecting...",
-    //     redirect: "/kycverification",
-    //   });
-    // }
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
 
-    // const otp = Math.floor(100000 + Math.random() * 900000);
-    // const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
+    user.otp = {
+      code: otp,
+      expiresAt: otpExpires,
+      otpCreatedAt: new Date(),
+    };
 
-    // user.otp = {
-    //   code: otp,
-    //   expiresAt: otpExpires,
-    //   otpCreatedAt: new Date(),
-    // };
+    try {
+      await sendOtpEmail(email, otp);
+    } catch (mailError) {
+      console.error("Email error:", mailError);
+      return res.status(500).json({ error: "Failed to send OTP email" });
+    }
 
-    // try {
-    //   await sendOtpEmail(email, otp);
-    // } catch (mailError) {
-    //   console.error("Email error:", mailError);
-    //   return res.status(500).json({ error: "Failed to send OTP email" });
-    // }
-
-    // await user.save();
+    await user.save();
 
     req.session.user = {
       id: user._id,
@@ -250,7 +249,7 @@ const login = async (req, res) => {
 };
 
 const tradeSub = async (req, res) => {
-  const { marketSelect1, tradeTime1, leverage1, cdate, tType, amount, email } = req.body;
+  const { marketSelect1, tradeTime1, leverage1, cdate, tType, amount1, email, balance } = req.body;
 
   try {
     const user = await User.findOne({ email });
@@ -259,23 +258,32 @@ const tradeSub = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-
-    req.session.user = {
-      id: user._id,
-      name: user.name,
-      email: user.email,
+    let info = {
+      email: email,
+      marketSelect: marketSelect1,
+      tradeTime: tradeTime1,
+      leverage: leverage1,
+      amount: amount1,
+      createddate: cdate,
+      tradeType: tType
     };
 
-    res.status(200).json({ message: "Login successful, OTP sent" });
+    await new Trade(info).save();
+
+    await User.updateOne({ email: email }, 
+        {
+            $set:{
+                balance: balance
+            }
+        }
+    )
+
+    res.status(200).json({ message: "Trade Started" });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Server error" });
   }
-};
+}
 
 const sendOtp = async (req, res) => {
   try {
