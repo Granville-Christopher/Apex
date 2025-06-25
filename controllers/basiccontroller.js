@@ -7,7 +7,7 @@ const Deposit = require("../models/usermodel/deposit");
 const Wallet = require("../models/usermodel/userwallets");
 const Withdraw = require("../models/usermodel/withdraw");
 const Kyc = require("../models/usermodel/kyc");
-const uploadAuth = require("../middlewares/uploads");
+const { uploadsTwo } = require("../middlewares/uploads");
 
 const Signup = async (req, res) => {
   try {
@@ -129,7 +129,7 @@ const verifyOtp = async (req, res) => {
 };
 
 const submitKyc = (req, res) => {
-  uploadAuth.fields([
+  uploadsTwo.fields([
     { name: "cardFront", maxCount: 1 },
     { name: "cardBack", maxCount: 1 },
   ])(req, res, async (err) => {
@@ -190,49 +190,51 @@ const login = async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const kycRecord = await Kyc.findOne({ userId: user._id });
+    // only uncomment when development is done
 
-    if (!kycRecord) {
-      return res.status(403).json({
-        error:
-          "Please verify your KYC to proceed. Redirecting to verification page...",
-        redirect: "/kycverification",
-        delay: 5000,
-      });
-    }
+    // const kycRecord = await Kyc.findOne({ userId: user._id });
 
-    if (kycRecord.status === "pending") {
-      return res.status(403).json({
-        error:
-          "Your KYC has not been approved. Please contact support if not approved after 24 hours.",
-      });
-    }
+    // if (!kycRecord) {
+    //   return res.status(403).json({
+    //     error:
+    //       "Please verify your KYC to proceed. Redirecting to verification page...",
+    //     redirect: "/kycverification",
+    //     delay: 5000,
+    //   });
+    // }
 
-    if (kycRecord.status === "rejected") {
-      return res.status(403).json({
-        error:
-          "Your KYC verification was rejected. Please verify again. Redirecting...",
-        redirect: "/kycverification",
-      });
-    }
+    // if (kycRecord.status === "pending") {
+    //   return res.status(403).json({
+    //     error:
+    //       "Your KYC has not been approved. Please contact support if not approved after 24 hours.",
+    //   });
+    // }
 
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
+    // if (kycRecord.status === "rejected") {
+    //   return res.status(403).json({
+    //     error:
+    //       "Your KYC verification was rejected. Please verify again. Redirecting...",
+    //     redirect: "/kycverification",
+    //   });
+    // }
 
-    user.otp = {
-      code: otp,
-      expiresAt: otpExpires,
-      otpCreatedAt: new Date(),
-    };
+    // const otp = Math.floor(100000 + Math.random() * 900000);
+    // const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
 
-    try {
-      await sendOtpEmail(email, otp);
-    } catch (mailError) {
-      console.error("Email error:", mailError);
-      return res.status(500).json({ error: "Failed to send OTP email" });
-    }
+    // user.otp = {
+    //   code: otp,
+    //   expiresAt: otpExpires,
+    //   otpCreatedAt: new Date(),
+    // };
 
-    await user.save();
+    // try {
+    //   await sendOtpEmail(email, otp);
+    // } catch (mailError) {
+    //   console.error("Email error:", mailError);
+    //   return res.status(500).json({ error: "Failed to send OTP email" });
+    // }
+
+    // await user.save();
 
     req.session.user = {
       id: user._id,
@@ -430,6 +432,90 @@ const deleteWalletSub = async (req, res) => {
   }
 };
 
+// update account
+const settingsSub = async (req, res) => {
+    try{
+        const user = await User.updateOne({ email: req.body.email }, 
+            {
+                $set:{
+                    name: req.body.name,
+                    phone: req.body.phone,
+                    country: req.body.country,
+                }
+            }
+        )
+        
+        if(user !== null){
+            req.session.message = "account updated";
+            res.redirect("/settings");
+        }else{
+          req.session.message = "error updating account";
+          res.redirect("/settings")
+        }
+
+
+    }catch (error) {
+      console.log(error)
+      req.session.message = "error completing request";
+      res.redirect("/settings");
+    }
+}
+
+// update password
+const changePassSub = async (req, res) => {
+    try{
+        const { email, password, conpass } = req.body;
+        
+        if (password !== conpass) {
+          req.session.message = "password mismatch";
+          res.redirect("/settings");
+        }
+
+        const user = await User.findOne({ email });
+
+        user.password = await bcrypt.hash(password, 10);
+        await user.save();
+
+        req.session.message = "password changed...";
+        res.redirect("/settings")
+
+    }catch (error) {
+      console.log(error)
+      req.session.message = "error completing request";
+      res.redirect("/settings");
+    }
+}
+
+// change dp
+const changePhoto = async (req, res) => {
+  try {
+
+    const photo = `${req.protocol}://${req.get("host")}/uploads/${
+        req.file.filename
+      }`
+
+      const user = await User.updateOne({ email: req.body.email }, 
+        {
+            $set:{
+                photo: photo
+            }
+        }
+      )
+      
+      if(user !== null){
+          req.session.message = "picture updated";
+          res.redirect("/settings");
+      }else{
+        req.session.message = "error updating picture";
+        res.redirect("/settings")
+      }
+  } catch (error) {
+    console.log(error);
+    req.session.message = "error completing request";
+    res.redirect("/deposit");
+  }
+}
+
 module.exports = {
   Signup,
   otpAuth,
@@ -443,4 +529,7 @@ module.exports = {
   deleteWalletSub,
   withdrawalSub,
   submitKyc,
+  settingsSub,
+  changePassSub,
+  changePhoto
 };

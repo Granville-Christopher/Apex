@@ -12,21 +12,25 @@ const {
   walletSub,
   deleteWalletSub,
   withdrawalSub,
+  settingsSub,
+  changePassSub,
+  changePhoto
 } = require("../controllers/basiccontroller");
 const router = express.Router();
 const { isLogin, isLogout } = require("../middlewares/auth");
-const uploads = require("../middlewares/uploads");
+const { uploads, uploadsFour } = require("../middlewares/uploads");
 const Wallet = require("../models/usermodel/userwallets");
 const Withdraw = require("../models/usermodel/withdraw");
+const User = require("../models/usermodel/signup");
 
 router.get("/", isLogout, async (req, res) => {
   res.render("user/index", {
     title: "Apex Meridian - Home",
     page: "Home",
     loaded: "Home",
-    title: "Apex Meridian - Dashboard",
-    page: "Dashboard",
-    loaded: "Dashboard",
+    title: "Apex Meridian - Home",
+    page: "Home",
+    loaded: "Home",
   });
 });
 
@@ -52,10 +56,17 @@ router.get("/markets", isLogin, async (req, res) => {
 });
 
 router.get("/settings", isLogin, async (req, res) => {
+  const message = req.session.message;
+  req.session.message = null;
+
+  const user = await User.findOne({ email: req.session.user.email });
+
   res.render("user/settings", {
     title: "Apex Meridian - settings",
     page: "settings",
     loaded: "settings",
+    message,
+    user: user
   });
 });
 
@@ -186,6 +197,17 @@ router.post("/withdrawals", withdrawalSub);
 router.post("/wallets", walletSub);
 router.get("/deletewallet/:id", deleteWalletSub);
 
+
+router.post("/settings", settingsSub);
+router.post("/changepass", changePassSub);
+router.post("/changephoto", uploadsFour.single("file"), changePhoto);
+
+
+
+
+
+
+
 router.get("/resetpassword", isLogout, async (req, res) => {
   res.render("user/resetpassword", {
     title: "Apex Meridian - Auth",
@@ -208,7 +230,7 @@ router.post("/logout", (req, res) => {
       return res.status(500).json({ error: "Could not log out." });
     }
     res.clearCookie("connect.sid");
-    res.status(200).json({ message: "Logged out successfully" });
+    res.status(200).redirect("/");
   });
 });
 module.exports = router;

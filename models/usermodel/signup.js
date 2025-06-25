@@ -38,6 +38,28 @@ const UserSchema = new mongoose.Schema(
       default: 0,
       required: false
     },
+    phone: {
+      type: String,
+      required: false
+    },
+    country: {
+      type: String,
+      required: false
+    },
+    photo: {
+      type: String,
+      required: false
+    },
+    accountType: {
+      type: String,
+      required: false,
+      default: 'Live Account'
+    },
+    accountStatus: {
+      type: String,
+      required: false,
+      default: 'Active'
+    },
   },
   {
     timestamps: true,
