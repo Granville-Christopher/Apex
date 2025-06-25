@@ -249,6 +249,34 @@ const login = async (req, res) => {
   }
 };
 
+const tradeSub = async (req, res) => {
+  const { marketSelect1, tradeTime1, leverage1, cdate, tType, amount, email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    req.session.user = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    };
+
+    res.status(200).json({ message: "Login successful, OTP sent" });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 const sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
@@ -551,5 +579,6 @@ module.exports = {
   settingsSub,
   changePassSub,
   changePhoto,
-  deleteTransactionSub
+  deleteTransactionSub,
+  tradeSub
 };

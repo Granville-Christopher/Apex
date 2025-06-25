@@ -15,7 +15,8 @@ const {
   settingsSub,
   changePassSub,
   changePhoto,
-  deleteTransactionSub
+  deleteTransactionSub,
+  tradeSub
 } = require("../controllers/basiccontroller");
 const router = express.Router();
 const { isLogin, isLogout } = require("../middlewares/auth");
@@ -278,6 +279,7 @@ router.post("/changepass", changePassSub);
 router.post("/changephoto", uploadsFour.single("file"), changePhoto);
 
 
+router.post("/trade", tradeSub);
 
 
 

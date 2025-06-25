@@ -76,7 +76,8 @@
             <option value="TVC:SPX">S&P 500 Index</option>
           </select>
 
-
+          <input type="hidden" name="" id="balance" value="<%= user.balance %>">
+          <input type="hidden" name="" id="email" value="<%= user.email %>">
 
           <div id="chartContainer" class="h-96 mt-6 bg-gray-700 rounded flex items-center justify-center text-gray-400">
             <span>Select a market to view its chart.</span>
@@ -129,6 +130,10 @@
       let tradeTime1 = document.getElementById('tradeTime').value
       let leverage1 = document.getElementById('leverage').value
       let amount1 = document.getElementById('amount').value
+      let cdate = new Date().toISOString().slice(0, 10)
+      let tType = 'Buy'
+      let balance = document.getElementById('balance').value
+      let email = document.getElementById('email').value
     })
 
     sell1.addEventListener('click', () => {
@@ -136,6 +141,10 @@
       let tradeTime1 = document.getElementById('tradeTime').value
       let leverage1 = document.getElementById('leverage').value
       let amount1 = document.getElementById('amount').value
+      let cdate = new Date().toISOString().slice(0, 10)
+      let tType = 'Sell'
+      let balance = document.getElementById('balance').value
+      let email = document.getElementById('email').value
     })
 
   </script>
