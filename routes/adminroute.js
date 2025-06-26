@@ -66,6 +66,23 @@ router.get("/trades/:email", isAdminLogin, async (req, res) => {
   });
 })
 
+// get single trade
+router.get("/updatetrade/:email/:id", isAdminLogin, async (req, res) => {
+  let email = req.params.email
+  let id = req.params.id
+
+  let user = await User.findOne({ email })
+  const trade = await Trade.findOne({ _id: id });
+
+  res.render("admin/usersingletrade", {
+    title: "Apex Meridian - Admin User Trade",
+    page: "usertrade",
+    loaded: "usertrade",
+    user,
+    trade
+  });
+})
+
 
 // get single user
 router.get("/usersingle/:email", isAdminLogin, async (req, res) => {
