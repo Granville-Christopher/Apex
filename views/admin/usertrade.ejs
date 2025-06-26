@@ -9,14 +9,15 @@
 
         <!-- Account Balance Management -->
         <div class="mb-8">
-            <div id="transactionDetails" class="overflow-x-auto hidden">
+            <div id="transactionDetails" class="overflow-x-auto">
                 <table class="min-w-full bg-white border border-gray-300 rounded-lg">
                     <thead>
                         <tr class="bg-gray-100 border-b border-gray-300">
-                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Date</th>
-                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Type</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">market Select</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Leverage</th>
                             <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Amount</th>
                             <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Status</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -24,11 +25,15 @@
                         <% if(trades){ %>
                             <% trades.forEach((txn, index) => { %>
                                 <tr class="border-b border-gray-300">
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= txn.date %></td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= txn.type %></td>
+                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= txn.marketSelect %></td>
+                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= txn.leverage %></td>
                                     <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%= parseFloat(txn.amount).toFixed(2) %></td>
                                     <td class="py-2 px-4 whitespace-nowrap border-r border-gray-300 <%= txn.status === 1 ? 'text-green-500' : 'text-yellow-500' %>">
                                         <%= txn.status === 1 ? 'Completed' : 'Pending' %>
+                                    </td>
+                                    <td class="py-2 px-4 whitespace-nowrap border-r border-gray-300">
+                                        <a href="/admin/updatetrade/<%= user.email %>/<%= txn._id %>"
+                                                    class="bg-blue-600 text-center text-white px-3 py-1 rounded hover:bg-blue-700">Update Trade</a>
                                     </td>
                                 </tr>
                                     <% }) %>
