@@ -148,7 +148,7 @@
                                             
                                             <% if (deposit.status == 0) { %>
                                                 <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
-                                                    <a href="/admin/approvedeposit?email=<%= deposit.email %>&amount=<%= deposit.amount %>/<%= deposit._id %>"
+                                                    <a href="/admin/approvedeposit/<%= deposit._id %>?email=<%= deposit.email %>&amount=<%= deposit.amount %>"
                                                         class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Approve</a>
                                                 </td>
                                             <% }else{ %>

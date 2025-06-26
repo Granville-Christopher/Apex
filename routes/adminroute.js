@@ -149,6 +149,8 @@ router.get('/approvedeposit/:id' , isAdminLogin, async (req, res) => {
     let email = req.query.email
     let amount = Number(req.query.amount)
 
+    let user = await User.findOne({ email })
+
     if (!id) {
       res.redirect("/");
     }
@@ -161,6 +163,9 @@ router.get('/approvedeposit/:id' , isAdminLogin, async (req, res) => {
             }
         }
     )
+
+    user.balance += amount
+    user.save()
 
     res.redirect("/admin/");
   } catch (error) {
