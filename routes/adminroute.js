@@ -51,18 +51,58 @@ router.get("/signup", isAdminLogout, async (req, res) => {
   });
 });
 
+// get user trades
+router.get("/trades/:email", isAdminLogin, async (req, res) => {
+  let email = req.params.email
+  let user = await User.findOne({ email })
+  const trades = await Trade.find({ email });
+
+  res.render("admin/usertrade", {
+    title: "Apex Meridian - Admin User Trades",
+    page: "usertrades",
+    loaded: "usertrades",
+    user,
+    trades
+  });
+})
+
+
+// get single user
 router.get("/usersingle/:email", isAdminLogin, async (req, res) => {
   let email = req.params.email
 
   let user = await User.findOne({ email })
   let kyc = await Kyc.findOne({ userId: user._id })
 
+  const deposits = await Deposit.find({ email: user.email });
+  const withdrawals = await Withdraw.find({ email: user.email });
+
+  const transactions = [
+    ...deposits.map((d) => ({
+      id: d._id,
+      type: "Deposit",
+      date: d.createddate || "",
+      amount: d.amount,
+      status: d.status,
+    })),
+    ...withdrawals.map((w) => ({
+      id: w._id,
+      type: "Withdrawal",
+      date: w.createddate || "",
+      amount: w.amount,
+      status: w.status,
+    })),
+  ];
+
+  transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
   res.render("admin/usersingle", {
     title: "Apex Meridian - Admin usersingle",
     page: "usersingle",
     loaded: "usersingle",
     user,
-    kyc
+    kyc,
+    transactions
   });
 });
 
