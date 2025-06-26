@@ -1,6 +1,6 @@
 .env
 node_modules
-public/uploads
-public/qr
-public/kyc
-public/dp
+public/uploads/
+public/qr/
+public/kyc/
+public/dp/
