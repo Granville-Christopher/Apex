@@ -190,6 +190,13 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
+
+    if (user.block === true) {
+      return res.status(403).json({
+        error:
+          "Account Blocked.",
+      });
+    }
     
     req.session.user = {
       id: user._id,

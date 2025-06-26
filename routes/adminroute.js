@@ -1,5 +1,5 @@
 const express = require("express");
-const { Signup, Login, sendOtp, resetPassword, uploadWallets } = require("../controllers/admincontroller");
+const { Signup, Login, sendOtp, resetPassword, uploadWallets, editBal } = require("../controllers/admincontroller");
 const router = express.Router();
 const { isAdminLogin, isAdminLogout } = require("../middlewares/auth");
 const User = require("../models/usermodel/signup");
@@ -55,13 +55,71 @@ router.get("/usersingle/:email", isAdminLogin, async (req, res) => {
   let email = req.params.email
 
   let user = await User.findOne({ email })
+  let kyc = await Kyc.findOne({ userId: user._id })
 
   res.render("admin/usersingle", {
     title: "Apex Meridian - Admin usersingle",
     page: "usersingle",
     loaded: "usersingle",
-    user
+    user,
+    kyc
   });
+});
+
+// approve and reject kyc
+router.get("/kyc/:email/:id", isAdminLogin, async (req, res) => {
+  let email = req.params.email
+  let id = req.params.id
+  let type = req.query.type
+
+  if(type == 'approve'){
+    await Kyc.updateOne({ _id: id }, 
+        {
+          $set:{
+            status: "approved"
+          }
+        }
+    )
+  }else{
+    await Kyc.updateOne({ _id: id }, 
+        {
+          $set:{
+            status: "rejected"
+          }
+        }
+    )
+  }
+  
+  res.redirect(`/admin/usersingle/${email}`);
+  
+});
+
+// block and unblock user
+router.get("/blockuser/:email", isAdminLogin, async (req, res) => {
+  let email = req.params.email
+  let id = req.params.id
+  let type = req.query.type
+
+  if(type == 'block'){
+    await User.updateOne({ email }, 
+        {
+          $set:{
+            block: true
+          }
+        }
+    )
+  }else{
+    await User.updateOne({ email }, 
+        {
+          $set:{
+            block: false
+          }
+        }
+    )
+  }
+  
+  res.redirect(`/admin/usersingle/${email}`);
+  
 });
 
 router.post("/admin-signup", Signup)
@@ -71,6 +129,26 @@ router.post("/resetpassword", resetPassword )
 
 
 router.post("/wallets", uploadsThree.single("walletQRCode"), uploadWallets)
+router.post("/upbalance", editBal)
+
+// live search
+router.get('/search', async (req, res) => {
+  try {
+    const query = req.query.query || '';
+
+    const users = await User.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { email: { $regex: query, $options: 'i' } }
+      ]
+    }).limit(20)
+
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json([]);
+  }
+});
 
 
 router.get("/resetpassword", isAdminLogout, async (req, res) => {
@@ -109,7 +187,25 @@ router.get('/deletedeposit/:id' , isAdminLogin, async (req, res) => {
       res.redirect("/");
     }
 
-    await AdminWallet.deleteOne({ _id: id });
+    await Deposit.deleteOne({ _id: id });
+
+    res.redirect("/admin/");
+  } catch (error) {
+    console.log(error);
+    res.redirect("/admin/");
+  }
+})
+
+// delete withdrawal
+router.get('/deletewith/:id' , isAdminLogin, async (req, res) => {
+  try {
+    let id = req.params.id;
+
+    if (!id) {
+      res.redirect("/");
+    }
+
+    await Withdraw.deleteOne({ _id: id });
 
     res.redirect("/admin/");
   } catch (error) {
@@ -174,14 +270,6 @@ router.get('/approvedeposit/:id' , isAdminLogin, async (req, res) => {
   }
 })
 
-// router.get("/dashboard", isAdminLogin, async (req, res) => {
-
-//   res.render("admin/dashboard", {
-//     title: "Apex Meridian - Admin Dashboard",
-//     page: "Dashboard",
-//     loaded: "Dashboard",
-//   });
-// });
 
 
 module.exports = router;

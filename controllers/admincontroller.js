@@ -146,10 +146,41 @@ const uploadWallets = async (req, res) => {
   }
 }
 
+const editBal = async (req, res) => {
+  try {
+    let { amount, balance, email, type } = req.body
+
+    balance = Number(balance)
+    amount = Number(amount)
+
+    if(type == 'increase'){
+      balance += amount
+    }else{
+      balance -= amount
+    }
+
+    await User.updateOne({ email }, 
+        {
+            $set:{
+                balance: balance
+            }
+        }
+    )
+
+    res.redirect(`/admin/usersingle/${email}`);
+
+  } catch (error) {
+    console.log(error);
+    req.session.message = "error completing request";
+    res.redirect("/admin/");
+  }
+}
+
 module.exports = {
   Signup,
   Login,
   sendOtp,
   resetPassword,
-  uploadWallets
+  uploadWallets,
+  editBal
 }
