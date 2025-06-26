@@ -72,22 +72,20 @@
 
 
             <div class="md:flex items-center space-x-4">
-                <% if (session && session.user) { %>
+                <% if (session && session.admin) { %>
                     <!-- If logged in, show logout button -->
-                    <form action="/user/logout" method="POST" class="inline">
-                        <button type="submit"
-                            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-                            Logout
-                        </button>
-                    </form>
+                    <a href="/logout"
+                        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Logout
+                    </a>
                     <% } else { %>
                         <!-- If not logged in, show login button -->
 
-                        <a href="/signup"
+                        <a href="/admin/signup"
                             class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
                             Signup
                         </a>
-                        <% } %>
+                    <% } %>
             </div>
         </div>
 

@@ -190,6 +190,12 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
+    
+    req.session.user = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    };
 
     const kycRecord = await Kyc.findOne({ userId: user._id });
 
@@ -234,12 +240,6 @@ const login = async (req, res) => {
     }
 
     await user.save();
-
-    req.session.user = {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-    };
 
     res.status(200).json({ message: "Login successful, OTP sent" });
   } catch (error) {
@@ -404,8 +404,7 @@ const withdrawalSub = async (req, res) => {
       email,
       amount: withdrawalAmount,
       waddress,
-      createddate: new Date().toISOString().slice(0, 10),
-      status: "pending"
+      createddate: new Date().toISOString().slice(0, 10)
     });
 
     await withdrawal.save();
@@ -425,8 +424,6 @@ const withdrawalSub = async (req, res) => {
 // wallet sub
 const walletSub = async (req, res) => {
   try {
-    console.log(req.body);
-
     let info = {
       email: req.body.email ?? "",
       walletname: req.body.walletname ?? "",

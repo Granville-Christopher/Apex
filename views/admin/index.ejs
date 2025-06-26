@@ -31,9 +31,9 @@
                 <button
                     class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
                     data-target="view-all-users">VIEW ALL USERS</button>
-                <button
+                <a href="https://mail.hostinger.com" target="_blank"
                     class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
-                    data-target="webmail">WEBMAIL</button>
+                    data-target="webmail">WEBMAIL</a>
             </nav>
         </div>
 
@@ -129,25 +129,41 @@
                             </thead>
                             <tbody>
                                 <!-- Example row -->
-                                <tr class="text-center border-t border-gray-300">
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">jane@example.com
-                                    </td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Wallet 1</td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$500</td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
-                                        <a href="#" class="text-blue-600 hover:underline">View Proof</a>
-                                    </td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">2024-06-01 10:00
-                                    </td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
-                                        <button
-                                            class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Approve</button>
-                                    </td>
-                                    <td class="py-2 px-4">
-                                        <button
-                                            class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
-                                    </td>
-                                </tr>
+                                <% if (!deposits || deposits.length===0) { %>
+                                    <tr>
+                                        <td class="text-center border-t border-gray-300">no deposit available now</td>
+                                    </tr>
+                                <% } else { %>
+                                    <% deposits.forEach(function(deposit, index) { %>
+                                        <tr class="text-center border-t border-gray-300">
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= deposit.email %>
+                                            </td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= deposit.waddress %></td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%= deposit.amount %></td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                <a href="/uploads/<%= deposit.subData %>" class="text-blue-600 hover:underline">View Proof</a>
+                                            </td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= deposit.createddate %>
+                                            </td>
+                                            
+                                            <% if (deposit.status == 0) { %>
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <a href="/admin/approvedeposit?email=<%= deposit.email %>&amount=<%= deposit.amount %>/<%= deposit._id %>"
+                                                        class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Approve</a>
+                                                </td>
+                                            <% }else{ %>
+                                                <td class="py-2 px-4 text-green-600">
+                                                    Approved
+                                                </td>
+                                            <% } %>
+
+                                            <td class="py-2 px-4">
+                                                <a href="/admin/deletedeposit/<%= deposit._id %>"
+                                                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</a>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -160,27 +176,48 @@
                                 <tr class="bg-blue-600 text-white">
                                     <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Email</th>
                                     <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Amount</th>
-                                    <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Wallet Type</th>
+                                    <!-- <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Wallet Type</th> -->
                                     <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Wallet Address</th>
                                     <th class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Date Requested</th>
                                     <th class="py-2 px-4 border-gray-300 whitespace-nowrap">Action</th>
+                                    <th class="py-2 px-4 border-gray-300 whitespace-nowrap">Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- Example row -->
-                                <tr class="text-center border-t border-gray-300 ">
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">mark@example.com
-                                    </td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$300</td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Bitcoin</td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
-                                        1A2b3C4d5E6f7G8h9I0j</td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">2024-06-02</td>
-                                    <td class="py-2 px-4">
-                                        <button
-                                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">View</button>
-                                    </td>
-                                </tr>
+                                <% if (!withdraws || withdraws.length===0) { %>
+                                    <tr>
+                                        <td class="text-center border-t border-gray-300">no withdraw available now</td>
+                                    </tr>
+                                <% } else { %>
+                                    <% withdraws.forEach(function(withdraw, index) { %>
+                                        <tr class="text-center border-t border-gray-300 ">
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= withdraw.email %>
+                                            </td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%= withdraw.amount %></td>
+                                            <!-- <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= withdraw.email %></td> -->
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                <%= withdraw.waddress %></td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= withdraw.createddate %></td>
+                                            
+                                            <% if (withdraw.status == 0) { %>
+                                                <td class="py-2 px-4">
+                                                    <a href="/admin/approvewithdraw/<%= withdraw._id %>"
+                                                        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Approve</a>
+                                                </td>
+                                            <% }else{ %>
+                                                <td class="py-2 px-4 text-green-600">
+                                                    Approved
+                                                </td>
+                                            <% } %>
+
+                                            <td class="py-2 px-4">
+                                                <a href="/admin/deletewith/<%= withdraw._id %>"
+                                                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</a>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -201,24 +238,35 @@
                             </thead>
                             <tbody>
                                 <!-- Example row -->
-                                <tr class="text-center border-t border-gray-300 ">
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">1</td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Main Wallet</td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Ethereum</td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">0x123456789abcdef
-                                    </td>
-                                    <td class="py-2 px-4">
-                                        <button
-                                            class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
-                                    </td>
-                                </tr>
+                                <% if (!wallets || wallets.length===0) { %>
+                                    <tr>
+                                        <td class="text-center border-t border-gray-300">no wallet available now</td>
+                                    </tr>
+                                <% } else { %>
+                                    <% wallets.forEach(function(wallet, index) { %>
+                                        <tr class="text-center border-t border-gray-300 ">
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= index + 1 %></td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= wallet.walletName %></td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= wallet.network %></td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= wallet.walletAddress %>
+                                            </td>
+                                            <td class="py-2 px-4">
+                                                <a href="/admin/deletewallet/<%= wallet._id %>"
+                                                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</a>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
                 </section>
                 <section id="add-new-wallet" class="content-section hidden">
                     <h2 class="text-xl font-bold mb-4">Add New Wallet</h2>
-                    <form class="space-y-4 max-w-md">
+                    <form class="space-y-4 max-w-md" action="/admin/wallets" method="POST" enctype="multipart/form-data">
+                        <% if (message) { %>
+                            <div class="text-center"><%= message %></div>
+                        <% } %>
                         <div>
                             <label for="walletName" class="block font-semibold mb-1">Wallet Name:</label>
                             <input type="text" id="walletName" name="walletName"
@@ -261,26 +309,34 @@
                             </thead>
                             <tbody>
                                 <!-- Example row -->
-                                <tr class="text-center border-t border-gray-300">
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">Alice Smith</td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">alice@example.com
-                                    </td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">987-654-3210</td>
-                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$2,500</td>
-                                    <td class="py-2 px-4">
-                                        <a href="/admin/usersingle"
-                                            class="bg-blue-600 text-center text-white px-3 py-1 rounded hover:bg-blue-700">View
-                                            User</a>
-                                    </td>
-                                </tr>
+                                <% if (!users || users.length===0) { %>
+                                    <tr>
+                                        <td class="text-center border-t border-gray-300">no user available now</td>
+                                    </tr>
+                                <% } else { %>
+                                    <% users.forEach(function(user, index) { %>
+                                        <tr class="text-center border-t border-gray-300">
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= user.name %></td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= user.email %>
+                                            </td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= user.phone %></td>
+                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%= parseFloat(user.balance).toFixed(2) %></td>
+                                            <td class="py-2 px-4">
+                                                <a href="/admin/usersingle/<%= user.email %>"
+                                                    class="bg-blue-600 text-center text-white px-3 py-1 rounded hover:bg-blue-700">View
+                                                    User</a>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
                 </section>
-                <section id="webmail" class="content-section hidden">
+                <!-- <section id="webmail" class="content-section hidden">
                     <h2 class="text-xl font-bold mb-4">Webmail</h2>
                     <p>Content for Webmail goes here.</p>
-                </section>
+                </section> -->
             </main>
         </div>
     </div>

@@ -29,7 +29,7 @@ const isAdminLogin = async (req, res, next) => {
     if (req.session.admin) {
       next();
     } else {
-      res.redirect('/admin/');
+      res.redirect('/admin/login');
     }
   } catch (err) {
     console.log(err.message);
@@ -41,7 +41,7 @@ const isAdminLogin = async (req, res, next) => {
 const isAdminLogout = async (req, res, next) => {
   try {
     if (req.session.admin) {
-      return res.redirect('/admin/dashboard');
+      return res.redirect('/admin/');
     }
     next();
   } catch (err) {

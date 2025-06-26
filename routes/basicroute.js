@@ -26,6 +26,7 @@ const Withdraw = require("../models/usermodel/withdraw");
 const Deposit = require("../models/usermodel/deposit");
 const Trade = require("../models/usermodel/trade");
 const User = require("../models/usermodel/signup");
+const AdminWallet = require("../models/adminmodel/wallet");
 
 router.get("/", isLogout, async (req, res) => {
   res.render("user/index", {
@@ -41,7 +42,7 @@ router.get("/", isLogout, async (req, res) => {
 router.get("/deposit", isLogin, async (req, res) => {
   const message = req.session.message;
   req.session.message = null;
-
+  const wallet = await AdminWallet.aggregate([{ $sample: { size: 1 } }]);
   const user = await User.findOne({ email: req.session.user.email });
 
   res.render("user/deposit", {
@@ -50,6 +51,7 @@ router.get("/deposit", isLogin, async (req, res) => {
     loaded: "deposit",
     message,
     user,
+    wallet: wallet[0]
   });
 });
 

@@ -2,6 +2,14 @@ const Admin = require("../models/adminmodel/signup");
 const bcrypt = require("bcryptjs");
 const sendOtpResetEmail = require("../config/passwordresetmail");
 const session = require("express-session");
+const User = require("../models/usermodel/signup");
+const Deposit = require("../models/usermodel/deposit");
+const Wallet = require("../models/usermodel/userwallets");
+const AdminWallet = require("../models/adminmodel/wallet");
+const Withdraw = require("../models/usermodel/withdraw");
+const Trade = require("../models/usermodel/trade");
+const Kyc = require("../models/usermodel/kyc");
+const { uploadsThree } = require("../middlewares/uploads");
 
 const Signup = async (req, res) => {
   try {
@@ -42,7 +50,7 @@ const Login = async (req, res) => {
       return res.status(400).json({ error: "admin not found" });
     }
 
-    req.session.admi = {
+    req.session.admin = {
       id: admin._id,
       email: admin.email,
     };
@@ -111,11 +119,37 @@ const resetPassword = async (req, res) => {
     console.error("Reset password error:", error);
     res.status(500).json({ error: "Server error" });
   }
-};
+}
+
+
+const uploadWallets = async (req, res) => {
+  try {
+    let info = {
+      walletName: req.body.walletName ?? "",
+      network: req.body.network ?? "",
+      walletAddress: req.body.walletAddress ?? "",
+      walletQRCode: req.file.filename
+    };
+
+    const adminWallet = await new AdminWallet(info).save();
+    if (adminWallet !== null) {
+      req.session.message = "wallet created";
+      res.redirect("/admin/");
+    } else {
+      req.session.message = "error uploading wallet";
+      res.redirect("/admin/");
+    }
+  } catch (error) {
+    console.log(error);
+    req.session.message = "error completing request";
+    res.redirect("/admin/");
+  }
+}
 
 module.exports = {
   Signup,
   Login,
   sendOtp,
   resetPassword,
-};
+  uploadWallets
+}
