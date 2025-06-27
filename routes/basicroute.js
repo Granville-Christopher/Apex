@@ -20,7 +20,7 @@ const {
 } = require("../controllers/basiccontroller");
 const router = express.Router();
 const { isLogin, isLogout } = require("../middlewares/auth");
-const { uploads, uploadsFour } = require("../middlewares/uploads");
+const upload = require("../middlewares/uploads");
 const Wallet = require("../models/usermodel/userwallets");
 const Withdraw = require("../models/usermodel/withdraw");
 const Deposit = require("../models/usermodel/deposit");
@@ -298,7 +298,7 @@ router.post("/get-reset-otp", sendOtp);
 router.post("/reset-password", resetPassword);
 router.post("/verification/submit", submitKyc);
 
-router.post("/deposit", uploads.single("file"), depositSub);
+router.post("/deposit", upload.single("file"), depositSub);
 router.post("/withdrawals", withdrawalSub);
 
 router.post("/wallets", walletSub);
@@ -310,7 +310,7 @@ router.get("/deletetxn/:id", deleteTransactionSub);
 
 router.post("/settings", settingsSub);
 router.post("/changepass", changePassSub);
-router.post("/changephoto", uploadsFour.single("file"), changePhoto);
+router.post("/changephoto", upload.single("file"), changePhoto);
 
 
 router.post("/trade", tradeSub);

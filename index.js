@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const MongoStore = require('connect-mongo');
 const cors = require("cors");
 require("dotenv").config();
 const basicRoute = require("./routes/basicroute");
@@ -11,32 +12,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-
-
-// auto create upload folder
-const fs = require('fs');
-
-const uploadDir = path.join(__dirname, 'public/uploads');
-const uploadDir2 = path.join(__dirname, 'public/kyc');
-const uploadDir3 = path.join(__dirname, 'public/qr');
-const uploadDir4 = path.join(__dirname, 'public/dp');
-
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-if (!fs.existsSync(uploadDir2)) {
-    fs.mkdirSync(uploadDir2, { recursive: true });
-}
-
-if (!fs.existsSync(uploadDir3)) {
-    fs.mkdirSync(uploadDir3, { recursive: true });
-}
-
-if (!fs.existsSync(uploadDir4)) {
-    fs.mkdirSync(uploadDir4, { recursive: true });
-}
-
 
 const dbURI = process.env.DBURI;
 
@@ -61,8 +36,12 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: 'sessions',
+    }),
     cookie: {
-      maxAge: 1000 * 60 * 60 * 2
+      maxAge: 1000 * 60 * 60 * 2,
     },
   })
 );

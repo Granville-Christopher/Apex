@@ -9,7 +9,7 @@ const AdminWallet = require("../models/adminmodel/wallet");
 const Withdraw = require("../models/usermodel/withdraw");
 const Trade = require("../models/usermodel/trade");
 const Kyc = require("../models/usermodel/kyc");
-const { uploadsThree } = require("../middlewares/uploads");
+const upload = require("../middlewares/uploads");
 
 
 router.get("/", isAdminLogin, async (req, res) => {
@@ -188,7 +188,7 @@ router.post("/get-reset-otp", sendOtp)
 router.post("/resetpassword", resetPassword )
 
 
-router.post("/wallets", uploadsThree.single("walletQRCode"), uploadWallets)
+router.post("/wallets", upload.single("walletQRCode"), uploadWallets)
 router.post("/upbalance", editBal)
 router.post("/manipulate", manipulateTrade)
 
