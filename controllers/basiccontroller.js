@@ -155,7 +155,7 @@ const submitKyc = (req, res) => {
         return res.status(400).json({ error: "Both card images are required" });
       }
 
-      const [frontUpload, backUpload] = await generateUploadURL([cardFrontFile, cardBackFile]);
+      const [frontUpload, backUpload] = await generateUploadURLs([cardFrontFile, cardBackFile]);
 
       const newKyc = new Kyc({
         userId,

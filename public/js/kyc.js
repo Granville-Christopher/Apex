@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
           method: "POST",
           body: formData,
         });
-
+        console.log("Response status:", response.status);
         const data = await response.json();
 
         if (response.ok) {
