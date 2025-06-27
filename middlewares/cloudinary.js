@@ -16,7 +16,7 @@ cloudinaryV2.config({
 
 
 
-export function generateUploadURL(image) {
+function generateUploadURL(image) {
     try {
         const bufferStream = streamifier.createReadStream(image.buffer);
 
@@ -44,7 +44,7 @@ export function generateUploadURL(image) {
 
 
 
-export function generateUploadURLs(files) {
+function generateUploadURLs(files) {
     return Promise.all(files.map((file) => {
         return new Promise((resolve, reject) => {
             const bufferStream = streamifier.createReadStream(file.buffer);
@@ -64,3 +64,8 @@ export function generateUploadURLs(files) {
         });
     }));
 }
+
+module.exports = {
+    generateUploadURL,
+    generateUploadURLs
+};
