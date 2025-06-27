@@ -1,6 +1,5 @@
 // import dotenv from 'dotenv';
 require("dotenv").config();
-dotenv.config();
 // import { v2 as cloudinaryV2 } from 'cloudinary';
 // import streamifier from 'streamifier'
 const { v2: cloudinaryV2 } = require('cloudinary');
