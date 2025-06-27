@@ -3,10 +3,10 @@ const bcrypt = require("bcryptjs");
 const sendOtpResetEmail = require("../config/passwordresetmail");
 const session = require("express-session");
 const User = require("../models/usermodel/signup");
-const Deposit = require("../models/usermodel/deposit");
-const Wallet = require("../models/usermodel/userwallets");
+// const Deposit = require("../models/usermodel/deposit");
+// const Wallet = require("../models/usermodel/userwallets");
 const AdminWallet = require("../models/adminmodel/wallet");
-const Withdraw = require("../models/usermodel/withdraw");
+// const Withdraw = require("../models/usermodel/withdraw");
 const Trade = require("../models/usermodel/trade");
 const Kyc = require("../models/usermodel/kyc");
 const { uploadsThree } = require("../middlewares/uploads");
@@ -146,6 +146,7 @@ const uploadWallets = async (req, res) => {
   }
 }
 
+// edit user balance
 const editBal = async (req, res) => {
   try {
     let { amount, balance, email, type } = req.body
@@ -176,11 +177,44 @@ const editBal = async (req, res) => {
   }
 }
 
+
+// edit user balance
+const manipulateTrade = async (req, res) => {
+  let { email, id } = req.body
+
+  try {
+    let info = {
+      marketSelect: req.body.marketSelect ?? "",
+      tradeTime: req.body.tradeTime ?? "",
+      leverage: req.body.leverage ?? "",
+      amount: req.body.amount ?? "",
+      tradeType: req.body.tradeType ?? "",
+      createddate: req.body.createddate ?? "",
+      pnl: req.body.pnl ?? "",
+      status: req.body.status ?? "",
+      outcome: req.body.outcome ?? "",
+      commission: req.body.commission ?? "",
+      limitOrder: req.body.limitOrder ?? "",
+    }
+
+    await Trade.updateOne({ _id: id, email }, { $set: info });
+
+    req.session.message = 'trade manipulated'
+    res.redirect(`/admin/updatetrade/${email}/${id}`);
+
+  } catch (error) {
+    console.log(error);
+    req.session.message = "error completing request";
+    res.redirect("/admin/");
+  }
+}
+
 module.exports = {
   Signup,
   Login,
   sendOtp,
   resetPassword,
   uploadWallets,
-  editBal
+  editBal,
+  manipulateTrade
 }

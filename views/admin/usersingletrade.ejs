@@ -1,0 +1,90 @@
+<%- include('partials/header') %>
+<section class="min-h-screen bg-gray-50 mt-16">
+    <div class="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <!-- User Info -->
+        <div class="mb-6">
+            <p class="text-gray-700">Email: <span id="useremail"><%= user.email %></span></p><br>
+            <a class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300" href="/admin/trades/<%= user.email %>">check trade</a>
+        </div>
+
+        <!-- Account Balance Management -->
+        <div class="mb-8">
+            <h3 class="text-lg md:text-xl font-semibold mb-4">Manipulate Trade</h3>
+            <form id="decreaseBalanceForm" class="" action="/admin/manipulate" method="POST">
+                <% if (message) { %>
+                    <div class="text-center"><%= message %></div>
+                <% } %>
+                <div>
+                    <label for="withdrawAmount" class="block text-black-300 text-sm mb-1">Time Created</label>
+                    <input type="text" name="createddate" value="<%= trade.createddate %>" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0" />
+                </div>
+                <div>
+                    <label for="withdrawAmount" class="block text-black-300 text-sm mb-1">market Selected</label>
+                    <input type="text" name="marketSelect" value="<%= trade.marketSelect %>" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0" />
+                </div>
+                <div>
+                    <label for="withdrawAmount" class="block text-black-300 text-sm mb-1">Trade Time</label>
+                    <input type="text" name="tradeTime" value="<%= trade.tradeTime %>" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0" />
+                </div>
+                <div>
+                    <label for="withdrawAmount" class="block text-black-300 text-sm mb-1">Leverage</label>
+                    <input type="text" name="leverage" value="<%= trade.leverage %>" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0" />
+                </div>
+                <div>
+                    <label for="withdrawAmount" class="block text-black-300 text-sm mb-1">Amount Entered</label>
+                    <input type="text" name="amount" value="<%= trade.amount %>" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0" />
+                </div>
+                <div>
+                    <label for="withdrawAmount" class="block text-black-300 text-sm mb-1">Trade Type</label>
+                    <input type="text" name="tradeType" value="<%= trade.tradeType %>" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0" />
+                </div>
+                <div>
+                    <label for="withdrawAmount" class="block text-black-300 text-sm mb-1">Profit or Loss</label>
+                    <select name="pnl" id="" class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0">
+                        <option value="Profit">Profit</option>
+                        <option value="Loss">Loss</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="withdrawAmount" class="block text-black-300 text-sm mb-1">Status</label>
+                    <select name="status" id="" class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0">
+                        <option value="Open">Open</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="withdrawAmount" class="block text-black-300 text-sm mb-1">Outcome (eg +3.6%)</label>
+                    <input type="text" name="outcome" value="<%= trade.outcome %>" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0" />
+                </div>
+                <div>
+                    <label for="withdrawAmount" class="block text-black-300 text-sm mb-1">Commission (eg 5%)</label>
+                    <input type="text" name="commission" value="<%= trade.commission %>" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0" />
+                </div>
+                <div>
+                    <label for="withdrawAmount" class="block text-black-300 text-sm mb-1">Notes (eg Market Order)</label>
+                    <input type="text" name="limitOrder" value="<%= trade.limitOrder %>" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0" />
+                </div>
+
+                    <input type="hidden" name="email" value="<%= user.email %>" id="">
+                    <input type="hidden" name="id" value="<%= trade._id %>" id="">
+
+                <div class="mt-5">
+                    <button type="submit"
+                        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<%- include('partials/footer') %>

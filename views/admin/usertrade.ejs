@@ -28,8 +28,8 @@
                                     <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= txn.marketSelect %></td>
                                     <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= txn.leverage %></td>
                                     <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%= parseFloat(txn.amount).toFixed(2) %></td>
-                                    <td class="py-2 px-4 whitespace-nowrap border-r border-gray-300 <%= txn.status === 1 ? 'text-green-500' : 'text-yellow-500' %>">
-                                        <%= txn.status === 1 ? 'Completed' : 'Pending' %>
+                                    <td class="py-2 px-4 whitespace-nowrap border-r border-gray-300 <%= txn.status == 'Closed' ? 'text-green-500' : 'text-yellow-500' %>">
+                                        <%= txn.status === 'Closed' ? 'Completed' : 'Pending' %>
                                     </td>
                                     <td class="py-2 px-4 whitespace-nowrap border-r border-gray-300">
                                         <a href="/admin/updatetrade/<%= user.email %>/<%= txn._id %>"

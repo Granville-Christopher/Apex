@@ -1,5 +1,5 @@
 const express = require("express");
-const { Signup, Login, sendOtp, resetPassword, uploadWallets, editBal } = require("../controllers/admincontroller");
+const { Signup, Login, sendOtp, resetPassword, uploadWallets, editBal, manipulateTrade } = require("../controllers/admincontroller");
 const router = express.Router();
 const { isAdminLogin, isAdminLogout } = require("../middlewares/auth");
 const User = require("../models/usermodel/signup");
@@ -70,6 +70,8 @@ router.get("/trades/:email", isAdminLogin, async (req, res) => {
 router.get("/updatetrade/:email/:id", isAdminLogin, async (req, res) => {
   let email = req.params.email
   let id = req.params.id
+  const message = req.session.message;
+  req.session.message = null;
 
   let user = await User.findOne({ email })
   const trade = await Trade.findOne({ _id: id });
@@ -79,7 +81,8 @@ router.get("/updatetrade/:email/:id", isAdminLogin, async (req, res) => {
     page: "usertrade",
     loaded: "usertrade",
     user,
-    trade
+    trade,
+    message
   });
 })
 
@@ -187,6 +190,7 @@ router.post("/resetpassword", resetPassword )
 
 router.post("/wallets", uploadsThree.single("walletQRCode"), uploadWallets)
 router.post("/upbalance", editBal)
+router.post("/manipulate", manipulateTrade)
 
 // live search
 router.get('/search', async (req, res) => {
