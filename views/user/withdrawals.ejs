@@ -79,7 +79,7 @@
                     </td>
                     <td class="py-2 px-4 whitespace-nowrap">
                       <% if (withdrawal.status == 0) { %>
-                        <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Cancel</button>
+                        <a href="/cancelwith/<%= withdrawal._id %>/<%= withdrawal.amount %>" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Cancel</a>
                       <% } %>
                     </td>
                   </tr>
@@ -91,15 +91,30 @@
 
           <!-- CARD VIEW (Mobile only) -->
           <div class="sm:hidden space-y-4 mt-8">
-            <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
-              <p><strong>ID:</strong> 001</p>
-              <p><strong>Date:</strong> 2025-06-23</p>
-              <p><strong>Method:</strong> Crypto</p>
-              <p><strong>Wallet/Bank A/c:</strong> bc1qxy2k...0wlh</p>
-              <p><strong>Amount:</strong> $200</p>
-              <p><strong>Status:</strong> <span class="text-yellow-400">Pending</span></p>
-              <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Cancel</button>
-            </div>
+              <% if (!withdrawals || withdrawals.length===0) { %>
+                <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+                  <p>no withdrawals made</p>
+                </div>
+              <% } else { %>
+                <% withdrawals.forEach(function(withdrawal, index) { %>
+                  <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+                    <p><strong>ID:</strong> <%= index + 1 %></p>
+                    <p><strong>Date:</strong> <%= withdrawal.createddate %></p>
+                    <p><strong>Wallet:</strong> <%= withdrawal.waddress %></p>
+                    <p><strong>Amount:</strong> $<%= withdrawal.amount %></p>
+                    <p><strong>Status:</strong> <span class="text-yellow-400">
+                      <% if (withdrawal.status == 0) { %>
+                        Pending
+                      <% }else if (withdrawal.status == 1) { %>
+                        Completed
+                      <% } else if (withdrawal.status == 2) { %>
+                        Cancelled
+                      <% } %>
+                    </span></p>
+                    <a href="/cancelwith/<%= withdrawal._id %>/<%= withdrawal.amount %>" class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Cancel</a>
+                  </div>
+                <% }); %>
+              <% } %>
           </div>
         </div>
       </section>

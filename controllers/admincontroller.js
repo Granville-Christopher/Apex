@@ -182,7 +182,7 @@ const editBal = async (req, res) => {
 
 // edit user balance
 const manipulateTrade = async (req, res) => {
-  let { email, id } = req.body
+  let { email, id, status, amount, pnl } = req.body
 
   try {
     let info = {
@@ -200,6 +200,12 @@ const manipulateTrade = async (req, res) => {
     }
 
     await Trade.updateOne({ _id: id, email }, { $set: info });
+
+    if(status == 'Closed' && pnl == 'Profit'){
+      const user = await User.findOne({ email });
+      user.profit += Number(amount)
+      await user.save()
+    }
 
     req.session.message = 'trade manipulated'
     res.redirect(`/admin/updatetrade/${email}/${id}`);

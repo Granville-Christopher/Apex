@@ -289,6 +289,20 @@ router.get("/kycverification", async (req, res) => {
   });
 });
 
+// cancel withdrawal
+router.get("/cancelwith/:id/:amount", async (req, res) => {
+  let id = req.params.id
+  let amount = Number(req.params.amount)
+
+  const user = await User.findOne({ email });
+  user.balance += amount
+  await user.save()
+
+
+  await Withdraw.deleteOne({ _id: id });
+  res.redirect("/withdrawals");
+});
+
 router.post("/signup", Signup);
 router.post("/", login);
 router.post("/otp", otpAuth);

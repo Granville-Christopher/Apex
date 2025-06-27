@@ -52,30 +52,33 @@
 
       <!-- CARD VIEW (Mobile only) -->
       <div class="sm:hidden space-y-1 mt-8">
-        <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
-          <p><strong>ID:</strong> #001</p>
-          <p><strong>Date:</strong> 2025-06-23</p>
-          <p><strong>Asset:</strong> BTC</p>
-          <p><strong>Trade Type:</strong> Buy</p>
-          <p><strong>Outcome:</strong> +2.4%</p>
-          <p><strong>Status:</strong> <span class="text-green-500">Open</span></p>
-        </div>
-        <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
-          <p><strong>ID:</strong> #002</p>
-          <p><strong>Date:</strong> 2025-06-22</p>
-          <p><strong>Asset:</strong> ETH</p>
-          <p><strong>Trade Type:</strong> Sell</p>
-          <p><strong>Outcome:</strong> -0.5%</p>
-          <p><strong>Status:</strong> <span class="text-green-500">Open</span></p>
-        </div>
-        <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
-          <p><strong>ID:</strong> #003</p>
-          <p><strong>Date:</strong> 2025-06-21</p>
-          <p><strong>Asset:</strong> LTC</p>
-          <p><strong>Trade Type:</strong> Buy</p>
-          <p><strong>Outcome:</strong> +1.1%</p>
-          <p><strong>Status:</strong> <span class="text-green-500">Open</span></p>
-        </div>
+        <% if (!trades || trades.length===0) { %>
+          <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+            <p><strong>ID:</strong> #001</p>
+          </div>
+        <% } else { %>
+            <% trades.forEach(function(trade, index) { %>
+        
+              <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+                <p><strong>ID:</strong> <%= index + 1 %></p>
+                <p><strong>Date:</strong> <%= trade.createddate %></p>
+                <p><strong>Asset:</strong> <%= trade.marketSelect %></p>
+                <p><strong>Trade Type:</strong> <%= trade.tradeType %></p>
+
+                <% if (!trade.outcome || trade.outcome == '') { %>
+                  <p><strong>Outcome:</strong> <span class="text-yellow-500">Pending</span></p>
+                <% }else{ %>                  
+                  <p><strong>Outcome:</strong> <%= trade.outcome %></p>
+                <% } %>
+
+                <% if (trade.status == 'Open') { %>
+                  <p><strong>Status:</strong> <span class="text-green-500">Open</span></p>
+                <% }else{ %>
+                  <p><strong>Status:</strong> <span class="text-red-500">Close</span></p>
+                <% } %>
+              </div>
+            <% }); %>
+        <% } %>
       </div>
 
 

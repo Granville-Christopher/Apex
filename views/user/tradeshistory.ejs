@@ -54,25 +54,31 @@
 
       <!-- CARD VIEW (Mobile only) -->
       <div class="sm:hidden space-y-1 mt-8">
-        <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
-          <p><strong>SN:</strong> 1</p>
-          <p><strong>Date:</strong> 2025-06-20</p>
-          <p><strong>Outcome:</strong> <span class="text-red-500">-1.2%</span></p>
-          <p><strong>Amount:</strong> $250</p>
-          <p><strong>Commission:</strong> $2.50</p>
-          <p><strong>Notes:</strong> Market order</p>
-          <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button>
-        </div>
+        <% if (!trades || trades.length===0) { %>
+          <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+            <p>no trade available now</p>
+          </div>
+        <% } else { %>
+            <% trades.forEach(function(trade, index) { %>
 
-        <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
-          <p><strong>SN:</strong> 2</p>
-          <p><strong>Date:</strong> 2025-06-19</p>
-          <p><strong>Outcome:</strong> <span class="text-green-500">+3.0%</span></p>
-          <p><strong>Amount:</strong> $1000</p>
-          <p><strong>Commission:</strong> $10.00</p>
-          <p><strong>Notes:</strong> Limit order</p>
-          <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button>
-        </div>
+              <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+                <p><strong>SN:</strong> <%= index + 1 %></p>
+                <p><strong>Date:</strong> <%= trade.createddate %></p>
+                
+                <% if (!trade.outcome || trade.outcome == '') { %>
+                  <p><strong>Outcome:</strong> <span class="text-yellow-500">Pending</span></p>
+                <% }else{ %>
+                    <% if (trade.pnl == 'Profit') { %>
+                      <p><strong>Outcome:</strong> <span class="text-green-500"><%= trade.outcome %></span></p>
+                    <% }else{ %>
+                      <p><strong>Outcome:</strong> <span class="text-red-500"><%= trade.outcome %></span></p>
+                <% } } %>
+                <p><strong>Amount:</strong> $<%= trade.amount %></p>
+                <p><strong>Commission:</strong> <%= trade.commission %></p>
+                <p><strong>Notes:</strong> <%= trade.limitOrder %></p>
+              </div>
+            <% }); %>
+          <% } %>
       </div>
 
     </main>

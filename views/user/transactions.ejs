@@ -48,14 +48,21 @@
 
         <!-- CARD VIEW (Mobile only) -->
         <div class="sm:hidden space-y-1 pt-12 mt-16">
-          <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
-            <p><strong>SN:</strong> 1</p>
-            <p><strong>Transaction Type:</strong> Deposit</p>
-            <p><strong>Date:</strong> 2025-06-22</p>
-            <p><strong>Amount:</strong> $500</p>
-            <p><strong>Status:</strong> <span class="text-green-500">Completed</span></p>
-            <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button>
-          </div>
+          <% if(transactions){ %>
+                <% transactions.forEach((txn, index) => { %>
+                  <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+                    <p><strong>SN:</strong> <%= index + 1 %></p>
+                    <p><strong>Transaction Type:</strong> <%= txn.type %></p>
+                    <p><strong>Date:</strong> <%= txn.date %></p>
+                    <p><strong>Amount:</strong> $<%= txn.amount %></p>
+                    <p><strong>Status:</strong> <span class="<%= txn.status === 1 ? 'text-green-500' : 'text-yellow-500' %>"><%= txn.status === 1 ? 'Completed' : 'Pending' %></span></p>
+                    <!-- <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button> -->
+                  </div>
+          <% }) %>
+            <% }else{ %>
+                <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+                  <p>no transactions yet...</p>
+            <% } %>
         </div>
       </section>
 
