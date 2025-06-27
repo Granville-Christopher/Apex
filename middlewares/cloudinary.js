@@ -14,26 +14,21 @@ cloudinaryV2.config({
 
 export function generateUploadURL(image) {
     try {
-        // Convert the buffer to a readable stream
         const bufferStream = streamifier.createReadStream(image.buffer);
 
-        // Create a promise to resolve the upload result
         return new Promise((resolve, reject) => {
-            // Create a stream from the buffer
             const stream = cloudinaryV2.uploader.upload_stream(
                 { resource_type: 'auto' },
                 (error, result) => {
                 if (error) {
                     console.error('Upload error:', error);
-                    reject(error); // Reject the promise if there's an error
+                    reject(error);
                 } else {
                     const data = { 'uploadUrl': result.secure_url, 'publicId': result.public_id };
-                    resolve(data); // Resolve the promise with the upload data
+                    resolve(data);
                 }
             });
 
-
-            // Pipe the buffer stream to the Cloudinary upload stream
             bufferStream.pipe(stream);
         })
 
