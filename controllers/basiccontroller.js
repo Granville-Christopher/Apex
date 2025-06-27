@@ -9,7 +9,7 @@ const Withdraw = require("../models/usermodel/withdraw");
 const Trade = require("../models/usermodel/trade");
 const Kyc = require("../models/usermodel/kyc");
 const { uploadsTwo } = require("../middlewares/uploads");
-const { generateUploadURL } = require('../../middlewares/cloudinary')
+const { generateUploadURL } = require('../middlewares/cloudinary')
 
 const Signup = async (req, res) => {
   try {
