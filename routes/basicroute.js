@@ -296,7 +296,15 @@ router.post("/resend-otp", resendOtp);
 router.post("/verify-otp", verifyOtp);
 router.post("/get-reset-otp", sendOtp);
 router.post("/reset-password", resetPassword);
-router.post("/verification/submit", submitKyc);
+
+router.post(
+  "/verification/submit",
+  upload.fields([
+    { name: "cardFront", maxCount: 1 },
+    { name: "cardBack", maxCount: 1 },
+  ]),
+  submitKyc
+)
 
 router.post("/deposit", upload.single("file"), depositSub);
 router.post("/withdrawals", withdrawalSub);

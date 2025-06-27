@@ -131,41 +131,43 @@ const verifyOtp = async (req, res) => {
 };
 
 const submitKyc = async (req, res) => {
-    let data = await generateUploadURL(req.file)
-
-    try {
-      const userId = req.session.user?.id;
-      if (!userId) {
-        return res.status(401).json({ error: "Unauthorized, please login" });
-      }
-
-      const { verificationType } = req.body;
-      const cardFront = req.files?.cardFront?.[0]?.filename;
-      const cardBack = req.files?.cardBack?.[0]?.filename;
-
-      if (!cardFront || !cardBack) {
-        return res.status(400).json({ error: "Both card images are required" });
-      }
-
-      const newKyc = new Kyc({
-        userId,
-        verificationType,
-        cardFront,
-        cardBack,
-      });
-
-      await newKyc.save();
-
-      res
-        .status(200)
-        .json({
-          message:
-            "KYC submitted successfully! Your details are under review, we'll get back to you within 24 hours with a response.",
-        });
-    } catch (error) {
-      console.error("KYC error:", error);
-      res.status(500).json({ error: "Server error" });
+  try {
+    const userId = req.session.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized, please login" });
     }
+
+    const { verificationType } = req.body;
+
+    const cardFrontFile = req.files?.cardFront?.[0];
+    const cardBackFile = req.files?.cardBack?.[0];
+
+    if (!cardFrontFile || !cardBackFile) {
+      return res.status(400).json({ error: "Both card images are required" });
+    }
+
+    const [frontUpload, backUpload] = await Promise.all([
+      generateUploadURL(cardFrontFile),
+      generateUploadURL(cardBackFile),
+    ]);
+
+    const newKyc = new Kyc({
+      userId,
+      verificationType,
+      cardFront: frontUpload.uploadUrl,
+      cardBack: backUpload.uploadUrl,
+    });
+
+    await newKyc.save();
+
+    res.status(200).json({
+      message:
+        "KYC submitted successfully! Your details are under review, we'll get back to you within 24 hours with a response.",
+    });
+  } catch (error) {
+    console.error("KYC error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
 };
 
 

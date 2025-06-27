@@ -1,3 +1,5 @@
+const multer = require("multer");
+
 let storage = multer.memoryStorage()
 
 let fileFilter = (req, file, cb) => {
