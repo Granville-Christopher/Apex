@@ -1,0 +1,53 @@
+<%- include('partials/header') %>
+<section class="min-h-screen bg-gray-50 mt-16">
+    <div class="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <!-- User Info -->
+        <div class="mb-6">
+            <h2 class="text-lg md:text-2xl font-bold text-gray-900">Full Name: <span id="username"><%= user.name %></span></h2>
+            <p class="text-gray-700">Email: <span id="useremail"><%= user.email %></span></p><br>
+        </div>
+
+        <!-- Account Balance Management -->
+        <div class="mb-8">
+            <div id="transactionDetails" class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 border-b border-gray-300">
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">market Select</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Leverage</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Amount</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Status</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Example transaction rows -->
+                        <% if(trades){ %>
+                            <% trades.forEach((txn, index) => { %>
+                                <tr class="border-b border-gray-300">
+                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= txn.marketSelect %></td>
+                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= txn.leverage %></td>
+                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%= parseFloat(txn.amount).toFixed(2) %></td>
+                                    <td class="py-2 px-4 whitespace-nowrap border-r border-gray-300 <%= txn.status == 'Closed' ? 'text-green-500' : 'text-yellow-500' %>">
+                                        <%= txn.status === 'Closed' ? 'Completed' : 'Pending' %>
+                                    </td>
+                                    <td class="py-2 px-4 whitespace-nowrap border-r border-gray-300">
+                                        <a href="/admin/updatetrade/<%= user.email %>/<%= txn._id %>"
+                                                    class="bg-blue-600 text-center text-white px-3 py-1 rounded hover:bg-blue-700">Update Trade</a>
+                                    </td>
+                                </tr>
+                                    <% }) %>
+                        <% }else{ %>
+                            <tr class="border-b border-gray-300 ">
+                                <td>no trades yet...</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<%- include('partials/footer') %>

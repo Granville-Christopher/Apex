@@ -1,0 +1,160 @@
+<%- include('partials/header') %>
+<section class="min-h-screen bg-gray-50 mt-16">
+    <div class="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <!-- User Info -->
+        <div class="mb-6">
+            <% if (user.photo && user.photo.trim() !== '') { %>
+                <img src="<%= user.photo %>" alt="" width="150" height="150">
+            <% } %>
+            <h2 class="text-lg md:text-2xl font-bold text-gray-900">Full Name: <span id="username"><%= user.name %></span></h2>
+            <p class="text-gray-700">Email: <span id="useremail"><%= user.email %></span></p><br>
+            <a class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300" href="/admin/trades/<%= user.email %>">check trade</a>
+        </div>
+
+        <!-- Account Balance Management -->
+        <div class="mb-8">
+            <h3 class="text-lg md:text-xl font-semibold mb-4">Increase User Account Balance</h3>
+            <p class="text-lg md:text-xl font-extrabold text-gray-900 mb-4">Current Balance: <span id="userBalance">$<%= parseFloat(user.balance).toFixed(2) %></span></p>
+            <form id="increaseBalanceForm" class="flex flex-col md:flex-row md:items-center md:space-x-4 mb-6" action="/admin/upbalance" method="POST">
+                <input type="number" name="amount" value="0" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-200 mb-4 md:mb-0" />
+                
+                    <input type="hidden" name="email" value="<%= user.email %>" id="">
+                    <input type="hidden" name="balance" value="<%= user.balance %>" id="">
+                    <input type="hidden" name="type" value="increase" id="">
+
+                <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300">
+                    Submit
+                </button>
+            </form>
+
+            <h3 class="text-lg md:text-xl font-semibold mb-4">Decrease User Account Balance</h3>
+            <p class="text-lg md:text-xl font-extrabold text-gray-900 mb-4">Current Balance: <span id="userBalanceDecrease">$<%= parseFloat(user.balance).toFixed(2) %></span></p>
+            <form id="decreaseBalanceForm" class="flex flex-col md:flex-row md:items-center md:space-x-4" action="/admin/upbalance" method="POST">
+                <input type="number" name="amount" value="0" required
+                    class="flex-grow px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-red-500 transition duration-200 mb-4 md:mb-0" />
+
+                    <input type="hidden" name="email" value="<%= user.email %>" id="">
+                    <input type="hidden" name="balance" value="<%= user.balance %>" id="">
+                    <input type="hidden" name="type" value="decrease" id="">
+
+                <button type="submit"
+                    class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300">
+                    Submit
+                </button>
+            </form>
+        </div>
+
+        <!-- User Details -->
+        <div class="mb-8">
+            <h3 class="text-xl font-semibold mb-4">User Details</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <p><span class="font-semibold">Full Name:</span> <%= user.name %></p>
+                </div>
+                <div>
+                    <p><span class="font-semibold">Phone Number:</span> <%= user.phone %></p>
+                </div>
+                <div>
+                    <p><span class="font-semibold">Country:</span> <%= user.country %></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KYC Documents -->
+        <div class="mb-8">
+            <h3 class="text-xl font-semibold mb-4">KYC Documents Uploaded</h3>
+            <% if(kyc){ %>
+                <div class="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0 mb-4">
+                    <div class="flex-1">
+                        <div class="border rounded-lg overflow-hidden shadow-sm">
+                            <img src="/kyc/<%= kyc.cardFront %>" alt="KYC Front" class="w-full h-auto object-cover" />
+                        </div>
+                        <div class="border rounded-lg overflow-hidden shadow-sm">
+                            <img src="/kyc/<%= kyc.cardBack %>" alt="KYC Back" class="w-full h-auto object-cover" />
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <a href="/admin/kyc/<%= user.email %>/<%= kyc._id%>?type=approve" id="approveKycBtn" class="mt-2 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg shadow transition duration-300">
+                            Approve KYC
+                        </a>
+                        <a href="/admin/kyc/<%= user.email %>/<%= kyc._id%>?type=reject" id="rejectKycBtn" class="mt-2 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg shadow transition duration-300">
+                            Reject KYC
+                        </a>
+                    </div>
+                </div>
+            <% }else{ %>
+                <div class="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0 mb-4">
+                    <p>no kyc uploaded yet...</p>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Block User Login -->
+        <div class="mb-8">
+            <% if (user.block == false) { %>
+                <a href="/admin/blockuser/<%= user.email %>?type=block" id="blockUserBtn" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300">
+                    Block User Login
+                </a>
+            <% } else { %>
+            
+                <a href="/admin/blockuser/<%= user.email %>?type=unblock" id="blockUserBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300">
+                    Block User Login
+                </a>
+            <% } %>
+            
+        </div>
+
+        <!-- User Transaction Details -->
+        <div>
+            <h3 class="md:text-xl text-lg font-semibold mb-4">Click to see user transaction details</h3>
+            <button id="toggleTransactionsBtn" class="mb-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-300">
+                Toggle Transactions
+            </button>
+            <div id="transactionDetails" class="overflow-x-auto hidden">
+                <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 border-b border-gray-300">
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Date</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Type</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Amount</th>
+                            <th class="text-left py-2 px-4 border-r border-gray-300 whitespace-nowrap">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Example transaction rows -->
+                        <% if(transactions){ %>
+                            <% transactions.forEach((txn, index) => { %>
+                                <tr class="border-b border-gray-300">
+                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= txn.date %></td>
+                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= txn.type %></td>
+                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%= parseFloat(txn.amount).toFixed(2) %></td>
+                                    <td class="py-2 px-4 whitespace-nowrap border-r border-gray-300 <%= txn.status === 1 ? 'text-green-500' : 'text-yellow-500' %>">
+                                        <%= txn.status === 1 ? 'Completed' : 'Pending' %>
+                                    </td>
+                                </tr>
+                                    <% }) %>
+                        <% }else{ %>
+                            <tr class="border-b border-gray-300 ">
+                                <td>no transactions yet...</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.getElementById('toggleTransactionsBtn').addEventListener('click', function () {
+        const details = document.getElementById('transactionDetails');
+        if (details.classList.contains('hidden')) {
+            details.classList.remove('hidden');
+        } else {
+            details.classList.add('hidden');
+        }
+    });
+</script>
+<%- include('partials/footer') %>

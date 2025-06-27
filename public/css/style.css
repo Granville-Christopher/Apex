@@ -1,0 +1,20 @@
+body {
+  width: 100%;
+}
+
+/* Allow horizontal scrolling on smaller screens for tables */
+@media (max-width: 768px) {
+  body {
+    overflow-x: auto;
+  }
+}
+
+.dashlogo {
+  margin-right: 850px;
+}
+
+@media screen and (max-width: 768px) {
+  .dashlogo {
+    margin-right: 100px;
+  }
+}

@@ -1,0 +1,114 @@
+<%- include('partials/dashboardhead') %>
+  <script src="/js/userdashboard.js"></script>
+  <main class="md:max-w-7xl md:ml-64 md:px-2">
+    <main class=" pt-20">
+
+      <!-- Completed Trades Heading -->
+      <h3 class="text-lg md:text-xl md:text-start fixed bg-gray-900 w-full text-center font-semibold mb-2 ">Completed
+        Trades History</h3>
+
+      <!-- TABLE VIEW (Desktop & Tablet) -->
+      <div class="overflow-x-auto w-full hidden sm:block mt-8">
+        <table class="min-w-full w-full text-left text-sm">
+          <thead class="text-gray-300 border-b border-gray-600">
+            <tr>
+              <th class="py-2 px-4 whitespace-nowrap">SN</th>
+              <th class="py-2 px-4 whitespace-nowrap">Date</th>
+              <th class="py-2 px-4 whitespace-nowrap">Outcome</th>
+              <th class="py-2 px-4 whitespace-nowrap">Amount</th>
+              <th class="py-2 px-4 whitespace-nowrap">Commission</th>
+              <th class="py-2 px-4 whitespace-nowrap">Notes</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-200">
+            <% if (!trades || trades.length===0) { %>
+              <tr>
+                <td class="py-2 px-4 whitespace-nowrap">no trade available now</td>
+              </tr>
+              <% } else { %>
+                <% trades.forEach(function(trade, index) { %>
+
+                  <tr>
+                    <td class="py-2 px-4 whitespace-nowrap">
+                      <%= index + 1 %>
+                    </td>
+                    <td class="py-2 px-4 whitespace-nowrap">
+                      <%= trade.createddate %>
+                    </td>
+
+                    <% if (!trade.outcome || trade.outcome=='' ) { %>
+                      <td class="py-2 px-4 whitespace-nowrap text-yellow-500">Pending</td>
+                      <% }else{ %>
+                        <% if (trade.pnl=='Profit' ) { %>
+                          <td class="py-2 px-4 whitespace-nowrap text-green-500">
+                            <%= trade.outcome %>
+                          </td>
+                          <% }else{ %>
+                            <td class="py-2 px-4 whitespace-nowrap text-red-500">
+                              <%= trade.outcome %>
+                            </td>
+                            <% } } %>
+
+                              <td class="py-2 px-4 whitespace-nowrap">$<%= trade.amount %>
+                              </td>
+                              <td class="py-2 px-4 whitespace-nowrap">
+                                <%= trade.commission %>
+                              </td>
+                              <td class="py-2 px-4 whitespace-nowrap">
+                                <%= trade.limitOrder %>
+                              </td>
+                  </tr>
+
+                  <% }); %>
+                    <% } %>
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CARD VIEW (Mobile only) -->
+
+      <div class="sm:hidden space-y-1 mt-8">
+        <% if (!trades || trades.length===0) { %>
+          <div>
+            <p class="py-2 px-4 whitespace-nowrap">no trade available now</p>
+          </div>
+          <% } else { %>
+            <% trades.forEach(function(trade, index) { %>
+              <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+                <p><strong>SN:</strong>
+                  <%= index + 1 %>
+                </p>
+                <p><strong>Date:</strong>
+                  <%= trade.createddate %>
+                </p>
+                <% if (!trade.outcome || trade.outcome=='' ) { %>
+                  <p><strong>Outcome:</strong> <span class="text-red-500">pending</span></p>
+                  <% }else{ %>
+                    <% if (trade.pnl=='Profit' ) { %>
+                      <p><strong>Outcome:</strong> <span class="text-red-500">
+                          <%= trade.outcome %>
+                        </span></p>
+                      <% }else{ %>
+                        <p><strong>Outcome:</strong> <span class="text-red-500">
+                            <%= trade.outcome %>
+                          </span></p>
+
+                        <% } } %>
+                          <p><strong>Amount:</strong>$<%= trade.amount %>
+                          </p>
+                          <p><strong>Commission:</strong>
+                            <%= trade.commission %>
+                          </p>
+                          <p><strong>Notes:</strong>
+                            <%= trade.limitOrder %>
+                          </p>
+                          
+              </div>
+                    <% }); %>
+          <% } %>
+      </div>
+
+    </main>
+  </main>
+  <%- include('partials/footer') %>

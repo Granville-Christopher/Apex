@@ -1,0 +1,88 @@
+const express = require("express");
+const mongoose = require("mongoose");
+const session = require("express-session");
+const cors = require("cors");
+require("dotenv").config();
+const basicRoute = require("./routes/basicroute");
+const adminRoute = require("./routes/adminroute");
+const path = require("path");
+const app = express();
+const MongoStore = require('connect-mongo');
+
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
+
+// auto create upload folder
+// const fs = require('fs');
+
+// const uploadDir = path.join(__dirname, 'public/uploads');
+// const uploadDir2 = path.join(__dirname, 'public/kyc');
+// const uploadDir3 = path.join(__dirname, 'public/qr');
+// const uploadDir4 = path.join(__dirname, 'public/dp');
+
+// if (!fs.existsSync(uploadDir)) {
+//     fs.mkdirSync(uploadDir, { recursive: true });
+// }
+
+// if (!fs.existsSync(uploadDir2)) {
+//     fs.mkdirSync(uploadDir2, { recursive: true });
+// }
+
+// if (!fs.existsSync(uploadDir3)) {
+//     fs.mkdirSync(uploadDir3, { recursive: true });
+// }
+
+// if (!fs.existsSync(uploadDir4)) {
+//     fs.mkdirSync(uploadDir4, { recursive: true });
+// }
+
+
+
+const dbURI = process.env.DBURI;
+
+mongoose
+  .connect(dbURI)
+  .then(() => {
+    console.log("✅ Connected to MongoDB");
+    const PORT = process.env.PORT;
+    app.listen(PORT, () => console.log(`🚀 Server running on PORT ${PORT}`));
+  })
+  .catch((err) => {
+    console.error("❌ Database Connection Error:", err);
+  });
+
+app.set("view engine", "ejs");
+
+app.use(express.static("public"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: dbURI,
+      collectionName: 'sessions'
+    }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 2,
+    },
+  })
+);
+
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  res.locals.currentUrl = req.originalUrl;
+  next();
+});
+
+app.use("/", basicRoute);
+app.use("/admin", adminRoute);
+
+app.use((req, res, next) => {
+  res.status(404).render("404", { title: "404" });
+});

@@ -1,0 +1,169 @@
+<%- include('partials/dashboardhead') %>
+  <main class="md:max-w-7xl md:ml-64 md:px-2">
+    <main class="space-y-10">
+      <section id="settings" class="section mt-16">
+        <h2 class="flex justify-between">
+          <span
+            class="text-lg md:text-xl md:text-start bg-gray-800 md:bg-gray-900 py-2 font-semibold mb-6 ">Settings</span>
+          <% if (message) { %>
+            <span class="text-white">
+              <%= message %>
+            </span>
+            <% } %>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Balances Section -->
+          <div class="bg-gray-800 p-4 rounded shadow">
+            <h3 class="text-xl font-semibold mb-4 text-white">Balances</h3>
+            <ul class="space-y-2 text-gray-300">
+              <li class="flex justify-between">
+                <span>Total Balance:</span>
+                <span>$<%= parseFloat(user.balance).toFixed(2) %></span>
+              </li>
+              <!-- <li class="flex justify-between">
+                <span>Main Balance:</span>
+                <span>$0.00</span>
+              </li> -->
+              <li class="flex justify-between">
+                <span>Profit Balance:</span>
+                <span>$<%= parseFloat(user.profit).toFixed(2) %></span>
+              </li>
+              <li class="flex justify-between">
+                <span>Total Deposits:</span>
+                <span>$<%= parseFloat(totalDeposit).toFixed(2) %></span>
+              </li>
+              <!-- <li class="flex justify-between">
+                <span>Total Bonus:</span>
+                <span>$0.00</span>
+              </li> -->
+              <li class="flex justify-between">
+                <span>Pending Withdrawal:</span>
+                <span>$<%= parseFloat(totalWithdraw).toFixed(2) %></span>
+              </li>
+            </ul>
+          </div>
+
+
+          <!-- Personal Details Form -->
+          <div class="bg-gray-800 p-4 rounded shadow">
+            <h3 class="text-xl font-semibold mb-4">Personal Details</h3>
+            <p class="text-sm text-gray-400 mb-2">Fill the form to edit your profile</p>
+            <form class="space-y-3" action="/settings" method="POST">
+              <!-- <div>
+                <label class="block text-sm mb-1">User ID</label>
+                <input type="text" value="3239512" disabled
+                  class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" />
+              </div> -->
+              <div>
+                <label class="block text-sm mb-1">Full Name</label>
+                <input type="text" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white"
+                  value="<%= user.name %>" required name="name" />
+              </div>
+              <div>
+                <label class="block text-sm mb-1">Email Address</label>
+                <input type="email" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" readonly
+                  value="<%= user.email %>" name="email" />
+              </div>
+              <div>
+                <label class="block text-sm mb-1">Phone Number</label>
+                <input type="tel" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white"
+                  value="<%= user.phone %>" name="phone" />
+              </div>
+              <div>
+                <label class="block text-sm mb-1">Country</label>
+                <input type="text" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white"
+                  value="<%= user.country %>" name="country" />
+              </div>
+              <button type="submit"
+                class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+            </form>
+          </div>
+
+          <!-- Change Password Section -->
+          <div class="bg-gray-800 p-4 rounded shadow">
+            <h3 class="text-xl font-semibold mb-4">Change Password</h3>
+            <p class="text-sm text-gray-400 mb-2">Fill form to change your password</p>
+            <form class="space-y-3" action="/changepass" method="POST">
+
+              <input type="hidden" name="email" value="<%= user.email %>" id="">
+
+              <div>
+                <label class="block text-sm mb-1">Password</label>
+                <input type="password" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white"
+                  name="password" minlength="6" />
+              </div>
+              <div>
+                <label class="block text-sm mb-1">Confirm Password</label>
+                <input type="password" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white"
+                  name="conpass" />
+              </div>
+              <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Change
+                Password</button>
+            </form>
+          </div>
+
+          <!-- Account Info Section -->
+          <div class="bg-gray-800 p-4 rounded shadow">
+            <h3 class="text-xl font-semibold mb-4 text-white">Account Info</h3>
+            <ul class="text-gray-300 space-y-2">
+              <li class="flex justify-between">
+                <span>Account Type:</span>
+                <span class="text-white">
+                  <%= user.accountType %>
+                </span>
+              </li>
+              <li class="flex justify-between">
+                <span>Account Status:</span>
+                <% if (user.accountType=='Live Account' ) { %>
+                  <span class="text-green-500">
+                    <%= user.accountStatus %>
+                  </span>
+                  <% }else { %>
+                    <span class="text-red-500">
+                      <%= user.accountStatus %>
+                    </span>
+                    <% } %>
+              </li>
+              <li class="flex justify-between">
+                <span>Email verification:</span>
+                <span class="text-green-500">Verified</span>
+              </li>
+              <li class="flex justify-between">
+                <span>KYC status:</span>
+                <span class="text-green-500">Verified</span>
+              </li>
+            </ul>
+          </div>
+
+
+          <!-- Profile Photo Upload -->
+          <div class="bg-gray-800 p-4 rounded shadow">
+            <h3 class="text-xl font-semibold mb-4 text-white">Change Profile Photo</h3>
+            <form action="/changephoto" method="POST" enctype="multipart/form-data">
+              <!-- File Input -->
+              <input type="file" class="block w-full text-sm text-gray-300 mb-3
+                file:mr-4 file:py-2 file:px-4 file:rounded file:border-0
+                file:text-sm file:font-semibold
+                file:bg-blue-500 file:text-white hover:file:bg-blue-600" name="file" />
+
+              <input type="hidden" name="email" value="<%= user.email %>" id="">
+
+              <!-- Upload Button -->
+              <button type="submit"
+                class="mt-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded">
+                Upload
+              </button>
+
+              <!-- Help Text -->
+              <p class="text-xs text-gray-400 mt-2">Allowed JPG, GIF, HEIC or PNG. Max size of 2Mb.</p>
+            </form>
+          </div>
+
+        </div>
+      </section>
+    </main>
+  </main>
+  <script src="/js/userdashboard.js"></script>
+  <script src="/js/alert.js"></script>
+  <%- include('partials/footer') %>
