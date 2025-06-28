@@ -75,11 +75,11 @@
                             <img src="<%= kyc.cardBack %>" alt="KYC Back" class="w-full h-auto object-cover" />
                         </div>
                     </div>
-                    <div class="flex-1">
-                        <a href="/admin/kyc/<%= user.email %>/<%= kyc._id%>?type=approve" id="approveKycBtn" class="mt-2 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg shadow transition duration-300">
+                    <div class="flex-1 space-x-6">
+                        <a href="/admin/kyc/<%= user.email %>/<%= kyc._id%>?type=approve" id="approveKycBtn" class="mt-2 px-4 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg shadow transition duration-300">
                             Approve KYC
                         </a>
-                        <a href="/admin/kyc/<%= user.email %>/<%= kyc._id%>?type=reject" id="rejectKycBtn" class="mt-2 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg shadow transition duration-300">
+                        <a href="/admin/kyc/<%= user.email %>/<%= kyc._id%>?type=reject" id="rejectKycBtn" class="mt-2 px-4 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg shadow transition duration-300">
                             Reject KYC
                         </a>
                     </div>
