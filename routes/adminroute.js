@@ -9,7 +9,7 @@ const AdminWallet = require("../models/adminmodel/wallet");
 const Withdraw = require("../models/usermodel/withdraw");
 const Trade = require("../models/usermodel/trade");
 const Kyc = require("../models/usermodel/kyc");
-const upload = require("../middlewares/uploads");
+const { upload } = require("../middlewares/uploads");
 
 
 router.get("/", isAdminLogin, async (req, res) => {

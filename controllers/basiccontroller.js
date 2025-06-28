@@ -9,7 +9,8 @@ const Withdraw = require("../models/usermodel/withdraw");
 const Trade = require("../models/usermodel/trade");
 const Kyc = require("../models/usermodel/kyc");
 const { uploadsTwo } = require("../middlewares/uploads");
-const { generateUploadURL } = require('../middlewares/cloudinary')
+const { generateUploadURL } = require("../middlewares/cloudinary");
+const { generateUploadURLs } = require("../middlewares/cloudinary");
 
 const Signup = async (req, res) => {
   try {
@@ -132,51 +133,68 @@ const verifyOtp = async (req, res) => {
 
 // submit kyc by user
 const submitKyc = (req, res) => {
-  uploadsTwo.fields([
-    { name: "cardFront", maxCount: 1 },
-    { name: "cardBack", maxCount: 1 },
-  ])(req, res, async (err) => {
-    if (err) {
-      console.error("Multer error:", err);
-      return res.status(400).json({ error: "File upload failed" });
-    }
+  console.log("🔥 /verification/submit route triggered");
 
-    try {
-      const userId = req.session.user?.id;
-      if (!userId) {
-        return res.status(401).json({ error: "Unauthorized, please login" });
+  try {
+    uploadsTwo.fields([
+      { name: "cardFront", maxCount: 1 },
+      { name: "cardBack", maxCount: 1 },
+    ])(req, res, async (err) => {
+      if (err) {
+        console.error("⚠️ Multer error:", err);
+        return res.status(400).json({ error: "File upload failed" });
       }
 
-      const { verificationType } = req.body;
-      const cardFrontFile = req.files?.cardFront?.[0];
-      const cardBackFile = req.files?.cardBack?.[0];
+      try {
+        const userId = req.session.user?.id;
+        if (!userId) {
+          console.warn("⚠️ Unauthorized access attempt");
+          return res.status(401).json({ error: "Unauthorized, please login" });
+        }
 
-      if (!cardFrontFile || !cardBackFile) {
-        return res.status(400).json({ error: "Both card images are required" });
+        const { verificationType } = req.body;
+        const cardFrontFile = req.files?.cardFront?.[0];
+        const cardBackFile = req.files?.cardBack?.[0];
+
+        if (!cardFrontFile || !cardBackFile) {
+          console.warn("⚠️ Missing card image(s)");
+          return res
+            .status(400)
+            .json({ error: "Both card images are required" });
+        }
+
+        console.log("🖼 Uploading images to Cloudinary...");
+
+        const [frontUpload, backUpload] = await generateUploadURLs([
+          cardFrontFile,
+          cardBackFile,
+        ]);
+
+        const newKyc = new Kyc({
+          userId,
+          verificationType,
+          cardFront: frontUpload.uploadUrl,
+          cardBack: backUpload.uploadUrl,
+        });
+
+        await newKyc.save();
+
+        console.log("✅ KYC submitted and saved for user:", userId);
+
+        res.status(200).json({
+          message:
+            "KYC submitted successfully! Your details are under review, we'll get back to you within 24 hours with a response.",
+        });
+      } catch (error) {
+        console.error("❌ KYC internal error:", error);
+        res.status(500).json({ error: "Server error" });
       }
-
-      const [frontUpload, backUpload] = await generateUploadURLs([cardFrontFile, cardBackFile]);
-
-      const newKyc = new Kyc({
-        userId,
-        verificationType,
-        cardFront: frontUpload.uploadUrl,
-        cardBack: backUpload.uploadUrl,
-      });
-
-      await newKyc.save();
-
-      res.status(200).json({
-        message:
-          "KYC submitted successfully! Your details are under review, we'll get back to you within 24 hours with a response.",
-      });
-    } catch (error) {
-      console.error("KYC error:", error);
-      res.status(500).json({ error: "Server error" });
-    }
-  });
-}
-
+    });
+  } catch (outerError) {
+    console.error("❌ submitKyc outer crash:", outerError);
+    res.status(500).json({ error: "Server crash" });
+  }
+};
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -195,11 +213,10 @@ const login = async (req, res) => {
 
     if (user.block === true) {
       return res.status(403).json({
-        error:
-          "Account Blocked.",
+        error: "Account Blocked.",
       });
     }
-    
+
     req.session.user = {
       id: user._id,
       name: user.name,
@@ -258,7 +275,16 @@ const login = async (req, res) => {
 };
 
 const tradeSub = async (req, res) => {
-  const { marketSelect1, tradeTime1, leverage1, cdate, tType, amount1, email, balance } = req.body;
+  const {
+    marketSelect1,
+    tradeTime1,
+    leverage1,
+    cdate,
+    tType,
+    amount1,
+    email,
+    balance,
+  } = req.body;
 
   try {
     const user = await User.findOne({ email });
@@ -274,25 +300,26 @@ const tradeSub = async (req, res) => {
       leverage: leverage1,
       amount: amount1,
       createddate: cdate,
-      tradeType: tType
+      tradeType: tType,
     };
 
     await new Trade(info).save();
 
-    await User.updateOne({ email: email }, 
-        {
-            $set:{
-                balance: balance
-            }
-        }
-    )
+    await User.updateOne(
+      { email: email },
+      {
+        $set: {
+          balance: balance,
+        },
+      }
+    );
 
     res.status(200).json({ message: "Trade Started" });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Server error" });
   }
-}
+};
 
 const sendOtp = async (req, res) => {
   try {
@@ -357,14 +384,14 @@ const resetPassword = async (req, res) => {
 // deposit sub
 const depositSub = async (req, res) => {
   try {
-    let data = await generateUploadURL(req.file)
+    let data = await generateUploadURL(req.file);
     let info = {
       email: req.body.email ?? "",
       amount: Number(req.body.amount) ?? "",
       network: req.body.network ?? "",
       waddress: req.body.waddress ?? "",
       subData: data.uploadUrl,
-      createddate: new Date().toISOString().slice(0, 10)
+      createddate: new Date().toISOString().slice(0, 10),
     };
 
     const deposit = await new Deposit(info).save();
@@ -414,7 +441,7 @@ const withdrawalSub = async (req, res) => {
       email,
       amount: withdrawalAmount,
       waddress,
-      createddate: new Date().toISOString().slice(0, 10)
+      createddate: new Date().toISOString().slice(0, 10),
     });
 
     await withdrawal.save();
@@ -484,9 +511,9 @@ const deleteTransactionSub = async (req, res) => {
       res.redirect("/");
     }
 
-    if(type == 'Deposit'){
+    if (type == "Deposit") {
       await Deposit.deleteOne({ _id: id });
-    }else{
+    } else {
       await Withdraw.deleteOne({ _id: id });
     }
 
@@ -499,85 +526,84 @@ const deleteTransactionSub = async (req, res) => {
 
 // update account
 const settingsSub = async (req, res) => {
-    try{
-        const user = await User.updateOne({ email: req.body.email }, 
-            {
-                $set:{
-                    name: req.body.name,
-                    phone: req.body.phone,
-                    country: req.body.country,
-                }
-            }
-        )
-        
-        if(user !== null){
-            req.session.message = "account updated";
-            res.redirect("/settings");
-        }else{
-          req.session.message = "error updating account";
-          res.redirect("/settings")
-        }
+  try {
+    const user = await User.updateOne(
+      { email: req.body.email },
+      {
+        $set: {
+          name: req.body.name,
+          phone: req.body.phone,
+          country: req.body.country,
+        },
+      }
+    );
 
-
-    }catch (error) {
-      console.log(error)
-      req.session.message = "error completing request";
+    if (user !== null) {
+      req.session.message = "account updated";
+      res.redirect("/settings");
+    } else {
+      req.session.message = "error updating account";
       res.redirect("/settings");
     }
-}
+  } catch (error) {
+    console.log(error);
+    req.session.message = "error completing request";
+    res.redirect("/settings");
+  }
+};
 
 // update password
 const changePassSub = async (req, res) => {
-    try{
-        const { email, password, conpass } = req.body;
-        
-        if (password !== conpass) {
-          req.session.message = "password mismatch";
-          res.redirect("/settings");
-        }
+  try {
+    const { email, password, conpass } = req.body;
 
-        const user = await User.findOne({ email });
-
-        user.password = await bcrypt.hash(password, 10);
-        await user.save();
-
-        req.session.message = "password changed...";
-        res.redirect("/settings")
-
-    }catch (error) {
-      console.log(error)
-      req.session.message = "error completing request";
+    if (password !== conpass) {
+      req.session.message = "password mismatch";
       res.redirect("/settings");
     }
-}
+
+    const user = await User.findOne({ email });
+
+    user.password = await bcrypt.hash(password, 10);
+    await user.save();
+
+    req.session.message = "password changed...";
+    res.redirect("/settings");
+  } catch (error) {
+    console.log(error);
+    req.session.message = "error completing request";
+    res.redirect("/settings");
+  }
+};
 
 // change dp
 const changePhoto = async (req, res) => {
   try {
-    let data = await generateUploadURL(req.file)
-    const photo = data.uploadUrl
-  
-    const user = await User.updateOne({ email: req.body.email }, 
+    let data = await generateUploadURL(req.file);
+    const photo = data.uploadUrl;
+
+    const user = await User.updateOne(
+      { email: req.body.email },
       {
-        $set:{
-            photo: photo
-        }
+        $set: {
+          photo: photo,
+        },
       }
-    )
-    
-    if(user !== null){
-        req.session.message = "picture updated";
-        res.redirect("/settings");
-    }else{
+    );
+
+    if (user !== null) {
+      req.session.message = "picture updated";
+      res.redirect("/settings");
+    } else {
       req.session.message = "error updating picture";
-      res.redirect("/settings")
+      res.redirect("/settings");
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     req.session.message = "error completing request";
-    res.redirect("/settings")
+    res.redirect("/settings");
   }
-}
+};
 
 module.exports = {
   Signup,
@@ -596,5 +622,5 @@ module.exports = {
   changePassSub,
   changePhoto,
   deleteTransactionSub,
-  tradeSub
+  tradeSub,
 };

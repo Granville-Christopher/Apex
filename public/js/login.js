@@ -30,7 +30,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     if (data.redirect) {
       setTimeout(() => {
         window.location.href = data.redirect;
-      }, data.delay || 10000);
+      }, data.delay || 5000);
     }
   }
 });

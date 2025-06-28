@@ -12,4 +12,8 @@ let upload = multer({
     fileFilter: fileFilter
 })
 
-module.exports = upload
+const uploadsTwo = multer({ storage });
+module.exports = {
+    upload,
+    uploadsTwo
+}

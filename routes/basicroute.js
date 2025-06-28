@@ -20,7 +20,7 @@ const {
 } = require("../controllers/basiccontroller");
 const router = express.Router();
 const { isLogin, isLogout } = require("../middlewares/auth");
-const upload = require("../middlewares/uploads");
+const { upload } = require("../middlewares/uploads");
 const Wallet = require("../models/usermodel/userwallets");
 const Withdraw = require("../models/usermodel/withdraw");
 const Deposit = require("../models/usermodel/deposit");
