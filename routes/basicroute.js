@@ -304,7 +304,7 @@ router.get("/cancelwith/:id/:amount", async (req, res) => {
 });
 
 router.post("/signup", Signup);
-router.post("/", login);
+router.post("/login", login);
 router.post("/otp", otpAuth);
 router.post("/resend-otp", resendOtp);
 router.post("/verify-otp", verifyOtp);

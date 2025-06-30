@@ -11,7 +11,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
-  const response = await fetch("/", {
+  const response = await fetch("/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
