@@ -34,8 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     localStorage.setItem("userEmail", signupData.email);
 
-    console.log("Signup Data:", signupData);
-
     fetch("/signup", {
       method: "POST",
       headers: {

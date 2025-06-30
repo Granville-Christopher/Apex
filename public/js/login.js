@@ -11,6 +11,8 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
+  localStorage.setItem("userEmail", email);
+
   const response = await fetch("/login", {
     method: "POST",
     headers: {
