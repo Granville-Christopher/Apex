@@ -49,8 +49,18 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/robots.txt", (req, res) => {
+  res.sendFile(path.join(__dirname, "robots.txt"));
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  res.sendFile(path.join(__dirname, 'sitemap.xml'));
+});
+
 app.use("/", basicRoute);
 app.use("/admin", adminRoute);
+
+
 
 app.use((req, res, next) => {
   res.status(404).render("404", { title: "404" });
