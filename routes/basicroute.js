@@ -16,7 +16,7 @@ const {
   changePassSub,
   changePhoto,
   deleteTransactionSub,
-  tradeSub
+  tradeSub,
 } = require("../controllers/basiccontroller");
 const router = express.Router();
 const { isLogin, isLogout } = require("../middlewares/auth");
@@ -27,6 +27,8 @@ const Deposit = require("../models/usermodel/deposit");
 const Trade = require("../models/usermodel/trade");
 const User = require("../models/usermodel/signup");
 const AdminWallet = require("../models/adminmodel/wallet");
+const Message = require("../models/usermodel/message");
+const Admin = require("../models/adminmodel/signup");
 
 router.get("/", isLogout, async (req, res) => {
   res.render("user/index", {
@@ -37,6 +39,21 @@ router.get("/", isLogout, async (req, res) => {
     page: "Home",
     loaded: "Home",
   });
+});
+
+router.get("/chat-history", async (req, res) => {
+  try {
+    const userId = req.session.user?.id;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const messages = await Message.find({
+      $or: [{ sender: userId }, { sender: "admin" }],
+    }).sort({ timestamp: 1 });
+
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to load messages" });
+  }
 });
 
 router.get("/deposit", isLogin, async (req, res) => {
@@ -51,7 +68,7 @@ router.get("/deposit", isLogin, async (req, res) => {
     loaded: "deposit",
     message,
     user,
-    wallet: wallet[0]
+    wallet: wallet[0],
   });
 });
 
@@ -77,10 +94,10 @@ router.get("/settings", isLogin, async (req, res) => {
     {
       $group: {
         _id: null,
-        total: { $sum: "$amount" }
-      }
-    }
-  ])
+        total: { $sum: "$amount" },
+      },
+    },
+  ]);
   const totalDeposit = totalDepositResult[0]?.total || 0;
 
   const totalWithdrawResult = await Withdraw.aggregate([
@@ -88,12 +105,11 @@ router.get("/settings", isLogin, async (req, res) => {
     {
       $group: {
         _id: null,
-        total: { $sum: "$amount" }
-      }
-    }
-  ])
+        total: { $sum: "$amount" },
+      },
+    },
+  ]);
   const totalWithdraw = totalWithdrawResult[0]?.total || 0;
-
 
   res.render("user/settings", {
     title: "Apex Meridian - settings",
@@ -102,7 +118,7 @@ router.get("/settings", isLogin, async (req, res) => {
     message,
     user,
     totalWithdraw,
-    totalDeposit
+    totalDeposit,
   });
 });
 
@@ -113,13 +129,13 @@ router.get("/trade", isLogin, async (req, res) => {
     title: "Apex Meridian - trade",
     page: "trade",
     loaded: "trade",
-    user
+    user,
   });
 });
 
 router.get("/trades", isLogin, async (req, res) => {
   const user = await User.findOne({ email: req.session.user.email });
-  
+
   const trades = await Trade.find({ email: req.session.user.email });
 
   res.render("user/opentrades", {
@@ -127,21 +143,24 @@ router.get("/trades", isLogin, async (req, res) => {
     page: "trades",
     loaded: "trades",
     user,
-    trades
+    trades,
   });
 });
 
 router.get("/tradeshistory", isLogin, async (req, res) => {
   const user = await User.findOne({ email: req.session.user.email });
 
-  const trades = await Trade.find({ email: req.session.user.email, status: "Closed" });
+  const trades = await Trade.find({
+    email: req.session.user.email,
+    status: "Closed",
+  });
 
   res.render("user/tradeshistory", {
     title: "Apex Meridian - trades",
     page: "trades",
     loaded: "trades",
     user,
-    trades
+    trades,
   });
 });
 
@@ -175,7 +194,7 @@ router.get("/transactions", isLogin, async (req, res) => {
     page: "transactions",
     loaded: "transactions",
     user,
-    transactions
+    transactions,
   });
 });
 
@@ -230,10 +249,10 @@ router.get("/analytics", isLogin, async (req, res) => {
     {
       $group: {
         _id: null,
-        total: { $sum: "$amount" }
-      }
-    }
-  ])
+        total: { $sum: "$amount" },
+      },
+    },
+  ]);
   const totalProfit = totalProfitResult[0]?.total || 0;
 
   const totalLossResult = await Trade.aggregate([
@@ -241,10 +260,10 @@ router.get("/analytics", isLogin, async (req, res) => {
     {
       $group: {
         _id: null,
-        total: { $sum: "$amount" }
-      }
-    }
-  ])
+        total: { $sum: "$amount" },
+      },
+    },
+  ]);
   const totalLoss = totalLossResult[0]?.total || 0;
 
   res.render("user/analytics", {
@@ -253,7 +272,7 @@ router.get("/analytics", isLogin, async (req, res) => {
     loaded: "analytics",
     user,
     totalProfit,
-    totalLoss
+    totalLoss,
   });
 });
 
@@ -291,13 +310,12 @@ router.get("/kycverification", async (req, res) => {
 
 // cancel withdrawal
 router.get("/cancelwith/:id/:amount", async (req, res) => {
-  let id = req.params.id
-  let amount = Number(req.params.amount)
+  let id = req.params.id;
+  let amount = Number(req.params.amount);
 
   const user = await User.findOne({ email });
-  user.balance += amount
-  await user.save()
-
+  user.balance += amount;
+  await user.save();
 
   await Withdraw.deleteOne({ _id: id });
   res.redirect("/withdrawals");
@@ -318,20 +336,13 @@ router.post("/withdrawals", withdrawalSub);
 router.post("/wallets", walletSub);
 router.get("/deletewallet/:id", deleteWalletSub);
 
-
 router.get("/deletetxn/:id", deleteTransactionSub);
-
 
 router.post("/settings", settingsSub);
 router.post("/changepass", changePassSub);
 router.post("/changephoto", upload.single("file"), changePhoto);
 
-
 router.post("/trade", tradeSub);
-
-
-
-
 
 router.get("/resetpassword", isLogout, async (req, res) => {
   res.render("user/resetpassword", {
@@ -343,16 +354,15 @@ router.get("/resetpassword", isLogout, async (req, res) => {
 
 router.get("/dashboard", isLogin, async (req, res) => {
   const user = await User.findOne({ email: req.session.user.email });
-
   const totalDepositResult = await Deposit.aggregate([
     { $match: { email: req.session.user.email, status: 1 } },
     {
       $group: {
         _id: null,
-        total: { $sum: "$amount" }
-      }
-    }
-  ])
+        total: { $sum: "$amount" },
+      },
+    },
+  ]);
   const totalDeposit = totalDepositResult[0]?.total || 0;
 
   const totalWithdrawResult = await Withdraw.aggregate([
@@ -360,10 +370,11 @@ router.get("/dashboard", isLogin, async (req, res) => {
     {
       $group: {
         _id: null,
-        total: { $sum: "$amount" }
-      }
-    }
-  ])
+        total: { $sum: "$amount" },
+      },
+    },
+  ]);
+
   const totalWithdraw = totalWithdrawResult[0]?.total || 0;
 
   // get profits & loss
@@ -372,10 +383,10 @@ router.get("/dashboard", isLogin, async (req, res) => {
     {
       $group: {
         _id: null,
-        total: { $sum: "$amount" }
-      }
-    }
-  ])
+        total: { $sum: "$amount" },
+      },
+    },
+  ]);
   const totalProfit = totalProfitResult[0]?.total || 0;
 
   const totalLossResult = await Trade.aggregate([
@@ -383,10 +394,10 @@ router.get("/dashboard", isLogin, async (req, res) => {
     {
       $group: {
         _id: null,
-        total: { $sum: "$amount" }
-      }
-    }
-  ])
+        total: { $sum: "$amount" },
+      },
+    },
+  ]);
   const totalLoss = totalLossResult[0]?.total || 0;
 
   res.render("user/dashboard", {
@@ -397,7 +408,7 @@ router.get("/dashboard", isLogin, async (req, res) => {
     deposit: totalDeposit,
     withdrawal: totalWithdraw,
     profits: totalProfit,
-    loss: totalLoss
+    loss: totalLoss,
   });
 });
 

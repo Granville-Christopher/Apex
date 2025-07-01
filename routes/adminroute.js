@@ -1,5 +1,13 @@
 const express = require("express");
-const { Signup, Login, sendOtp, resetPassword, uploadWallets, editBal, manipulateTrade } = require("../controllers/admincontroller");
+const {
+  Signup,
+  Login,
+  sendOtp,
+  resetPassword,
+  uploadWallets,
+  editBal,
+  manipulateTrade,
+} = require("../controllers/admincontroller");
 const router = express.Router();
 const { isAdminLogin, isAdminLogout } = require("../middlewares/auth");
 const User = require("../models/usermodel/signup");
@@ -10,16 +18,20 @@ const Withdraw = require("../models/usermodel/withdraw");
 const Trade = require("../models/usermodel/trade");
 const Kyc = require("../models/usermodel/kyc");
 const { upload } = require("../middlewares/uploads");
-
+const Message = require("../models/usermodel/message");
+const mongoose = require("mongoose");
+const socketServer = require("../index");
+const io = socketServer.io;
+const connectedUsers = socketServer.connectedUsers;
 
 router.get("/", isAdminLogin, async (req, res) => {
   const message = req.session.message;
   req.session.message = null;
 
-  let users = await User.find()
-  let wallets = await AdminWallet.find()
-  let deposits = await Deposit.find()
-  let withdraws = await Withdraw.find()
+  let users = await User.find();
+  let wallets = await AdminWallet.find();
+  let deposits = await Deposit.find();
+  let withdraws = await Withdraw.find();
 
   res.render("admin/index", {
     title: "Apex Meridian - Admin Dashboard",
@@ -29,12 +41,11 @@ router.get("/", isAdminLogin, async (req, res) => {
     wallets,
     message,
     deposits,
-    withdraws
+    withdraws,
   });
 });
 
 router.get("/login", isAdminLogout, async (req, res) => {
-
   res.render("admin/login", {
     title: "Apex Meridian - Admin Login",
     page: "Login",
@@ -42,8 +53,103 @@ router.get("/login", isAdminLogout, async (req, res) => {
   });
 });
 
-router.get("/signup", isAdminLogout, async (req, res) => {
+router.get("/messages", async (req, res) => {
+  try {
+    const uniqueSenders = await Message.aggregate([
+      { $match: { sender: { $ne: "admin" } } },
+      { $group: { _id: "$sender" } },
+    ]);
 
+    const senderIds = uniqueSenders
+      .map((u) => u._id)
+      .filter((id) => id && mongoose.Types.ObjectId.isValid(id));
+
+    console.log("Sender IDs:", senderIds);
+
+    const users = await User.find({ _id: { $in: senderIds } });
+
+    res.render("admin/messages", {
+      title: "Apex Meridian - Admin Messages",
+      page: "Messages",
+      loaded: "Messages",
+      users,
+    });
+  } catch (err) {
+    console.error("❌ Failed to load messages:", err);
+    res.status(500).send("Error loading messages");
+  }
+});
+
+router.get("/messages/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ error: "Invalid user ID" });
+  }
+
+  try {
+    const messages = await Message.find({
+      $or: [{ sender: userId }, { sender: "admin", to: userId }],
+    }).sort({ timestamp: 1 });
+
+    res.json(messages);
+  } catch (err) {
+    console.error("❌ Failed to fetch messages:", err);
+    res.status(500).json({ error: "Failed to fetch messages" });
+  }
+});
+
+router.post("/messages/reply", async (req, res) => {
+  const { to, message } = req.body;
+
+  if (!to || !message) {
+    return res.status(400).json({ success: false, message: "Missing fields" });
+  }
+
+  try {
+    const newMsg = new Message({
+      sender: "admin",
+      to,
+      message,
+    });
+
+    await newMsg.save();
+
+    const userSocketId = connectedUsers?.[to];
+    if (userSocketId) {
+      io.to(userSocketId).emit("receiveMessage", newMsg);
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error sending admin reply:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// router.post("/messages/reply", async (req, res) => {
+//   const { to, message } = req.body;
+
+//   if (!to || !message) {
+//     return res.status(400).json({ success: false, message: "Missing fields" });
+//   }
+
+//   try {
+//     const newMsg = new Message({
+//       sender: "admin",
+//       to: to, // ✅ This should be the _id from the user's list, NOT the name
+//       message,
+//     });
+
+//     await newMsg.save();
+//     res.json({ success: true });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ success: false, message: "Server error" });
+//   }
+// });
+
+router.get("/signup", isAdminLogout, async (req, res) => {
   res.render("admin/signup", {
     title: "Apex Meridian - Admin Signup",
     page: "SignUp",
@@ -53,8 +159,8 @@ router.get("/signup", isAdminLogout, async (req, res) => {
 
 // get user trades
 router.get("/trades/:email", isAdminLogin, async (req, res) => {
-  let email = req.params.email
-  let user = await User.findOne({ email })
+  let email = req.params.email;
+  let user = await User.findOne({ email });
   const trades = await Trade.find({ email });
 
   res.render("admin/usertrade", {
@@ -62,18 +168,18 @@ router.get("/trades/:email", isAdminLogin, async (req, res) => {
     page: "usertrades",
     loaded: "usertrades",
     user,
-    trades
+    trades,
   });
-})
+});
 
 // get single trade
 router.get("/updatetrade/:email/:id", isAdminLogin, async (req, res) => {
-  let email = req.params.email
-  let id = req.params.id
+  let email = req.params.email;
+  let id = req.params.id;
   const message = req.session.message;
   req.session.message = null;
 
-  let user = await User.findOne({ email })
+  let user = await User.findOne({ email });
   const trade = await Trade.findOne({ _id: id });
 
   res.render("admin/usersingletrade", {
@@ -82,17 +188,16 @@ router.get("/updatetrade/:email/:id", isAdminLogin, async (req, res) => {
     loaded: "usertrade",
     user,
     trade,
-    message
+    message,
   });
-})
-
+});
 
 // get single user
 router.get("/usersingle/:email", isAdminLogin, async (req, res) => {
-  let email = req.params.email
+  let email = req.params.email;
 
-  let user = await User.findOne({ email })
-  let kyc = await Kyc.findOne({ userId: user._id })
+  let user = await User.findOne({ email });
+  let kyc = await Kyc.findOne({ userId: user._id });
 
   const deposits = await Deposit.find({ email: user.email });
   const withdrawals = await Withdraw.find({ email: user.email });
@@ -122,87 +227,88 @@ router.get("/usersingle/:email", isAdminLogin, async (req, res) => {
     loaded: "usersingle",
     user,
     kyc,
-    transactions
+    transactions,
   });
 });
 
 // approve and reject kyc
 router.get("/kyc/:email/:id", isAdminLogin, async (req, res) => {
-  let email = req.params.email
-  let id = req.params.id
-  let type = req.query.type
+  let email = req.params.email;
+  let id = req.params.id;
+  let type = req.query.type;
 
-  if(type == 'approve'){
-    await Kyc.updateOne({ _id: id }, 
-        {
-          $set:{
-            status: "approved"
-          }
-        }
-    )
-  }else{
-    await Kyc.updateOne({ _id: id }, 
-        {
-          $set:{
-            status: "rejected"
-          }
-        }
-    )
+  if (type == "approve") {
+    await Kyc.updateOne(
+      { _id: id },
+      {
+        $set: {
+          status: "approved",
+        },
+      }
+    );
+  } else {
+    await Kyc.updateOne(
+      { _id: id },
+      {
+        $set: {
+          status: "rejected",
+        },
+      }
+    );
   }
-  
+
   res.redirect(`/admin/usersingle/${email}`);
-  
 });
 
 // block and unblock user
 router.get("/blockuser/:email", isAdminLogin, async (req, res) => {
-  let email = req.params.email
-  let id = req.params.id
-  let type = req.query.type
+  let email = req.params.email;
+  let id = req.params.id;
+  let type = req.query.type;
 
-  if(type == 'block'){
-    await User.updateOne({ email }, 
-        {
-          $set:{
-            block: true
-          }
-        }
-    )
-  }else{
-    await User.updateOne({ email }, 
-        {
-          $set:{
-            block: false
-          }
-        }
-    )
+  if (type == "block") {
+    await User.updateOne(
+      { email },
+      {
+        $set: {
+          block: true,
+        },
+      }
+    );
+  } else {
+    await User.updateOne(
+      { email },
+      {
+        $set: {
+          block: false,
+        },
+      }
+    );
   }
-  
+
   res.redirect(`/admin/usersingle/${email}`);
-  
 });
 
-router.post("/admin-signup", Signup)
-router.post("/admin-login", Login)
-router.post("/get-reset-otp", sendOtp)
-router.post("/resetpassword", resetPassword )
+router.post("/admin-signup", Signup);
+router.post("/admin-login", Login);
+router.post("/get-reset-otp", sendOtp);
+router.post("/resetpassword", resetPassword);
 
-
-router.post("/wallets", upload.single("walletQRCode"), uploadWallets)
-router.post("/upbalance", editBal)
-router.post("/manipulate", manipulateTrade)
+router.post("/wallets", upload.single("walletQRCode"), uploadWallets);
+router.post("/upbalance", editBal);
+router.post("/manipulate", manipulateTrade);
 
 // live search
-router.get('/search', async (req, res) => {
+router.get("/search", async (req, res) => {
   try {
-    const query = req.query.query || '';
+    const query = req.query.query || "";
 
     const users = await User.find({
       $or: [
-        { name: { $regex: query, $options: 'i' } },
-        { email: { $regex: query, $options: 'i' } }
-      ]
-    }).limit(20)
+        { name: { $regex: query, $options: "i" } },
+        { email: { $regex: query, $options: "i" } },
+      ],
+    }).limit(20);
 
     res.json(users);
   } catch (err) {
@@ -211,9 +317,7 @@ router.get('/search', async (req, res) => {
   }
 });
 
-
 router.get("/resetpassword", isAdminLogout, async (req, res) => {
-
   res.render("admin/resetpassword", {
     title: "Apex Meridian - Admin resetpassword",
     page: "resetpassword",
@@ -222,7 +326,7 @@ router.get("/resetpassword", isAdminLogout, async (req, res) => {
 });
 
 // delete wallet
-router.get('/deletewallet/:id' , isAdminLogin, async (req, res) => {
+router.get("/deletewallet/:id", isAdminLogin, async (req, res) => {
   try {
     let id = req.params.id;
 
@@ -237,10 +341,10 @@ router.get('/deletewallet/:id' , isAdminLogin, async (req, res) => {
     console.log(error);
     res.redirect("/admin/");
   }
-})
+});
 
 // delete deposit
-router.get('/deletedeposit/:id' , isAdminLogin, async (req, res) => {
+router.get("/deletedeposit/:id", isAdminLogin, async (req, res) => {
   try {
     let id = req.params.id;
 
@@ -255,10 +359,10 @@ router.get('/deletedeposit/:id' , isAdminLogin, async (req, res) => {
     console.log(error);
     res.redirect("/admin/");
   }
-})
+});
 
 // delete withdrawal
-router.get('/deletewith/:id' , isAdminLogin, async (req, res) => {
+router.get("/deletewith/:id", isAdminLogin, async (req, res) => {
   try {
     let id = req.params.id;
 
@@ -273,10 +377,10 @@ router.get('/deletewith/:id' , isAdminLogin, async (req, res) => {
     console.log(error);
     res.redirect("/admin/");
   }
-})
+});
 
 // approve withdrawal
-router.get('/approvewithdraw/:id' , isAdminLogin, async (req, res) => {
+router.get("/approvewithdraw/:id", isAdminLogin, async (req, res) => {
   try {
     let id = req.params.id;
 
@@ -284,53 +388,52 @@ router.get('/approvewithdraw/:id' , isAdminLogin, async (req, res) => {
       res.redirect("/");
     }
 
-    await Withdraw.updateOne({ _id: id }, 
-        {
-            $set:{
-                status: 1
-            }
-        }
-    )
+    await Withdraw.updateOne(
+      { _id: id },
+      {
+        $set: {
+          status: 1,
+        },
+      }
+    );
 
     res.redirect("/admin/");
   } catch (error) {
     console.log(error);
     res.redirect("/admin/");
   }
-})
+});
 
 // approve deposit
-router.get('/approvedeposit/:id' , isAdminLogin, async (req, res) => {
+router.get("/approvedeposit/:id", isAdminLogin, async (req, res) => {
   try {
     let id = req.params.id;
-    let email = req.query.email
-    let amount = Number(req.query.amount)
+    let email = req.query.email;
+    let amount = Number(req.query.amount);
 
-    let user = await User.findOne({ email })
+    let user = await User.findOne({ email });
 
     if (!id) {
       res.redirect("/");
     }
 
-    
-    await Deposit.updateOne({ _id: id }, 
-        {
-            $set:{
-                status: 1
-            }
-        }
-    )
+    await Deposit.updateOne(
+      { _id: id },
+      {
+        $set: {
+          status: 1,
+        },
+      }
+    );
 
-    user.balance += amount
-    user.save()
+    user.balance += amount;
+    user.save();
 
     res.redirect("/admin/");
   } catch (error) {
     console.log(error);
     res.redirect("/admin/");
   }
-})
-
-
+});
 
 module.exports = router;

@@ -1,4 +1,275 @@
+<% if (session && session.user) { %>
+    <div id="chat-toggle" class="chat-toggle">
+        💬 <span id="unread-indicator" class="unread-dot hiddens"></span>
+    </div>
 
-<script src="https://s3.tradingview.com/tv.js"></script>
-</body>
-</html>
+    <div id="chat-box" class="chat-box">
+        <div class="chat-header flex items-center justify-between">
+            <span>Support</span>
+            <button id="refresh-chat" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2">Refresh</button>
+            <button id="close-chat">×</button>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <form id="chat-form">
+            <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off" required />
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    <style>
+        .unread-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: red;
+            border-radius: 50%;
+            margin-left: 6px;
+        }
+
+        .hiddens {
+            display: none;
+        }
+
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #007bff;
+            color: white;
+            padding: 12px 14px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .chat-box {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            max-height: 400px;
+            background: white;
+            color: black;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        .chat-box.hidden {
+            display: none;
+        }
+
+        .chat-header {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 14px;
+            color: black;
+        }
+
+        .chat-messages p {
+            margin: 5px 0;
+        }
+
+        #chat-form {
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+
+        #chat-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 0;
+        }
+
+        #chat-form button {
+            padding: 10px;
+            background: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .chat-bubble {
+            max-width: 70%;
+            padding: 10px 14px;
+            margin: 8px 0;
+            border-radius: 16px;
+            clear: both;
+            word-wrap: break-word;
+        }
+
+        .chat-left {
+            background: #f0f0f0;
+            float: left;
+            text-align: left;
+        }
+
+        .chat-right {
+            background: #007bff;
+            color: white;
+            float: right;
+            text-align: right;
+        }
+
+        .chat-messages::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+    </style>
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <audio id="notify-sound" src="/notificationsound/mixkit-bell-notification-933.wav" preload="auto"></audio>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const socket = io();
+            const sender = "<%= session.user.id %>";
+            const adminId = "admin";
+            const chatForm = document.getElementById("chat-form");
+            const chatInput = document.getElementById("chat-input");
+            const chatMessages = document.getElementById("chat-messages");
+            const chatBox = document.getElementById("chat-box");
+            const chatToggle = document.getElementById("chat-toggle");
+            const closeChat = document.getElementById("close-chat");
+            const unreadIndicator = document.getElementById("unread-indicator");
+            const refreshChatBtn = document.getElementById('refresh-chat');
+
+            let chatOpen = false;
+            let hasUnread = localStorage.getItem("chatHasUnread") === "true";
+
+            function updateUnreadIndicator() {
+                if (!chatOpen && hasUnread) {
+                    unreadIndicator.classList.remove("hiddens");
+                } else {
+                    unreadIndicator.classList.add("hiddens");
+                }
+            }
+
+            socket.emit("register", sender);
+
+            fetch("/chat-history", { credentials: "include" })
+                .then(res => res.json())
+                .then(data => {
+                    if (!Array.isArray(data)) {
+                        console.error("Expected array but got:", data);
+                        return;
+                    }
+
+                    data.forEach(msg => {
+                        const isMe = msg.sender === sender;
+                        appendMessage(isMe ? "You" : "Admin", msg.message, isMe);
+                    });
+
+                    const lastMsg = data[data.length - 1];
+                    if (!chatOpen && lastMsg && lastMsg.sender !== sender) {
+                        hasUnread = true;
+                        localStorage.setItem("chatHasUnread", "true");
+                    } else {
+                        hasUnread = false;
+                        localStorage.setItem("chatHasUnread", "false");
+                    }
+                    updateUnreadIndicator();
+                });
+
+            chatToggle.addEventListener("click", () => {
+                chatBox.classList.toggle("hidden");
+                chatOpen = !chatOpen;
+                if (chatOpen) {
+                    hasUnread = false;
+                    localStorage.setItem("chatHasUnread", "false");
+                    updateUnreadIndicator();
+                }
+            });
+
+            closeChat.addEventListener("click", () => {
+                chatBox.classList.add("hidden");
+                chatOpen = false;
+                updateUnreadIndicator();
+            });
+
+            chatForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                socket.emit("sendMessage", { sender, to: adminId, message });
+               
+                chatInput.value = "";
+            });
+
+            socket.on("receiveMessage", (msg) => {
+                const notifySound = document.getElementById("notify-sound");
+                const isMine = msg.sender === sender;
+                const chatBox = document.getElementById("chat-box");
+                appendMessage(isMine ? "You" : "Admin", msg.message, isMine);
+                if (!isMine) {
+                    notifySound.play();
+                }
+                if (!chatOpen && !isMine) {
+                    hasUnread = true;
+                    localStorage.setItem("chatHasUnread", "true");
+                    updateUnreadIndicator();
+                }
+                if (chatBox) {
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            });
+
+            function appendMessage(who, msg, isSender) {
+                const p = document.createElement("p");
+                p.className = `chat-bubble ${isSender ? 'chat-right' : 'chat-left'}`;
+                p.innerHTML = `<strong>${who}:</strong> ${msg}`;
+                chatMessages.appendChild(p);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            updateUnreadIndicator();
+
+            refreshChatBtn.addEventListener('click', () => {
+                refreshChat();
+            });
+
+            function refreshChat() {
+                fetch("/chat-history", { credentials: "include" })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!Array.isArray(data)) {
+                            console.error("Expected array but got:", data);
+                            return;
+                        }
+                        chatMessages.innerHTML = '';
+                        data.forEach(msg => {
+                            const isMe = msg.sender === sender;
+                            appendMessage(isMe ? "You" : "Admin", msg.message, isMe);
+                        });
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    });
+            }
+
+            setInterval(() => {
+                if (chatOpen) {
+                    refreshChat();
+                }
+            }, 8000);
+        });
+    </script>
+
+    </body>
+
+    </html>
+    <% } %>

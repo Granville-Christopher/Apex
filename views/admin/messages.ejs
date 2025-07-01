@@ -1,0 +1,160 @@
+<%- include('partials/header', { title: 'Admin Messages' }) %>
+
+  <div class="flex flex-1 pt-16 min-h-[calc(100vh-5rem)] bg-gray-100">
+    <!-- Sidebar -->
+    <aside id="sidebar"
+      class="bg-[#2c3e50] text-white w-72 min-w-[24rem] overflow-y-auto transition-transform duration-300 ease-in-out
+      fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 md:relative md:w-72 md:min-w-[18rem] z-30 pt-16 md:pt-4">
+      <h2 class="text-xl font-semibold p-4 border-b border-gray-700 bg-[#1a252f]">Users</h2>
+      <ul class="divide-y divide-gray-700" id="userList">
+        <% users.forEach(function(user) { %>
+          <li class="p-4 hover:bg-[#34495e] cursor-pointer flex justify-between items-center"
+            data-user-id="<%= user._id %>" data-user-name="<%= user.name %>" data-user-email="<%= user.email %>">
+            <span>
+              <%= user.name %>
+            </span>
+            <span id="unread-<%= user._id %>"
+              class="hidden bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">!</span>
+          </li>
+          <% }) %>
+      </ul>
+
+    </aside>
+
+    <!-- Main messages section -->
+    <main id="messagesSection"
+      class="flex-1 bg-white p-6 overflow-y-auto transition-all duration-300 ease-in-out ml-0 ">
+      <!-- Toggle button for small screens -->
+
+      <button id="toggleSidebarBtn"
+        class="md:hidden fixed mt-12 right-2 top-4  z-40 bg-[#1A2C3E] text-white p-2 rounded-md shadow-md focus:outline-none"
+        aria-label="Toggle Users Sidebar">
+        <p id="toggleSidebarBtn">☰ Messages</p>
+      </button>
+      <h1 class="text-2xl font-bold mb-4">Messages</h1>
+      <div class="messages-content">
+        <p>Select a user to view messages.</p>
+      </div>
+    </main>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <audio id="notify-sound" src="/notificationsound/mixkit-bell-notification-933.wav" preload="auto"></audio>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const socket = io(); 
+      socket.emit("register", "admin");
+
+      let currentUserId = null;
+
+      const toggleBtn = document.getElementById('toggleSidebarBtn');
+      const sidebar = document.getElementById('sidebar');
+      const messagesSection = document.getElementById('messagesSection');
+
+      toggleBtn.addEventListener('click', function () {
+        sidebar.classList.toggle('-translate-x-full');
+        messagesSection.classList.toggle('ml-72');
+      });
+
+      document.addEventListener('click', function (event) {
+        if (window.innerWidth < 768 &&
+          !sidebar.contains(event.target) &&
+          !toggleBtn.contains(event.target) &&
+          !sidebar.classList.contains('-translate-x-full')) {
+          sidebar.classList.add('-translate-x-full');
+          messagesSection.classList.remove('ml-72');
+        }
+      });
+
+      document.querySelectorAll('#sidebar ul li').forEach(item => {
+        item.addEventListener('click', () => {
+          const userId = item.dataset.userId;
+          const userName = item.dataset.userName;
+          const userEmail = item.dataset.userEmail;
+          currentUserId = userId;
+
+          const unreadDot = document.getElementById(`unread-${userId}`);
+          if (unreadDot) unreadDot.classList.add("hidden");
+
+          const messagesContent = messagesSection.querySelector('.messages-content');
+          messagesContent.innerHTML = `
+          <h2 class="text-xl font-semibold mb-4">Messages with ${userName}</h2>
+          <p class="text-sm text-gray-600 mb-3">${userEmail}</p>
+          <div id="chat-box" class="h-96 overflow-y-auto bg-gray-100 p-4 rounded border mb-4"></div>
+          <form id="replyForm" class="flex gap-2 fixed bottom-5  md:ml-72 left-5 right-5 items-center justify-between">
+            <input type="text" id="replyInput" class="flex-1 border rounded px-3 py-2" placeholder="Type a reply..." required>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Send</button>
+          </form>
+        `;
+
+          fetch(`/admin/messages/${userId}`)
+            .then(res => res.json())
+            .then(data => {
+              const chatBox = document.getElementById("chat-box");
+              chatBox.innerHTML = data.map(msg => {
+                const who = msg.sender === "admin" ? "🧑 Admin" : "👤 User";
+                const align = msg.sender === "admin" ? "text-right" : "text-left";
+                return `<p class="${align} mb-2"><strong>${who}:</strong> ${msg.message}</p>`;
+              }).join('');
+            });
+
+          document.getElementById("replyForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const message = document.getElementById("replyInput").value.trim();
+            if (!message) return;
+
+            fetch("/admin/messages/reply", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ to: userId, message }),
+            })
+              .then(res => res.json())
+              .then(res => {
+                if (res.success) {
+                  const chatBox = document.getElementById("chat-box");
+                  const p = document.createElement("p");
+                  p.className = "text-right";
+                  p.innerHTML = `<strong>🧑 Admin:</strong> ${message}`;
+                  chatBox.appendChild(p);
+                  document.getElementById("replyInput").value = "";
+                  chatBox.scrollTop = chatBox.scrollHeight;
+                }
+              });
+          });
+
+          if (window.innerWidth < 768) {
+            sidebar.classList.add('-translate-x-full');
+            messagesSection.classList.remove('ml-72');
+          }
+        });
+      });
+
+      socket.on("receiveMessage", (msg) => {
+        const notifySound = document.getElementById("notify-sound");
+
+        if (currentUserId && (msg.sender === currentUserId || msg.to === currentUserId)) {
+          const chatBox = document.getElementById("chat-box");
+          if (chatBox) {
+            const p = document.createElement("p");
+            const who = msg.sender === "admin" ? "🧑 Admin" : "👤 User";
+            const align = msg.sender === "admin" ? "text-right" : "text-left";
+            p.className = align;
+            p.innerHTML = `<strong>${who}:</strong> ${msg.message}`;
+            chatBox.appendChild(p);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            notifySound.play();
+          }
+        } else {
+          const unreadDot = document.getElementById(`unread-${msg.sender}`);
+          if (unreadDot) {
+            unreadDot.classList.remove("hidden");
+            notifySound.play();
+          }
+        }
+      });
+    });
+  </script>
+
+
+
+  <%- include('partials/footer') %>
