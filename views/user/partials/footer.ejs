@@ -6,7 +6,8 @@
     <div id="chat-box" class="chat-box">
         <div class="chat-header flex items-center justify-between">
             <span>Support</span>
-            <button id="refresh-chat" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2">Refresh</button>
+            <button id="refresh-chat"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2">Refresh</button>
             <button id="close-chat">×</button>
         </div>
         <div class="chat-messages" id="chat-messages"></div>
@@ -148,6 +149,7 @@
             const closeChat = document.getElementById("close-chat");
             const unreadIndicator = document.getElementById("unread-indicator");
             const refreshChatBtn = document.getElementById('refresh-chat');
+            const notifySound = document.getElementById("notify-sound");
 
             let chatOpen = false;
             let hasUnread = localStorage.getItem("chatHasUnread") === "true";
@@ -155,6 +157,7 @@
             function updateUnreadIndicator() {
                 if (!chatOpen && hasUnread) {
                     unreadIndicator.classList.remove("hiddens");
+                    refreshChat();
                 } else {
                     unreadIndicator.classList.add("hiddens");
                 }
@@ -208,7 +211,6 @@
                 if (!message) return;
 
                 socket.emit("sendMessage", { sender, to: adminId, message });
-               
                 chatInput.value = "";
             });
 
@@ -242,6 +244,8 @@
 
             refreshChatBtn.addEventListener('click', () => {
                 refreshChat();
+                notifySound.play();
+
             });
 
             function refreshChat() {
@@ -265,7 +269,7 @@
                 if (chatOpen) {
                     refreshChat();
                 }
-            }, 8000);
+            }, 1000);
         });
     </script>
 
