@@ -32,10 +32,7 @@ const Admin = require("../models/adminmodel/signup");
 
 router.get("/", isLogout, async (req, res) => {
   res.render("user/index", {
-    title: "Apex Meridian - Home",
-    page: "Home",
-    loaded: "Home",
-    title: "Apex Meridian - Home",
+    title: "Apex Meridian copy trading",
     page: "Home",
     loaded: "Home",
   });
