@@ -7,7 +7,7 @@
       fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 md:relative md:w-72 md:min-w-[18rem] z-30 pt-16 md:pt-4">
       <h2 class="text-xl font-semibold p-4 border-b border-gray-700 bg-[#1a252f]">Users</h2>
       <ul class="divide-y divide-gray-700" id="userList">
-        
+
       </ul>
 
     </aside>
@@ -33,7 +33,7 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const socket = io(); 
+      const socket = io();
       socket.emit("register", "admin");
 
       let currentUserId = null;
@@ -139,15 +139,21 @@
             notifySound.play();
           }
         } else {
-          refreshSection()
-          const unreadDot = document.getElementById(`unread-${msg.sender}`);
-          if (unreadDot) {
-            unreadDot.classList.remove("hidden");
-            notifySound.play();
-          }
+          refreshSection().then(() => {
+            setTimeout(() => {
+              const unreadDot = document.getElementById(`unread-${msg.sender}`);
+              if (unreadDot) {
+                unreadDot.classList.remove("hidden");
+                notifySound.play();
+              } else {
+                console.warn(`⚠️ Could not find unread badge for user ID: ${msg.sender}`);
+              }
+            }, 300);
+          }).catch((err) => {
+            console.error("❌ Failed to refresh user list:", err);
+          });
         }
       });
-
 
       // populate the user side bar
       async function refreshSection() {
