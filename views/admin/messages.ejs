@@ -57,70 +57,70 @@
         }
       });
 
-      document.querySelectorAll('#sidebar ul li').forEach(item => {
-        item.addEventListener('click', () => {
-          const userId = item.dataset.userId;
-          const userName = item.dataset.userName;
-          const userEmail = item.dataset.userEmail;
-          currentUserId = userId;
+      document.getElementById("userList").addEventListener("click", function (event) {
+        const item = event.target.closest("li[data-user-id]");
+        if (!item) return; // Not a list item
 
-          const unreadDot = document.getElementById(`unread-${userId}`);
-          if (unreadDot) unreadDot.classList.add("hidden");
+        const userId = item.dataset.userId;
+        const userName = item.dataset.userName;
+        const userEmail = item.dataset.userEmail;
+        currentUserId = userId;
 
-          const messagesContent = messagesSection.querySelector('.messages-content');
-          messagesContent.innerHTML = `
+        const unreadDot = document.getElementById(`unread-${userId}`);
+        if (unreadDot) unreadDot.classList.add("hidden");
+
+        const messagesContent = messagesSection.querySelector('.messages-content');
+        messagesContent.innerHTML = `
           <h2 class="text-xl font-semibold mb-4">Messages with ${userName}</h2>
           <p class="text-sm text-gray-600 mb-3">${userEmail}</p>
           <div id="chat-box" class="h-96 overflow-y-auto bg-gray-100 p-4 rounded border mb-4"></div>
-          <form id="replyForm" class="flex gap-2 fixed bottom-5  md:ml-72 left-5 right-5 items-center justify-between">
+          <form id="replyForm" class="flex gap-2 fixed bottom-5 md:ml-72 left-5 right-5 items-center justify-between">
             <input type="text" id="replyInput" class="flex-1 border rounded px-3 py-2" placeholder="Type a reply..." required>
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Send</button>
           </form>
         `;
 
-          fetch(`/admin/messages/${userId}`)
-            .then(res => res.json())
-            .then(data => {
-              const chatBox = document.getElementById("chat-box");
-              chatBox.innerHTML = data.map(msg => {
-                const who = msg.sender === "admin" ? "🧑 Admin" : "👤 User";
-                const align = msg.sender === "admin" ? "text-right" : "text-left";
-                return `<p class="${align} mb-2"><strong>${who}:</strong> ${msg.message}</p>`;
-              }).join('');
-            });
-
-          document.getElementById("replyForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            const message = document.getElementById("replyInput").value.trim();
-            if (!message) return;
-
-            fetch("/admin/messages/reply", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ to: userId, message }),
-            })
-              .then(res => res.json())
-              .then(res => {
-                if (res.success) {
-                  const chatBox = document.getElementById("chat-box");
-                  const p = document.createElement("p");
-                  p.className = "text-right";
-                  p.innerHTML = `<strong>🧑 Admin:</strong> ${message}`;
-                  chatBox.appendChild(p);
-                  document.getElementById("replyInput").value = "";
-                  chatBox.scrollTop = chatBox.scrollHeight;
-
-                  socket.emit("sendMessage", { sender: 'admin', to: userId, message });
-
-                }
-              });
+        fetch(`/admin/messages/${userId}`)
+          .then(res => res.json())
+          .then(data => {
+            const chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML = data.map(msg => {
+              const who = msg.sender === "admin" ? "🧑 Admin" : "👤 User";
+              const align = msg.sender === "admin" ? "text-right" : "text-left";
+              return `<p class="${align} mb-2"><strong>${who}:</strong> ${msg.message}</p>`;
+            }).join('');
           });
 
-          if (window.innerWidth < 768) {
-            sidebar.classList.add('-translate-x-full');
-            messagesSection.classList.remove('ml-72');
-          }
+        document.getElementById("replyForm").addEventListener("submit", function (e) {
+          e.preventDefault();
+          const message = document.getElementById("replyInput").value.trim();
+          if (!message) return;
+
+          fetch("/admin/messages/reply", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ to: currentUserId, message }),
+          })
+            .then(res => res.json())
+            .then(res => {
+              if (res.success) {
+                const chatBox = document.getElementById("chat-box");
+                const p = document.createElement("p");
+                p.className = "text-right";
+                p.innerHTML = `<strong>🧑 Admin:</strong> ${message}`;
+                chatBox.appendChild(p);
+                document.getElementById("replyInput").value = "";
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                socket.emit("sendMessage", { sender: 'admin', to: currentUserId, message });
+              }
+            });
         });
+
+        if (window.innerWidth < 768) {
+          sidebar.classList.add('-translate-x-full');
+          messagesSection.classList.remove('ml-72');
+        }
       });
 
       socket.on("receiveMessage", (msg) => {
@@ -139,14 +139,13 @@
             notifySound.play();
           }
         } else {
+          refreshSection()
           const unreadDot = document.getElementById(`unread-${msg.sender}`);
           if (unreadDot) {
             unreadDot.classList.remove("hidden");
             notifySound.play();
           }
         }
-
-        refreshSection()
       });
 
 
