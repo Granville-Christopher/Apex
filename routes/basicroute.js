@@ -38,20 +38,27 @@ router.get("/", isLogout, async (req, res) => {
   });
 });
 
+
 router.get("/chat-history", async (req, res) => {
   try {
+    const ADMIN_ID = "admin"
     const userId = req.session.user?.id;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const messages = await Message.find({
-      $or: [{ sender: userId }, { sender: "admin" }],
+      $or: [
+        { sender: userId, to: ADMIN_ID },
+        { sender: ADMIN_ID, to: userId },
+      ],
     }).sort({ timestamp: 1 });
 
     res.json(messages);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Failed to load messages" });
   }
 });
+
 
 router.get("/deposit", isLogin, async (req, res) => {
   const message = req.session.message;

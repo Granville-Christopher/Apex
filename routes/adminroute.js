@@ -20,9 +20,6 @@ const Kyc = require("../models/usermodel/kyc");
 const { upload } = require("../middlewares/uploads");
 const Message = require("../models/usermodel/message");
 const mongoose = require("mongoose");
-const socketServer = require("../index");
-const io = socketServer.io;
-const connectedUsers = socketServer.connectedUsers;
 
 router.get("/", isAdminLogin, async (req, res) => {
   const message = req.session.message;
@@ -55,25 +52,52 @@ router.get("/login", isAdminLogout, async (req, res) => {
 
 router.get("/messages", async (req, res) => {
   try {
-    const uniqueSenders = await Message.aggregate([
-      { $match: { sender: { $ne: "admin" } } },
-      { $group: { _id: "$sender" } },
-    ]);
+    // const uniqueSenders = await Message.aggregate([
+    //   { $match: { sender: { $ne: "admin" } } },
+    //   { $group: { _id: "$sender" } },
+    // ]);
 
-    const senderIds = uniqueSenders
-      .map((u) => u._id)
-      .filter((id) => id && mongoose.Types.ObjectId.isValid(id));
+    // const senderIds = uniqueSenders
+    //   .map((u) => u._id)
+    //   .filter((id) => id && mongoose.Types.ObjectId.isValid(id));
 
-    console.log("Sender IDs:", senderIds);
-
-    const users = await User.find({ _id: { $in: senderIds } });
+    // const users = await User.find({ _id: { $in: senderIds } });
 
     res.render("admin/messages", {
       title: "Apex Meridian - Admin Messages",
       page: "Messages",
       loaded: "Messages",
-      users,
+      // users,
     });
+  } catch (err) {
+    console.error("❌ Failed to load messages:", err);
+    res.status(500).send("Error loading messages");
+  }
+});
+
+router.get("/messagestwo", async (req, res) => {
+  try {
+    const latestSenders = await Message.aggregate([
+      { $match: { sender: { $ne: "admin" } } },
+      {
+        $group: {
+          _id: "$sender",
+          latestTimestamp: { $max: "$timestamp" }
+        }
+      },
+      { $sort: { latestTimestamp: -1 } }
+    ]);
+
+    const senderIds = latestSenders.map((u) => u._id);
+    
+    const users = await User.find({ _id: { $in: senderIds } }).lean();
+
+    const usersMap = new Map(users.map(u => [u._id.toString(), u]));
+    const sortedUsers = senderIds
+      .map(id => usersMap.get(id.toString()))
+      .filter(Boolean);
+
+    res.json(sortedUsers);
   } catch (err) {
     console.error("❌ Failed to load messages:", err);
     res.status(500).send("Error loading messages");
@@ -105,26 +129,7 @@ router.post("/messages/reply", async (req, res) => {
   if (!to || !message) {
     return res.status(400).json({ success: false, message: "Missing fields" });
   }
-
-  try {
-    const newMsg = new Message({
-      sender: "admin",
-      to,
-      message,
-    });
-
-    await newMsg.save();
-
-    const userSocketId = connectedUsers?.[to];
-    if (userSocketId) {
-      io.to(userSocketId).emit("receiveMessage", newMsg);
-    }
-
     res.json({ success: true });
-  } catch (err) {
-    console.error("Error sending admin reply:", err);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
 });
 
 // router.post("/messages/reply", async (req, res) => {

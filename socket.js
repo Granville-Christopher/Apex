@@ -17,12 +17,11 @@ function setupSocket(server) {
     socket.on("sendMessage", async ({ sender, to, message }) => {
       const msg = await new Message({ sender, to, message }).save();
 
-      socket.emit("receiveMessage", msg);
-
       const receiverSocketId = connectedUsers[to];
       if (receiverSocketId) {
         io.to(receiverSocketId).emit("receiveMessage", msg);
       }
+
     });
 
     socket.on("disconnect", () => {
