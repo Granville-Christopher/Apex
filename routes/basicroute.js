@@ -38,10 +38,9 @@ router.get("/", isLogout, async (req, res) => {
   });
 });
 
-
 router.get("/chat-history", async (req, res) => {
   try {
-    const ADMIN_ID = "admin"
+    const ADMIN_ID = "admin";
     const userId = req.session.user?.id;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
@@ -59,11 +58,11 @@ router.get("/chat-history", async (req, res) => {
   }
 });
 
-
 router.get("/deposit", isLogin, async (req, res) => {
   const message = req.session.message;
   req.session.message = null;
-  const wallet = await AdminWallet.aggregate([{ $sample: { size: 1 } }]);
+
+  const wallets = await AdminWallet.find({});
   const user = await User.findOne({ email: req.session.user.email });
 
   res.render("user/deposit", {
@@ -72,7 +71,7 @@ router.get("/deposit", isLogin, async (req, res) => {
     loaded: "deposit",
     message,
     user,
-    wallet: wallet[0],
+    wallets,
   });
 });
 

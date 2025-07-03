@@ -5,6 +5,7 @@ const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const Deposit = require("../models/usermodel/deposit");
 const Wallet = require("../models/usermodel/userwallets");
+const AdminWallet = require("../models/adminmodel/wallet");
 const Withdraw = require("../models/usermodel/withdraw");
 const Trade = require("../models/usermodel/trade");
 const Kyc = require("../models/usermodel/kyc");
@@ -384,32 +385,47 @@ const resetPassword = async (req, res) => {
 // deposit sub
 const depositSub = async (req, res) => {
   try {
+    const { email, amount, selectedWalletId } = req.body;
+
+    if (!selectedWalletId) {
+      req.session.message = "Please select a wallet to deposit into.";
+      return res.redirect("/deposit");
+    }
+
+    const wallet = await AdminWallet.findById(selectedWalletId);
+    if (!wallet) {
+      req.session.message = "Selected wallet not found.";
+      return res.redirect("/deposit");
+    }
+
     let data = await generateUploadURL(req.file);
+
     let info = {
-      email: req.body.email ?? "",
-      amount: Number(req.body.amount) ?? "",
-      network: req.body.network ?? "",
-      waddress: req.body.waddress ?? "",
+      email: email ?? "",
+      amount: Number(amount) ?? 0,
+      network: wallet.network,
+      waddress: wallet.walletAddress,
       subData: data.uploadUrl,
       createddate: new Date().toISOString().slice(0, 10),
     };
 
     const deposit = await new Deposit(info).save();
-    if (deposit !== null) {
-      req.session.message = "deposit request successful";
+
+    if (deposit) {
+      req.session.message = "Deposit request successful";
       res.redirect("/deposit");
     } else {
-      req.session.message = "error making deposit";
+      req.session.message = "Error making deposit";
       res.redirect("/deposit");
     }
   } catch (error) {
     console.log(error);
-    req.session.message = "error completing request";
+    req.session.message = "Error completing request";
     res.redirect("/deposit");
   }
 };
 
-// deposit sub
+// withdraw sub
 const withdrawalSub = async (req, res) => {
   try {
     const { waddress, amount, email } = req.body;

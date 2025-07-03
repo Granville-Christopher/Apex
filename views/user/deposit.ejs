@@ -4,61 +4,107 @@
       <section id="deposit" class="section mt-20">
         <h2 class="text-lg md:text-xl font-semibold text-center md:text-start mb-4">Deposit</h2>
         <div class="bg-gray-800 p-4 rounded shadow space-y-4">
-          <form class="space-y-4" action="/deposit" method="POST" enctype="multipart/form-data">
-            <% if (message) { %>
-              <div class="text-center"><%= message %></div>
-            <% } %>
-            <div>
-              <label class="block text-sm font-medium mb-1">Amount</label>
-              <input type="number" placeholder="Enter amount"
-                class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" name="amount" min="100" required/>
-            </div>
 
-            <input type="hidden" name="email" value="<%= user.email %>" id="">
-       
-            <div>
-              <label class="block text-sm font-medium mb-1">Network</label>
-              <input type="text" value="<%= wallet?.network || '' %>" 
-                class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-gray-400" 
-                name="network" readonly required />
-            </div>
+          <h2 class="text-xl font-semibold mb-4">Select Deposit Wallet</h2>
 
-            <div>
-              <label class="block text-sm font-medium mb-1">Wallet Address</label>
-              <input type="text" value="<%= wallet?.walletAddress || '' %>" 
-                class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-gray-400" 
-                name="waddress" readonly required />
-            </div>
+          <% if (!wallets || wallets.length===0) { %>
+            <p>No wallets available at the moment.</p>
+            <% } else { %>
+              <div class="space-y-4">
+                <% wallets.forEach(function(wallet, index) { %>
+                  <div class="wallet-dropdown border border-gray-700 rounded p-4 bg-gray-800">
+                    <button type="button" class="w-full text-left font-medium text-blue-400 hover:underline"
+                      onclick="toggleDropdown(<%= index %>)" aria-expanded="false"
+                      aria-controls="wallet-details-<%= index %>">
+                      Click to see <%= wallet.walletName %> deposit wallet
+                    </button>
 
-            <div>
-              <label class="block text-sm font-medium mb-1">Wallet QR Code</label>
-              <div class="w-40 h-40 bg-white p-2 rounded">
-                <% if (wallet?.walletQRCode) { %>
-                  <img src="<%= wallet.walletQRCode %>" 
-                    alt="QR Code" class="w-full h-full object-contain" />
-                <% } else { %>
-                  <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-                    No QR Code
+                    <div id="wallet-details-<%= index %>" class="wallet-details mt-3 hidden">
+                      <div>
+                        <label class="block text-sm font-medium mb-1">Network</label>
+                        <input type="text" value="<%= wallet.network %>"
+                          class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-gray-400" readonly />
+                      </div>
+
+                      <div class="mt-2">
+                        <label class="block text-sm font-medium mb-1">Wallet Address</label>
+                        <input type="text" value="<%= wallet.walletAddress %>"
+                          class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-gray-400" readonly />
+                      </div>
+
+                      <div class="mt-2">
+                        <label class="block text-sm font-medium mb-1">Wallet QR Code</label>
+                        <div class="w-40 h-40 bg-white p-2 rounded">
+                          <% if (wallet.walletQRCode) { %>
+                            <img src="<%= wallet.walletQRCode %>" alt="QR Code" class="w-full h-full object-contain" />
+                            <% } else { %>
+                              <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                                No QR Code
+                              </div>
+                              <% } %>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                <% } %>
+                  <% }); %>
               </div>
-            </div>
+              <% } %>
 
-            <div class="bg-gray-800 p-4 rounded shadow">
-              <h3 class="text-xl font-semibold mb-4 text-white">Deposit into wallet above & upload deposit proof</h3>
-              
-                <!-- File Input -->
-                <input type="file" class="block w-full text-sm text-gray-300 mb-3
+                <script>
+                  function toggleDropdown(index) {
+                    const details = document.getElementById(`wallet-details-${index}`);
+                    if (details.classList.contains('hidden')) {
+                      details.classList.remove('hidden');
+                    } else {
+                      details.classList.add('hidden');
+                    }
+                  }
+                </script>
+                <form class="space-y-4" action="/deposit" method="POST" enctype="multipart/form-data">
+                  <% if (message) { %>
+                    <div class="text-center">
+                      <%= message %>
+                    </div>
+                    <% } %>
+                      <div>
+                        <label for="selectedWallet" class="block text-sm font-medium mb-1 text-white">Select Wallet to
+                          Deposit Into</label>
+                        <select id="selectedWallet" name="selectedWalletId" required
+                          class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white mb-4">
+                          <option value="" disabled selected>Select a wallet</option>
+                          <% wallets.forEach(wallet=> { %>
+                            <option value="<%= wallet._id %>">
+                              <%= wallet.walletName %> — <%= wallet.network %>
+                            </option>
+                            <% }) %>
+                        </select>
+
+                        <label class="block text-sm font-medium mb-1">Amount ($)</label>
+                        <input type="number" placeholder="Enter amount"
+                          class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" name="amount"
+                          min="100" required />
+                      </div>
+
+                      <input type="hidden" name="email" value="<%= user.email %>" id="">
+
+                      <div class="bg-gray-800 p-4 rounded shadow">
+                        <h3 class="text-xl font-semibold mb-4 text-white">Deposit into wallet above & upload deposit
+                          proof
+                        </h3>
+
+                        <!-- File Input -->
+                        <input type="file" class="block w-full text-sm text-gray-300 mb-3
                 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0
                 file:text-sm file:font-semibold
-                file:bg-blue-500 file:text-white hover:file:bg-blue-600" name="file" required/>
+                file:bg-blue-500 file:text-white hover:file:bg-blue-600" name="file" required />
 
-                <!-- Help Text -->
-                <p class="text-xs text-gray-400 mt-2">Allowed JPG, GIF, HEIC or PNG. Max size of 2Mb.</p>
-              
-            </div>
-            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded">Deposit</button>
-          </form>
+                        <!-- Help Text -->
+                        <p class="text-xs text-gray-400 mt-2  mb-5">Allowed JPG, GIF, HEIC or PNG. Max size of 2Mb.</p>
+
+                      </div>
+                      <button type="submit"
+                        class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 fixed bottom-0 left-0 right-0 rounded">Deposit</button>
+                </form>
         </div>
       </section>
     </main>
