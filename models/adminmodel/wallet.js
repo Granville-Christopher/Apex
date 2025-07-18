@@ -12,10 +12,10 @@ const adminWalletSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    walletQRCode: {
-        type: String,
-        required: false
-    }
+    // walletQRCode: {
+    //     type: String,
+    //     required: false
+    // }
 })
 
 // Create and export the User model

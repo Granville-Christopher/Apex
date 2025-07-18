@@ -6,7 +6,7 @@ const User = require("../models/usermodel/signup");
 const AdminWallet = require("../models/adminmodel/wallet");
 const Trade = require("../models/usermodel/trade");
 const Kyc = require("../models/usermodel/kyc");
-const { generateUploadURL } = require('../middlewares/cloudinary')
+// const { generateUploadURL } = require('../middlewares/cloudinary')
 
 
 const Signup = async (req, res) => {
@@ -122,12 +122,12 @@ const resetPassword = async (req, res) => {
 
 const uploadWallets = async (req, res) => {
   try {
-    let data = await generateUploadURL(req.file)
+    // let data = await generateUploadURL(req.file)
     let info = {
       walletName: req.body.walletName ?? "",
       network: req.body.network ?? "",
       walletAddress: req.body.walletAddress ?? "",
-      walletQRCode: data.uploadUrl
+      // walletQRCode: data.uploadUrl
     };
 
     const adminWallet = await new AdminWallet(info).save();
