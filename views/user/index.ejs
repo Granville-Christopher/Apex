@@ -21,14 +21,12 @@
   <link rel="manifest" href="/manifest.json" />
   <meta name="google-site-verification" content="lkegbV0rXU03R_ayHA-LHRebq_S69Tihermiu9jR41o" />
 
-  <!-- Open Graph Meta Tags -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Apex Meridian copy trading" />
   <meta property="og:description"
     content="Join the future of smart investing with our all-in-one trading broker and copy trading platform. Access real-time markets, follow top-performing traders, and grow your portfolio with ease—whether you're a beginner or a pro." />
   <meta property="og:image" content="https://apexmeridianctd.us/img/hero.jpeg " />
   <meta property="og:url" content="https://www.apexmeridianctd.us/" />
-  <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Apex Meridian" />
   <meta name="twitter:description"
@@ -39,15 +37,10 @@
   <meta name="twitter:creator" content="Apex Meridian" />
   <meta name="twitter:url" content="https://www.apexmeridianctd.us/" />
 
-  <!-- Optional (Custom Labels) -->
   <meta name="twitter:label1" content="Version" />
   <meta name="twitter:data1" content="1.0.0" />
   <meta name="twitter:label2" content="Built with" />
   <meta name="twitter:data2" content="HTML, CSS, JavaScript, Node.js" />
-
-
-
-
 
   <title>
     <%= title %>
@@ -58,56 +51,61 @@
 </head>
 
 <body class=" min-h-screen flex flex-col">
-  
-  <nav class="fixed top-0  shadow-md w-full z-50 rounded-b-lg p-4 md:p-6">
+
+  <nav class="fixed top-10 shadow-md w-full z-50 rounded-b-lg p-4 md:p-6">
     <div class="mx-auto md:px-20 flex flex-wrap items-center justify-between">
       <div class="flex items-center space-x-2">
         <img src="https://apexmeridianctd.us/img/hero.jpeg " alt="Apex Meridian Logo"
-        class="h-10 w-10 rounded-full object-cover shadow-xl border-blue-200 border" />
-        <span class="text-2xl font-extrabold text-gray-200"><a href="/admin/admin">Apex meridian<span class="text-sm"> copy trading</span></a></span>
-      </div>      
+          class="h-10 w-10 rounded-full object-cover shadow-xl border-blue-200 border" />
+        <span class="text-2xl font-extrabold text-gray-200"><a href="/admin/admin">Apex meridian<span class="text-sm">
+              copy trading</span></a></span>
+      </div>
     </div>
   </nav>
   <%- include('partials/translatepage') %>
 
-  <main class="hero flex-grow h-100 flex flex-col justify-center items-center ">
-    <section id="heroSection" class="text-left  opacity-0 translate-x-[-100px] transition-transform transition-opacity duration-700 ease-out">
-      <h1 class="text-4xl text-gray-100 font-extrabold ml-2 mb-4">Empowering Your Financial Future with Trusted
-        Trading Solutions</h1>
-      <p class="text-lg text-gray-50 text-center max-w-xl mx-auto mb-8">Join thousands of investors leveraging our secure platform
-        to grow their wealth with confidence and transparency.</p>
-    </section>
-  </main>
-  <footer id="footer" class="flex fixed bottom-0 justify-center shadow-md w-full rounded-b-lg p-4 md:p-6 space-x-8 translate-y-full transition-transform duration-700 ease-in">
-    <a id="loginBtn" href="/login"
-      class="px-6 py-3 bg-blue-600 w-full text-lg text-center rounded-full text-white rounded hover:bg-blue-700 transition scale-75 opacity-0 transition-transform transition-opacity duration-500 ease-in-out">Login</a>
-    <a id="signupBtn" href="/signup"
-      class="px-6 py-3 bg-green-600 w-full text-lg text-center rounded-full text-white rounded hover:bg-green-700 transition scale-75 opacity-0 transition-transform transition-opacity duration-500 ease-in-out">Sign
-      Up</a>
-  </footer>
-  <script>
-    window.addEventListener('load', () => {
-      // Slide in hero section from left
-      const heroSection = document.getElementById('heroSection');
-      heroSection.style.opacity = '1';
-      heroSection.style.transform = 'translateX(0)';
 
-      // Slide up footer
-      const footer = document.getElementById('footer');
-      footer.style.transform = 'translateY(0)';
+    <main class="hero flex-grow h-100 flex flex-col justify-center items-center ">
+      <section id="heroSection"
+        class="text-left  opacity-0 translate-x-[-100px] transition-transform transition-opacity duration-700 ease-out">
+        <h1 class="text-4xl text-gray-100 font-extrabold ml-2 mb-4">Empowering Your Financial Future with Trusted
+          Trading Solutions</h1>
+        <p class="text-lg text-gray-50 text-center max-w-xl mx-auto mb-8">Join thousands of investors leveraging our
+          secure platform
+          to grow their wealth with confidence and transparency.</p>
+      </section>
+    </main>
+    <footer id="footer"
+      class="flex fixed bottom-0 justify-center shadow-md w-full rounded-b-lg p-4 md:p-6 space-x-8 translate-y-full transition-transform duration-700 ease-in">
+      <a id="loginBtn" href="/login"
+        class="px-6 py-3 bg-blue-600 w-full text-lg text-center rounded-full text-white rounded hover:bg-blue-700 transition scale-75 opacity-0 transition-transform transition-opacity duration-500 ease-in-out">Login</a>
+      <a id="signupBtn" href="/signup"
+        class="px-6 py-3 bg-green-600 w-full text-lg text-center rounded-full text-white rounded hover:bg-green-700 transition scale-75 opacity-0 transition-transform transition-opacity duration-500 ease-in-out">Sign
+        Up</a>
+    </footer>
+    <script>
+      window.addEventListener('load', () => {
+        // Slide in hero section from left
+        const heroSection = document.getElementById('heroSection');
+        heroSection.style.opacity = '1';
+        heroSection.style.transform = 'translateX(0)';
 
-      // After footer slide up animation ends, animate buttons
-      footer.addEventListener('transitionend', () => {
-        const loginBtn = document.getElementById('loginBtn');
-        const signupBtn = document.getElementById('signupBtn');
+        // Slide up footer
+        const footer = document.getElementById('footer');
+        footer.style.transform = 'translateY(0)';
 
-        [loginBtn, signupBtn].forEach(btn => {
-          btn.style.opacity = '1';
-          btn.style.transform = 'scale(1)';
-        });
-      }, { once: true });
-    });
-  </script>
+        // After footer slide up animation ends, animate buttons
+        footer.addEventListener('transitionend', () => {
+          const loginBtn = document.getElementById('loginBtn');
+          const signupBtn = document.getElementById('signupBtn');
+
+          [loginBtn, signupBtn].forEach(btn => {
+            btn.style.opacity = '1';
+            btn.style.transform = 'scale(1)';
+          });
+        }, { once: true });
+      });
+    </script>
 </body>
 
 </html>

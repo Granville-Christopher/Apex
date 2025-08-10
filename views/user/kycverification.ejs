@@ -1,45 +1,47 @@
 <%- include('partials/header') %>
-<%- include('partials/translatepage') %>
 
-<section class="md:overflow-hidden relative bg-white min-h-screen flex items-center justify-center">
-    <div class="w-full max-w-md mx-auto bg-white rounded-3xl p-8 md:p-12 mt-16">
-        <div class="flex flex-col items-center mb-8">
-            <img src="https://placehold.co/40x40/fff/3B82F6?text=AM" alt="Apex meridian"
-                class="h-10 w-10 rounded-full object-cover shadow-xl border-blue-200 border">
-            <h1 class="text-lg md:text-2xl font-extrabold text-gray-900">KYC Verification</h1>
+
+    <section class="md:overflow-hidden relative bg-white min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto bg-white rounded-3xl p-8 md:p-12 mt-16">
+            <div class="flex flex-col items-center mb-8">
+                <img src="https://placehold.co/40x40/fff/3B82F6?text=AM" alt="Apex meridian"
+                    class="h-10 w-10 rounded-full object-cover shadow-xl border-blue-200 border">
+                <h1 class="text-lg md:text-2xl font-extrabold text-gray-900">KYC Verification</h1>
+            </div>
+            <p class="text-gray-700 mb-6 text-center">
+                To comply with regulatory requirements and ensure the security of your account, please complete the
+                Know Your Customer (KYC) verification process by submitting valid identification documents. This helps
+                us
+                verify your identity and protect your account from unauthorized access.
+            </p>
+            <form id="kycVerificationForm" class="space-y-6" enctype="multipart/form-data">
+                <div>
+                    <label for="verificationType" class="block text-gray-700 font-semibold mb-2">Verification
+                        Type</label>
+                    <select id="verificationType" name="verificationType" required
+                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-200">
+                        <option value="" disabled selected>Select verification type</option>
+                        <option value="id_card">ID Card</option>
+                        <option value="drivers_license">Driver's License</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="cardFront" class="block text-gray-700 font-semibold mb-2">Card Front Image</label>
+                    <input type="file" id="cardFront" name="cardFront" accept="image/*" required
+                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-200" />
+                </div>
+                <div>
+                    <label for="cardBack" class="block text-gray-700 font-semibold mb-2">Card Back Image</label>
+                    <input type="file" id="cardBack" name="cardBack" accept="image/*" required
+                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-200" />
+                </div>
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">
+                    Submit
+                </button>
+            </form>
         </div>
-        <p class="text-gray-700 mb-6 text-center">
-            To comply with regulatory requirements and ensure the security of your account, please complete the
-            Know Your Customer (KYC) verification process by submitting valid identification documents. This helps us
-            verify your identity and protect your account from unauthorized access.
-        </p>
-        <form id="kycVerificationForm" class="space-y-6" enctype="multipart/form-data">
-            <div>
-                <label for="verificationType" class="block text-gray-700 font-semibold mb-2">Verification Type</label>
-                <select id="verificationType" name="verificationType" required
-                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-200">
-                    <option value="" disabled selected>Select verification type</option>
-                    <option value="id_card">ID Card</option>
-                    <option value="drivers_license">Driver's License</option>
-                </select>
-            </div>
-            <div>
-                <label for="cardFront" class="block text-gray-700 font-semibold mb-2">Card Front Image</label>
-                <input type="file" id="cardFront" name="cardFront" accept="image/*" required
-                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-200" />
-            </div>
-            <div>
-                <label for="cardBack" class="block text-gray-700 font-semibold mb-2">Card Back Image</label>
-                <input type="file" id="cardBack" name="cardBack" accept="image/*" required
-                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-200" />
-            </div>
-            <button type="submit"
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">
-                Submit
-            </button>
-        </form>
-    </div>
-</section>
-<script src="/js/kyc.js"></script>
-<script src="/js/alert.js"></script>
-<%- include('partials/footer') %>
+    </section>
+    <script src="/js/kyc.js"></script>
+    <script src="/js/alert.js"></script>
+    <%- include('partials/footer') %>

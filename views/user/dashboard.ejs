@@ -1,163 +1,163 @@
 <%- include('partials/dashboardhead') %>
-  <%- include('partials/translatepage') %>
 
-    <!-- Main Page Content -->
-    <main class=" md:max-w-7xl md:ml-64 md:px-2">
-      <main class="space-y-10 md:mt-4">
-        <!-- Dashboard Section -->
-        <section id="dashboard" class="section active pt-40 ">
-          <!-- TradingView Widget BEGIN -->
-          <div class="tradingview-widget-container w-full bg-gray-800">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript"
-              src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-                {
-                  "symbols": [
-                    {
-                      "proName": "FOREXCOM:SPXUSD",
-                      "title": "S&P 500 Index"
-                    },
-                    {
-                      "proName": "BITSTAMP:BTCUSD",
-                      "title": "Bitcoin"
-                    },
-                    {
-                      "proName": "TRADENATION:SOLANA",
-                      "title": "Solana"
-                    },
-                    {
-                      "proName": "BITSTAMP:ETHUSD",
-                      "title": "Ethereum"
-                    },
-                    {
-                      "proName": "OANDA:XAUUSD",
-                      "title": "Gold"
-                    },
-                    {
-                      "proName": "SPARKS:SILVER",
-                      "title": "Silver"
-                    },
-                    {
-                      "proName": "TVC:USOIL",
-                      "title": "Crude"
-                    },
-                    {
-                      "proName": "VANTAGE:GAS",
-                      "title": "Gas"
-                    },
-                    {
-                      "proName": "CAPITALCOM:GASOLINE",
-                      "title": "Gasoline"
-                    },
-                    {
-                      "proName": "ACTIVTRADES:SUGARN2025",
-                      "title": "Sugar"
-                    }
-                  ],
-                    "colorTheme": "dark",
-                      "locale": "en",
-                        "largeChartUrl": "",
-                          "isTransparent": true,
-                            "showSymbolLogo": true,
-                              "displayMode": "adaptive"
-                }
-              </script>
-          </div>
-          <!-- TradingView Widget END -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 ">
-            <!-- Portfolio Summary -->
-            <div class="bg-gray-800 p-4 rounded shadow col-span-2">
-              <h2 class="text-xl font-bold mb-2">Portfolio Summary</h2>
-              <div class="flex justify-between">
-                <p class="text-sm text-gray-400">Total Balance:</p>
-                <p class="text-2xl text-gray-400"> $<%= parseFloat(user.balance).toFixed(2) %>
-                </p>
-              </div>
-              <p class="text-sm text-green-500">+5.72% this month</p>
-              <div class="h-64 mt-4 bg-gray-700 rounded flex items-center justify-center text-gray-400">
-                <canvas id="portfolioPieChart"></canvas>
-              </div>
+
+  <!-- Main Page Content -->
+  <main class=" md:max-w-7xl md:ml-64 md:px-2">
+    <main class="space-y-10 md:mt-4">
+      <!-- Dashboard Section -->
+      <section id="dashboard" class="section active pt-40 ">
+        <!-- TradingView Widget BEGIN -->
+        <div class="tradingview-widget-container w-full bg-gray-800">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js"
+            async>
+              {
+                "symbols": [
+                  {
+                    "proName": "FOREXCOM:SPXUSD",
+                    "title": "S&P 500 Index"
+                  },
+                  {
+                    "proName": "BITSTAMP:BTCUSD",
+                    "title": "Bitcoin"
+                  },
+                  {
+                    "proName": "TRADENATION:SOLANA",
+                    "title": "Solana"
+                  },
+                  {
+                    "proName": "BITSTAMP:ETHUSD",
+                    "title": "Ethereum"
+                  },
+                  {
+                    "proName": "OANDA:XAUUSD",
+                    "title": "Gold"
+                  },
+                  {
+                    "proName": "SPARKS:SILVER",
+                    "title": "Silver"
+                  },
+                  {
+                    "proName": "TVC:USOIL",
+                    "title": "Crude"
+                  },
+                  {
+                    "proName": "VANTAGE:GAS",
+                    "title": "Gas"
+                  },
+                  {
+                    "proName": "CAPITALCOM:GASOLINE",
+                    "title": "Gasoline"
+                  },
+                  {
+                    "proName": "ACTIVTRADES:SUGARN2025",
+                    "title": "Sugar"
+                  }
+                ],
+                  "colorTheme": "dark",
+                    "locale": "en",
+                      "largeChartUrl": "",
+                        "isTransparent": true,
+                          "showSymbolLogo": true,
+                            "displayMode": "adaptive"
+              }
+            </script>
+        </div>
+        <!-- TradingView Widget END -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 ">
+          <!-- Portfolio Summary -->
+          <div class="bg-gray-800 p-4 rounded shadow col-span-2">
+            <h2 class="text-xl font-bold mb-2">Portfolio Summary</h2>
+            <div class="flex justify-between">
+              <p class="text-sm text-gray-400">Total Balance:</p>
+              <p class="text-2xl text-gray-400"> $<%= parseFloat(user.balance).toFixed(2) %>
+              </p>
             </div>
-            <!-- Watchlist -->
-            <div class="bg-gray-800 p-4 rounded shadow">
-              <h2 class="text-xl font-bold mb-2">Watchlist</h2>
-              <ul class="space-y-2">
-                <li class="flex justify-between">
-                  <span>BTC/USD</span><span class="text-green-500"><span id="btc"></span></span>
-                </li>
-                <li class="flex justify-between">
-                  <span>ETH/USD</span><span class="text-red-500"><span id="eth"></span></span>
-                </li>
-                <li class="flex justify-between">
-                  <span>SOL/USD</span><span class="text-green-500"><span id="sol"></span></span>
-                </li>
-              </ul>
+            <p class="text-sm text-green-500">+5.72% this month</p>
+            <div class="h-64 mt-4 bg-gray-700 rounded flex items-center justify-center text-gray-400">
+              <canvas id="portfolioPieChart"></canvas>
             </div>
           </div>
-          <!-- Market News -->
-          <div class="bg-gray-800 mt-6 p-4 rounded shadow">
-            <h2 class="text-xl font-bold mb-2">Latest Market News</h2>
-            <ul class="list-disc pl-5 text-sm text-gray-300">
-              <li>Bitcoin hits new all-time high amidst ETF approval rumors.</li>
-              <li>US Fed signals no further rate hikes in 2025.</li>
-              <li>Gold rallies as inflation expectations increase.</li>
+          <!-- Watchlist -->
+          <div class="bg-gray-800 p-4 rounded shadow">
+            <h2 class="text-xl font-bold mb-2">Watchlist</h2>
+            <ul class="space-y-2">
+              <li class="flex justify-between">
+                <span>BTC/USD</span><span class="text-green-500"><span id="btc"></span></span>
+              </li>
+              <li class="flex justify-between">
+                <span>ETH/USD</span><span class="text-red-500"><span id="eth"></span></span>
+              </li>
+              <li class="flex justify-between">
+                <span>SOL/USD</span><span class="text-green-500"><span id="sol"></span></span>
+              </li>
             </ul>
           </div>
-        </section>
-      </main>
+        </div>
+        <!-- Market News -->
+        <div class="bg-gray-800 mt-6 p-4 rounded shadow">
+          <h2 class="text-xl font-bold mb-2">Latest Market News</h2>
+          <ul class="list-disc pl-5 text-sm text-gray-300">
+            <li>Bitcoin hits new all-time high amidst ETF approval rumors.</li>
+            <li>US Fed signals no further rate hikes in 2025.</li>
+            <li>Gold rallies as inflation expectations increase.</li>
+          </ul>
+        </div>
+      </section>
     </main>
-    <script src="/js/userdashboard.js"></script>
-    <script>
-      const ctx = document.getElementById("portfolioPieChart").getContext("2d");
-      const portfolioLineChart = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: ["Profits", "Loss", "Deposits", "Withdrawal"],
-          datasets: [
-            {
-              label: "Portfolio Overview",
-              data: [Number(<%= profits %>), Number(<%= loss %>), Number(<%= deposit %>), Number(<%= withdrawal %>)],
-              borderColor: "rgba(75, 192, 192, 1)",
-              backgroundColor: "rgba(75, 192, 192, 0.2)",
-              tension: 0.4,
-              fill: true,
-              pointBackgroundColor: "white",
-              pointBorderColor: "rgba(75, 192, 192, 1)",
-            },
-          ],
-        },
-        options: {
-          scales: {
-            x: {
-              ticks: { color: "white" },
-              grid: { color: "rgba(255,255,255,0.1)" },
-            },
-            y: {
-              ticks: { color: "white" },
-              grid: { color: "rgba(255,255,255,0.1)" },
-            },
+  </main>
+  <script src="/js/userdashboard.js"></script>
+  <script>
+    const ctx = document.getElementById("portfolioPieChart").getContext("2d");
+    const portfolioLineChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: ["Profits", "Loss", "Deposits", "Withdrawal"],
+        datasets: [
+          {
+            label: "Portfolio Overview",
+            data: [Number(<%= profits %>), Number(<%= loss %>), Number(<%= deposit %>), Number(<%= withdrawal %>)],
+            borderColor: "rgba(75, 192, 192, 1)",
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: "white",
+            pointBorderColor: "rgba(75, 192, 192, 1)",
           },
-          plugins: {
-            legend: {
-              labels: {
-                color: "white",
-              },
-            },
+        ],
+      },
+      options: {
+        scales: {
+          x: {
+            ticks: { color: "white" },
+            grid: { color: "rgba(255,255,255,0.1)" },
+          },
+          y: {
+            ticks: { color: "white" },
+            grid: { color: "rgba(255,255,255,0.1)" },
           },
         },
-      });
+        plugins: {
+          legend: {
+            labels: {
+              color: "white",
+            },
+          },
+        },
+      },
+    });
 
-    </script>
-    <script>
-      async function fetchRates() {
-        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd");
-        const data = await res.json();
+  </script>
+  <script>
+    async function fetchRates() {
+      const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd");
+      const data = await res.json();
 
-        document.getElementById("btc").textContent = `$${data.bitcoin.usd.toLocaleString()}`;
-        document.getElementById("eth").textContent = `$${data.ethereum.usd.toLocaleString()}`;
-        document.getElementById("sol").textContent = `$${data.solana.usd.toLocaleString()}`;
-      }
+      document.getElementById("btc").textContent = `$${data.bitcoin.usd.toLocaleString()}`;
+      document.getElementById("eth").textContent = `$${data.ethereum.usd.toLocaleString()}`;
+      document.getElementById("sol").textContent = `$${data.solana.usd.toLocaleString()}`;
+    }
 
-      fetchRates();
-    </script>
-    <%- include('partials/footer') %>
+    fetchRates();
+  </script>
+  <%- include('partials/footer') %>

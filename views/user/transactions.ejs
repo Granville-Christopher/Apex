@@ -1,12 +1,13 @@
 <%- include('partials/dashboardhead') %>
-<%- include('partials/translatepage') %>
+
 
   <script src="/js/userdashboard.js"></script>
   <main class="md:max-w-7xl md:ml-64 md:px-2">
     <main class="space-y-10">
       <section id="transactions" class="section">
         <!-- Heading -->
-        <h3 class="text-lg md:text-xl md:text-start pb-2 pt-4 fixed bg-gray-800 md:bg-gray-900 w-full text-center font-semibold mb-2">
+        <h3
+          class="text-lg md:text-xl md:text-start pb-2 pt-4 fixed bg-gray-800 md:bg-gray-900 w-full text-center font-semibold mb-2">
           Transactions
         </h3>
 
@@ -25,25 +26,33 @@
             </thead>
             <tbody class="text-gray-200">
               <% if(transactions){ %>
-                <% transactions.forEach((txn, index) => { %>
+                <% transactions.forEach((txn, index)=> { %>
                   <tr>
-                    <td class="py-2 px-4 whitespace-nowrap"><%= index + 1 %></td>
-                    <td class="py-2 px-4 whitespace-nowrap"><%= txn.type %></td>
-                    <td class="py-2 px-4 whitespace-nowrap"><%= txn.date %></td>
-                    <td class="py-2 px-4 whitespace-nowrap">$<%= txn.amount %></td>
-                    <td class="py-2 px-4 whitespace-nowrap <%= txn.status === 1 ? 'text-green-500' : 'text-yellow-500' %>">
-                      <%= txn.status === 1 ? 'Completed' : 'Pending' %>
+                    <td class="py-2 px-4 whitespace-nowrap">
+                      <%= index + 1 %>
+                    </td>
+                    <td class="py-2 px-4 whitespace-nowrap">
+                      <%= txn.type %>
+                    </td>
+                    <td class="py-2 px-4 whitespace-nowrap">
+                      <%= txn.date %>
+                    </td>
+                    <td class="py-2 px-4 whitespace-nowrap">$<%= txn.amount %>
+                    </td>
+                    <td
+                      class="py-2 px-4 whitespace-nowrap <%= txn.status === 1 ? 'text-green-500' : 'text-yellow-500' %>">
+                      <%= txn.status===1 ? 'Completed' : 'Pending' %>
                     </td>
                     <!-- <td class="py-2 px-4 whitespace-nowrap">
                       <a href="/deletetxn/<%= txn.id %>?type=<%= txn.type %>" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</a>
                     </td> -->
                   </tr>
-                <% }) %>
-              <% }else{ %>
-                  <tr>
-                    <td>no transactions yet...</td>
-                  </tr>
-              <% } %>
+                  <% }) %>
+                    <% }else{ %>
+                      <tr>
+                        <td>no transactions yet...</td>
+                      </tr>
+                      <% } %>
             </tbody>
           </table>
         </div>
@@ -51,21 +60,31 @@
         <!-- CARD VIEW (Mobile only) -->
         <div class="sm:hidden space-y-1 pt-12 mt-16">
           <% if(transactions){ %>
-                <% transactions.forEach((txn, index) => { %>
+            <% transactions.forEach((txn, index)=> { %>
+              <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
+                <p><strong>SN:</strong>
+                  <%= index + 1 %>
+                </p>
+                <p><strong>Transaction Type:</strong>
+                  <%= txn.type %>
+                </p>
+                <p><strong>Date:</strong>
+                  <%= txn.date %>
+                </p>
+                <p><strong>Amount:</strong> $<%= txn.amount %>
+                </p>
+                <p><strong>Status:</strong> <span
+                    class="<%= txn.status === 1 ? 'text-green-500' : 'text-yellow-500' %>">
+                    <%= txn.status===1 ? 'Completed' : 'Pending' %>
+                  </span></p>
+                <!-- <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button> -->
+              </div>
+              <% }) %>
+                <% }else{ %>
                   <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
-                    <p><strong>SN:</strong> <%= index + 1 %></p>
-                    <p><strong>Transaction Type:</strong> <%= txn.type %></p>
-                    <p><strong>Date:</strong> <%= txn.date %></p>
-                    <p><strong>Amount:</strong> $<%= txn.amount %></p>
-                    <p><strong>Status:</strong> <span class="<%= txn.status === 1 ? 'text-green-500' : 'text-yellow-500' %>"><%= txn.status === 1 ? 'Completed' : 'Pending' %></span></p>
-                    <!-- <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button> -->
+                    <p>no transactions yet...</p>
+                    <% } %>
                   </div>
-          <% }) %>
-            <% }else{ %>
-                <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
-                  <p>no transactions yet...</p>
-            <% } %>
-        </div>
       </section>
 
     </main>

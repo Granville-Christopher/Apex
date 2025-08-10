@@ -1,11 +1,12 @@
 <%- include('partials/dashboardhead') %>
-<%- include('partials/translatepage') %>
+
 
   <script src="/js/userdashboard.js"></script>
   <main class="md:max-w-7xl md:ml-64 md:px-2">
     <main class="pt-20">
       <!-- Current Trades Heading -->
-      <h3 class="text-lg md:text-xl md:text-start text-center font-semibold fixed w-full bg-gray-900 mb-2">Current Trades</h3>
+      <h3 class="text-lg md:text-xl md:text-start text-center font-semibold fixed w-full bg-gray-900 mb-2">Current
+        Trades</h3>
 
       <!-- TABLE VIEW (Desktop & Tablet) -->
       <div class="overflow-x-auto w-full hidden sm:block mt-8">
@@ -21,33 +22,43 @@
             </tr>
           </thead>
           <tbody class="text-gray-200">
-          <% if (!trades || trades.length===0) { %>
-            <tr>
-              <td class="py-2 px-4 whitespace-nowrap">no trade available now</td>
-            </tr>
-          <% } else { %>
-              <% trades.forEach(function(trade, index) { %>
-                <tr>
-                  <td class="py-2 px-4 whitespace-nowrap"><%= index + 1 %></td>
-                  <td class="py-2 px-4 whitespace-nowrap"><%= trade.createddate %></td>
-                  <td class="py-2 px-4 whitespace-nowrap"><%= trade.marketSelect %></td>
-                  <td class="py-2 px-4 whitespace-nowrap"><%= trade.tradeType %></td>
-                  
-                  <% if (!trade.outcome || trade.outcome == '') { %>
-                    <td class="py-2 px-4 whitespace-nowrap text-yellow-500">Pending</td>
-                  <% }else{ %>
-                    <td class="py-2 px-4 whitespace-nowrap"><%= trade.outcome %></td>
-                  <% } %>
-                  
+            <% if (!trades || trades.length===0) { %>
+              <tr>
+                <td class="py-2 px-4 whitespace-nowrap">no trade available now</td>
+              </tr>
+              <% } else { %>
+                <% trades.forEach(function(trade, index) { %>
+                  <tr>
+                    <td class="py-2 px-4 whitespace-nowrap">
+                      <%= index + 1 %>
+                    </td>
+                    <td class="py-2 px-4 whitespace-nowrap">
+                      <%= trade.createddate %>
+                    </td>
+                    <td class="py-2 px-4 whitespace-nowrap">
+                      <%= trade.marketSelect %>
+                    </td>
+                    <td class="py-2 px-4 whitespace-nowrap">
+                      <%= trade.tradeType %>
+                    </td>
 
-                  <% if (trade.status == 'Open') { %>
-                    <td class="py-2 px-4 whitespace-nowrap text-green-500">Open</td>
-                  <% }else{ %>
-                    <td class="py-2 px-4 whitespace-nowrap text-red-500">Closed</td>
-                  <% } %>
-                </tr>
-              <% }); %>
-          <% } %>
+                    <% if (!trade.outcome || trade.outcome=='' ) { %>
+                      <td class="py-2 px-4 whitespace-nowrap text-yellow-500">Pending</td>
+                      <% }else{ %>
+                        <td class="py-2 px-4 whitespace-nowrap">
+                          <%= trade.outcome %>
+                        </td>
+                        <% } %>
+
+
+                          <% if (trade.status=='Open' ) { %>
+                            <td class="py-2 px-4 whitespace-nowrap text-green-500">Open</td>
+                            <% }else{ %>
+                              <td class="py-2 px-4 whitespace-nowrap text-red-500">Closed</td>
+                              <% } %>
+                  </tr>
+                  <% }); %>
+                    <% } %>
           </tbody>
         </table>
       </div>
@@ -58,29 +69,39 @@
           <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
             <p><strong>ID:</strong> #001</p>
           </div>
-        <% } else { %>
+          <% } else { %>
             <% trades.forEach(function(trade, index) { %>
-        
+
               <div class="bg-gray-700 p-4 rounded shadow text-sm text-gray-200">
-                <p><strong>ID:</strong> <%= index + 1 %></p>
-                <p><strong>Date:</strong> <%= trade.createddate %></p>
-                <p><strong>Asset:</strong> <%= trade.marketSelect %></p>
-                <p><strong>Trade Type:</strong> <%= trade.tradeType %></p>
+                <p><strong>ID:</strong>
+                  <%= index + 1 %>
+                </p>
+                <p><strong>Date:</strong>
+                  <%= trade.createddate %>
+                </p>
+                <p><strong>Asset:</strong>
+                  <%= trade.marketSelect %>
+                </p>
+                <p><strong>Trade Type:</strong>
+                  <%= trade.tradeType %>
+                </p>
 
-                <% if (!trade.outcome || trade.outcome == '') { %>
+                <% if (!trade.outcome || trade.outcome=='' ) { %>
                   <p><strong>Outcome:</strong> <span class="text-yellow-500">Pending</span></p>
-                <% }else{ %>                  
-                  <p><strong>Outcome:</strong> <%= trade.outcome %></p>
-                <% } %>
+                  <% }else{ %>
+                    <p><strong>Outcome:</strong>
+                      <%= trade.outcome %>
+                    </p>
+                    <% } %>
 
-                <% if (trade.status == 'Open') { %>
-                  <p><strong>Status:</strong> <span class="text-green-500">Open</span></p>
-                <% }else{ %>
-                  <p><strong>Status:</strong> <span class="text-red-500">Close</span></p>
-                <% } %>
+                      <% if (trade.status=='Open' ) { %>
+                        <p><strong>Status:</strong> <span class="text-green-500">Open</span></p>
+                        <% }else{ %>
+                          <p><strong>Status:</strong> <span class="text-red-500">Close</span></p>
+                          <% } %>
               </div>
-            <% }); %>
-        <% } %>
+              <% }); %>
+                <% } %>
       </div>
 
 
