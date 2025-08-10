@@ -20,6 +20,7 @@ const Kyc = require("../models/usermodel/kyc");
 const { upload } = require("../middlewares/uploads");
 const Message = require("../models/usermodel/message");
 const mongoose = require("mongoose");
+const sendDepositApprovalEmail = require("../config/approveddeposit");
 
 router.get("/", isAdminLogin, async (req, res) => {
   const message = req.session.message;
@@ -82,19 +83,19 @@ router.get("/messagestwo", async (req, res) => {
       {
         $group: {
           _id: "$sender",
-          latestTimestamp: { $max: "$timestamp" }
-        }
+          latestTimestamp: { $max: "$timestamp" },
+        },
       },
-      { $sort: { latestTimestamp: -1 } }
+      { $sort: { latestTimestamp: -1 } },
     ]);
 
     const senderIds = latestSenders.map((u) => u._id);
-    
+
     const users = await User.find({ _id: { $in: senderIds } }).lean();
 
-    const usersMap = new Map(users.map(u => [u._id.toString(), u]));
+    const usersMap = new Map(users.map((u) => [u._id.toString(), u]));
     const sortedUsers = senderIds
-      .map(id => usersMap.get(id.toString()))
+      .map((id) => usersMap.get(id.toString()))
       .filter(Boolean);
 
     res.json(sortedUsers);
@@ -129,7 +130,7 @@ router.post("/messages/reply", async (req, res) => {
   if (!to || !message) {
     return res.status(400).json({ success: false, message: "Missing fields" });
   }
-    res.json({ success: true });
+  res.json({ success: true });
 });
 
 // router.post("/messages/reply", async (req, res) => {
@@ -432,7 +433,14 @@ router.get("/approvedeposit/:id", isAdminLogin, async (req, res) => {
     );
 
     user.balance += amount;
+
     user.save();
+    try {
+      await sendDepositApprovalEmail(email, amount);
+      console.log(`Approval email sent to ${email} for $${amount}`);
+    } catch (err) {
+      console.error("Failed to send deposit approval email:", err);
+    }
 
     res.redirect("/admin/");
   } catch (error) {

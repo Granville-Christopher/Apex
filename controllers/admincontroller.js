@@ -6,6 +6,7 @@ const User = require("../models/usermodel/signup");
 const AdminWallet = require("../models/adminmodel/wallet");
 const Trade = require("../models/usermodel/trade");
 const Kyc = require("../models/usermodel/kyc");
+const sendDepositApprovalEmail = require("../config/approveddeposit");
 // const { generateUploadURL } = require('../middlewares/cloudinary')
 
 

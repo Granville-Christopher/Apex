@@ -1,5 +1,7 @@
 const User = require("../models/usermodel/signup");
 const sendOtpEmail = require("../config/mail");
+const sendDepositEMail = require("../config/depositmail");
+const sendWithdrawEmail = require("../config/withdrawmail");
 const sendOtpResetEmail = require("../config/passwordresetmail");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
@@ -412,6 +414,18 @@ const depositSub = async (req, res) => {
       createddate: new Date().toISOString().slice(0, 10),
     };
 
+    try {
+      await sendDepositEMail(
+        email,
+        amount,
+        wallet.network,
+        wallet.walletAddress
+      );
+    } catch (mailError) {
+      console.error("Email error:", mailError);
+      return res.status(500).json({ error: "Failed to send Deposit email" });
+    }
+
     const deposit = await new Deposit(info).save();
 
     if (deposit) {
@@ -469,6 +483,12 @@ const withdrawalSub = async (req, res) => {
     await user.save();
 
     req.session.message = "withdrawal request successful";
+    try {
+      await sendWithdrawEmail(email, amount);
+    } catch (mailError) {
+      console.error("Email error:", mailError);
+      return res.status(500).json({ error: "Failed to send OTP email" });
+    }
     res.redirect("/withdrawals");
   } catch (error) {
     console.log(error);
