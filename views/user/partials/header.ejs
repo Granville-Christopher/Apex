@@ -44,10 +44,6 @@
     <meta name="twitter:label2" content="Built with" />
     <meta name="twitter:data2" content="HTML, CSS, JavaScript, Node.js" />
 
-
-
-
-
     <title>
         <%= title %>
     </title>
@@ -58,7 +54,7 @@
 
 <body class="bg-[#F3F4F6] min-h-screen flex flex-col">
     <nav
-        class="fixed top-0 bg-gradient-to-br from-[#0F1A2A] to-[#1A2C3E] shadow-md w-full z-50 rounded-b-lg p-4 md:p-6">
+        class="fixed top-10 bg-gradient-to-b from-[#ffffff] via-[#A9A9A9] to-[#1A2C3E] shadow-md w-full z-50 rounded-b-lg p-4 md:p-6">
         <div class="mx-auto md:px-20 flex flex-wrap items-center justify-between">
             <div class="flex items-center space-x-2">
                 <img src="https://apexmeridianctd.us/img/hero.jpeg " alt="Apex Meridian Logo"
@@ -84,6 +80,19 @@
             </div>
         </div>
 
+        <div id="google_translate_element" style="margin-top: 20px;" class="fixed z-20 ml-4"></div>
+
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement(
+                    { pageLanguage: 'en' },
+                    'google_translate_element'
+                );
+            }
+        </script>
+
+        <script type="text/javascript"
+            src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     </nav>
 
 
