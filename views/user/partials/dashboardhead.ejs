@@ -16,12 +16,23 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <!-- <style>
+    /* Hide Google Translate top banner completely */
+    .goog-te-banner-frame.skiptranslate {
+      display: none !important;
+    }
+
+    /* Prevent Google from pushing your page down */
+    body {
+      top: 0px !important;
+    }
+  </style> -->
 </head>
 
 <body class="bg-gray-900 text-white dark:text-white">
   <div class="flex min-h-screen">
     <aside id="sidebar"
-      class="w-64 mt-16 bg-gray-800 z-50 fixed h-full dark:bg-gray-900 hidden md:block transition-transform duration-300 ease-in-out">
+      class="w-64 mt-40 bg-gray-800 z-50 fixed h-full dark:bg-gray-900 hidden md:block transition-transform duration-300 ease-in-out">
       <div class="p-4 text-xl font-bold mt-4 text-green-500">Live Account</div>
       <nav class="space-y-2 px-4">
         <a href="/" class="block py-2 px-3 rounded hover:bg-gray-700">Dashboard</a>
@@ -39,91 +50,81 @@
     </aside>
 
     <div class="flex-1 flex flex-col">
-      <header
-        class="flex fixed top-0 z-50 items-center w-full m-0 justify-between gap-2 p-4 bg-gray-800 dark:bg-gray-900 shadow">
-        <div class="flex dashlogo">
-          <a href="/" class="flex items-center gap-2">
-            <img src="https://placehold.co/40x40/fff/3B82F6?text=AM" alt="Apex Meridian Logo"
-              class="h-10 w-10 rounded-full object-cover shadow-xl border-blue-500 border" />
-            <h2 class="text-xs md:text-2xl font-semibold">Apex Meridian <p class="text-xs"> copy trading</p>
-            </h2>
-          </a>
-        </div>
-
-        <div class="flex items-center space-x-8 relative">
-
-          <div id="google_translate_element" class="text-sm w-1/3"></div>
-          <script type="text/javascript">
-            function googleTranslateElementInit() {
-              new google.translate.TranslateElement(
-                { pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE },
-                'google_translate_element'
-              );
-            }
-          </script>
-          <script type="text/javascript"
-            src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-          <!-- CSS to hide Google's default top banner -->
-          <style>
-            .goog-te-banner-frame.skiptranslate {
-              display: none !important;
-            }
-
-            body {
-              top: 0px !important;
-            }
-          </style>
-          <!-- <button id="toggleTheme" class="px-2 text-xs rounded bg-blue-50 text-gray-900">dark</button> -->
-
-          <div class="relative">
-            <button id="userAvatar" class="flex items-center space-x-1 focus:outline-none">
-              <% if (!user.photo || user.photo=='' ) { %>
-                <img src="https://placehold.co/40x40/fff/3B82F6?text=user" alt="User Avatar"
-                  class="w-10 h-10 rounded-full">
-                <% } else { %>
-                  <img src="<%= user.photo %>" alt="User Avatar" class="w-10 h-10 rounded-full">
-                  <% } %>
-
-
-                    <i class="fa-solid fa-chevron-down text-white text-sm"></i>
-            </button>
-
-            <div id="userDropdown"
-              class="absolute right-0 mt-2 w-64 bg-white text-gray-800 rounded shadow-lg z-50 hidden">
-              <div class="px-4 py-3 border-b">
-                <p class="text-sm font-semibold">Main Balance</p>
-                <p class="text-lg font-bold">$<%= parseFloat(user.balance).toFixed(2) %>
-                </p>
-                <p class="text-sm mt-2">Status: <span class="text-green-500 font-medium">
-                    <%= user.accountStatus %>
-                  </span></p>
-                <p class="text-sm mt-2">Profit: <span class="font-semibold">$<%= parseFloat(user.profit).toFixed(2) %>
-                      </span></p>
-              </div>
-              <div class="px-4 py-3 border-b space-y-2">
-                <a href="/deposit">
-                  <div class="flex justify-between items-center">
-                    <span>Deposit</span>
-                    <i class="fa-solid fa-wallet text-blue-600"></i>
-                  </div>
-                </a>
-                <a href="/withdrawals">
-                  <div class="flex justify-between items-center">
-                    <span>Withdrawal</span>
-                    <i class="fa-solid fa-wallet text-blue-600"></i>
-                  </div>
-                </a>
-              </div>
-              <div class="px-4 py-2">
-                <a href="/settings"><button class="w-full text-left hover:bg-gray-100 py-1">My Profile</button></a>
-                <a href="/logout"> <button class="w-full text-left hover:bg-gray-100 py-1">Logout</button></a>
-              </div>
-            </div>
+      <header class=" fixed top-50 z-50 items-center w-full m-0  p-4 bg-gray-800 dark:bg-gray-900 shadow">
+        <div class="flex mb-2 justify-between gap-2">
+          <div class="flex dashlogo">
+            <a href="/" class="flex items-center gap-2">
+              <img src="https://placehold.co/40x40/fff/3B82F6?text=AM" alt="Apex Meridian Logo"
+                class="h-10 w-10 rounded-full object-cover shadow-xl border-blue-500 border" />
+              <h2 class="text-xs md:text-2xl font-semibold">Apex Meridian <p class="text-xs"> copy trading</p>
+              </h2>
+            </a>
           </div>
 
-          <button id="toggleSidebar" class="md:hidden text-white text-3xl">☰</button>
+          <div class="flex items-center space-x-8 relative">
+
+            <div class="relative">
+              <button id="userAvatar" class="flex items-center space-x-1 focus:outline-none">
+                <% if (!user.photo || user.photo=='' ) { %>
+                  <img src="https://placehold.co/40x40/fff/3B82F6?text=user" alt="User Avatar"
+                    class="w-10 h-10 rounded-full">
+                  <% } else { %>
+                    <img src="<%= user.photo %>" alt="User Avatar" class="w-10 h-10 rounded-full">
+                    <% } %>
+
+
+                      <i class="fa-solid fa-chevron-down text-white text-sm"></i>
+              </button>
+
+              <div id="userDropdown"
+                class="absolute right-0 mt-2 w-64 bg-white text-gray-800 rounded shadow-lg z-50 hidden">
+                <div class="px-4 py-3 border-b">
+                  <p class="text-sm font-semibold">Main Balance</p>
+                  <p class="text-lg font-bold">$<%= parseFloat(user.balance).toFixed(2) %>
+                  </p>
+                  <p class="text-sm mt-2">Status: <span class="text-green-500 font-medium">
+                      <%= user.accountStatus %>
+                    </span></p>
+                  <p class="text-sm mt-2">Profit: <span class="font-semibold">$<%= parseFloat(user.profit).toFixed(2) %>
+                    </span></p>
+                </div>
+                <div class="px-4 py-3 border-b space-y-2">
+                  <a href="/deposit">
+                    <div class="flex justify-between items-center">
+                      <span>Deposit</span>
+                      <i class="fa-solid fa-wallet text-blue-600"></i>
+                    </div>
+                  </a>
+                  <a href="/withdrawals">
+                    <div class="flex justify-between items-center">
+                      <span>Withdrawal</span>
+                      <i class="fa-solid fa-wallet text-blue-600"></i>
+                    </div>
+                  </a>
+                </div>
+                <div class="px-4 py-2">
+                  <a href="/settings"><button class="w-full text-left hover:bg-gray-100 py-1">My Profile</button></a>
+                  <a href="/logout"> <button class="w-full text-left hover:bg-gray-100 py-1">Logout</button></a>
+                </div>
+              </div>
+            </div>
+
+            <button id="toggleSidebar" class="md:hidden text-white text-3xl">☰</button>
+          </div>
         </div>
+        <div id="google_translate_element" class="text-sm"></div>
+        <script type="text/javascript">
+          function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+              { pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout },
+              'google_translate_element'
+            );
+          }
+        </script>
+        <script type="text/javascript"
+          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
         <script>
           const userAvatar = document.getElementById('userAvatar');
           const userDropdown = document.getElementById('userDropdown');

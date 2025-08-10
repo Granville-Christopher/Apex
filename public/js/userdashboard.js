@@ -3,14 +3,14 @@ document.getElementById("toggleSidebar").addEventListener("click", () => {
   sidebar.classList.toggle("hidden");
 });
 
-const toggleTheme = document.getElementById("toggleTheme");
-toggleTheme.addEventListener("click", () => {
-  document.documentElement.classList.toggle("dark");
-  localStorage.setItem(
-    "theme",
-    document.documentElement.classList.contains("dark") ? "dark" : "light"
-  );
-});
+// const toggleTheme = document.getElementById("toggleTheme");
+// toggleTheme.addEventListener("click", () => {
+//   document.documentElement.classList.toggle("dark");
+//   localStorage.setItem(
+//     "theme",
+//     document.documentElement.classList.contains("dark") ? "dark" : "light"
+//   );
+// });
 
 window.addEventListener("DOMContentLoaded", () => {
   const storedTheme = localStorage.getItem("theme");
