@@ -82,17 +82,24 @@
           <div class="bg-gray-800 p-4 rounded shadow">
             <h2 class="text-xl font-bold mb-2">Watchlist</h2>
             <ul class="space-y-2">
-              <li class="flex justify-between">
-                <span>BTC/USD</span><span class="text-green-500"><span id="btc"></span></span>
-              </li>
-              <li class="flex justify-between">
-                <span>ETH/USD</span><span class="text-red-500"><span id="eth"></span></span>
-              </li>
-              <li class="flex justify-between">
-                <span>SOL/USD</span><span class="text-green-500"><span id="sol"></span></span>
-              </li>
+              <li class="flex justify-between"><span>BTC/USD</span><span id="btc"></span></li>
+              <li class="flex justify-between"><span>ETH/USD</span><span id="eth"></span></li>
+              <li class="flex justify-between"><span>SOL/USD</span><span id="sol"></span></li>
+              <li class="flex justify-between"><span>LTC/USD</span><span id="ltc"></span></li>
+              <li class="flex justify-between"><span>USDT/USD</span><span id="usdt"></span></li>
+              <li class="flex justify-between"><span>XRP/USD</span><span id="xrp"></span></li>
+              <li class="flex justify-between"><span>ADA/USD</span><span id="ada"></span></li>
+              <li class="flex justify-between"><span>DOGE/USD</span><span id="doge"></span></li>
+              <li class="flex justify-between"><span>DOT/USD</span><span id="dot"></span></li>
+              <li class="flex justify-between"><span>TRX/USD</span><span id="trx"></span></li>
+              <li class="flex justify-between"><span>AVAX/USD</span><span id="avax"></span></li>
+              <li class="flex justify-between"><span>LINK/USD</span><span id="link"></span></li>
+              <li class="flex justify-between"><span>XLM/USD</span><span id="xlm"></span></li>
+              <li class="flex justify-between"><span>XMR/USD</span><span id="xmr"></span></li>
+              <li class="flex justify-between"><span>SHIB/USD</span><span id="shib"></span></li>
             </ul>
           </div>
+
         </div>
         <!-- Market News -->
         <div class="bg-gray-800 mt-6 p-4 rounded shadow">
@@ -149,15 +156,42 @@
 
   </script>
   <script>
+    const coins = [
+      { id: "bitcoin", symbol: "BTC" },
+      { id: "ethereum", symbol: "ETH" },
+      { id: "solana", symbol: "SOL" },
+      { id: "litecoin", symbol: "LTC" },
+      { id: "tether", symbol: "USDT" },
+      { id: "ripple", symbol: "XRP" },
+      { id: "cardano", symbol: "ADA" },
+      { id: "dogecoin", symbol: "DOGE" },
+      { id: "polkadot", symbol: "DOT" },
+      { id: "tron", symbol: "TRX" },
+      { id: "avalanche-2", symbol: "AVAX" },
+      { id: "chainlink", symbol: "LINK" },
+      { id: "stellar", symbol: "XLM" },
+      { id: "monero", symbol: "XMR" },
+      { id: "shiba-inu", symbol: "SHIB" }
+    ];
+
     async function fetchRates() {
-      const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd");
+      const ids = coins.map(c => c.id).join(",");
+      const res = await fetch(
+        `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`
+      );
       const data = await res.json();
 
-      document.getElementById("btc").textContent = `$${data.bitcoin.usd.toLocaleString()}`;
-      document.getElementById("eth").textContent = `$${data.ethereum.usd.toLocaleString()}`;
-      document.getElementById("sol").textContent = `$${data.solana.usd.toLocaleString()}`;
+      coins.forEach(c => {
+        const el = document.getElementById(c.symbol.toLowerCase());
+        if (el) {
+          el.textContent = `$${data[c.id].usd.toLocaleString()}`;
+        }
+      });
     }
 
     fetchRates();
+    setInterval(fetchRates, 30000);
   </script>
+
+
   <%- include('partials/footer') %>
