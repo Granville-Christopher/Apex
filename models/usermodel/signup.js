@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const generateUserId = require("../../config/idgenerator");
 
 // Define schema
 const UserSchema = new mongoose.Schema(
@@ -24,6 +25,12 @@ const UserSchema = new mongoose.Schema(
       required: [true, "Password is required"],
       minlength: 6,
     },
+    id: {
+      type: String,
+      index: true,
+      unique: true,
+      default: generateUserId,
+    },
     otp: {
       code: { type: String, default: null },
       expiresAt: { type: Date, default: null },
@@ -40,40 +47,39 @@ const UserSchema = new mongoose.Schema(
     balance: {
       type: Number,
       default: 0,
-      required: false
+      required: false,
     },
     profit: {
       type: Number,
       default: 0,
-      required: false
+      required: false,
     },
     phone: {
       type: String,
-      required: false
+      required: false,
     },
     country: {
       type: String,
-      required: false
+      required: false,
     },
     photo: {
       type: String,
-      required: false
+      required: false,
     },
     accountType: {
       type: String,
       required: false,
-      default: 'Live Account'
+      default: "Live Account",
     },
     accountStatus: {
       type: String,
       required: false,
-      default: 'Active'
+      default: "Active",
     },
   },
   {
     timestamps: true,
   }
 );
-
 
 module.exports = mongoose.model("User", UserSchema);

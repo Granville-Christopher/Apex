@@ -402,7 +402,7 @@ router.get("/dashboard", isLogin, async (req, res) => {
     },
   ]);
   const totalLoss = totalLossResult[0]?.total || 0;
-
+  const useridentity = await User.findOne({ id: user.id });
   res.render("user/dashboard", {
     title: "Apex Meridian - Dashboard",
     page: "Dashboard",
@@ -412,6 +412,7 @@ router.get("/dashboard", isLogin, async (req, res) => {
     withdrawal: totalWithdraw,
     profits: totalProfit,
     loss: totalLoss,
+    useridentity: useridentity,
   });
 });
 

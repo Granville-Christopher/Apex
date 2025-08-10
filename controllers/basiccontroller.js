@@ -12,6 +12,7 @@ const Kyc = require("../models/usermodel/kyc");
 const { uploadsTwo } = require("../middlewares/uploads");
 const { generateUploadURL } = require("../middlewares/cloudinary");
 const { generateUploadURLs } = require("../middlewares/cloudinary");
+const generateId = require("../config/idgenerator");
 
 const Signup = async (req, res) => {
   try {
@@ -27,11 +28,13 @@ const Signup = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const id = generateId();
 
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
+      id,
     });
 
     await newUser.save();
