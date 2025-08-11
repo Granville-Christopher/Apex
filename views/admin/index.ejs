@@ -30,6 +30,9 @@
                     data-target="add-new-wallet">ADD NEW WALLET</button>
                 <button
                     class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
+                    data-target="add-new-trade">ADD NEW TRADE</button>
+                <button
+                    class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
                     data-target="view-all-users">VIEW ALL USERS</button>
                 <a href="https://gmail.com" target="_blank"
                     class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
@@ -40,6 +43,9 @@
                 <a href="/admin/chats" target="_blank"
                     class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
                     data-target="webmail">CHATS</a>
+                <a href="/admin/tradeadmins" target="_blank"
+                    class="sidebar-item text-left px-4 py-2 rounded hover:bg-blue-600 hover:text-white focus:outline-none"
+                    data-target="webmail">ADMIN TRADES</a>
             </nav>
         </div>
 
@@ -84,7 +90,7 @@
                                 </tr>
                             </thead>
                             <tbody id="userTableBody">
-                                
+
                             </tbody>
                         </table>
                     </div>
@@ -110,37 +116,44 @@
                                     <tr>
                                         <td class="text-center border-t border-gray-300">no deposit available now</td>
                                     </tr>
-                                <% } else { %>
-                                    <% deposits.forEach(function(deposit, index) { %>
-                                        <tr class="text-center border-t border-gray-300">
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= deposit.email %>
-                                            </td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= deposit.waddress %></td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%= deposit.amount %></td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
-                                                <a href="<%= deposit.subData %>" class="text-blue-600 hover:underline">View Proof</a>
-                                            </td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= deposit.createddate %>
-                                            </td>
-                                            
-                                            <% if (deposit.status == 0) { %>
+                                    <% } else { %>
+                                        <% deposits.forEach(function(deposit, index) { %>
+                                            <tr class="text-center border-t border-gray-300">
                                                 <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
-                                                    <a href="/admin/approvedeposit/<%= deposit._id %>?email=<%= deposit.email %>&amount=<%= deposit.amount %>"
-                                                        class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Approve</a>
+                                                    <%= deposit.email %>
                                                 </td>
-                                            <% }else{ %>
-                                                <td class="py-2 px-4 text-green-600">
-                                                    Approved
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= deposit.waddress %>
                                                 </td>
-                                            <% } %>
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%=
+                                                        deposit.amount %>
+                                                </td>
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <a href="<%= deposit.subData %>"
+                                                        class="text-blue-600 hover:underline">View Proof</a>
+                                                </td>
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= deposit.createddate %>
+                                                </td>
 
-                                            <td class="py-2 px-4">
-                                                <a href="/admin/deletedeposit/<%= deposit._id %>"
-                                                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</a>
-                                            </td>
-                                        </tr>
-                                    <% }); %>
-                                <% } %>
+                                                <% if (deposit.status==0) { %>
+                                                    <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                        <a href="/admin/approvedeposit/<%= deposit._id %>?email=<%= deposit.email %>&amount=<%= deposit.amount %>"
+                                                            class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Approve</a>
+                                                    </td>
+                                                    <% }else{ %>
+                                                        <td class="py-2 px-4 text-green-600">
+                                                            Approved
+                                                        </td>
+                                                        <% } %>
+
+                                                            <td class="py-2 px-4">
+                                                                <a href="/admin/deletedeposit/<%= deposit._id %>"
+                                                                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</a>
+                                                            </td>
+                                            </tr>
+                                            <% }); %>
+                                                <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -166,35 +179,41 @@
                                     <tr>
                                         <td class="text-center border-t border-gray-300">no withdraw available now</td>
                                     </tr>
-                                <% } else { %>
-                                    <% withdraws.forEach(function(withdraw, index) { %>
-                                        <tr class="text-center border-t border-gray-300 ">
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= withdraw.email %>
-                                            </td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%= withdraw.amount %></td>
-                                            <!-- <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= withdraw.email %></td> -->
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
-                                                <%= withdraw.waddress %></td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= withdraw.createddate %></td>
-                                            
-                                            <% if (withdraw.status == 0) { %>
-                                                <td class="py-2 px-4">
-                                                    <a href="/admin/approvewithdraw/<%= withdraw._id %>"
-                                                        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Approve</a>
+                                    <% } else { %>
+                                        <% withdraws.forEach(function(withdraw, index) { %>
+                                            <tr class="text-center border-t border-gray-300 ">
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= withdraw.email %>
                                                 </td>
-                                            <% }else{ %>
-                                                <td class="py-2 px-4 text-green-600">
-                                                    Approved
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%=
+                                                        withdraw.amount %>
                                                 </td>
-                                            <% } %>
+                                                <!-- <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= withdraw.email %></td> -->
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= withdraw.waddress %>
+                                                </td>
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= withdraw.createddate %>
+                                                </td>
 
-                                            <td class="py-2 px-4">
-                                                <a href="/admin/deletewith/<%= withdraw._id %>"
-                                                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</a>
-                                            </td>
-                                        </tr>
-                                    <% }); %>
-                                <% } %>
+                                                <% if (withdraw.status==0) { %>
+                                                    <td class="py-2 px-4">
+                                                        <a href="/admin/approvewithdraw/<%= withdraw._id %>"
+                                                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Approve</a>
+                                                    </td>
+                                                    <% }else{ %>
+                                                        <td class="py-2 px-4 text-green-600">
+                                                            Approved
+                                                        </td>
+                                                        <% } %>
+
+                                                            <td class="py-2 px-4">
+                                                                <a href="/admin/deletewith/<%= withdraw._id %>"
+                                                                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</a>
+                                                            </td>
+                                            </tr>
+                                            <% }); %>
+                                                <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -219,55 +238,254 @@
                                     <tr>
                                         <td class="text-center border-t border-gray-300">no wallet available now</td>
                                     </tr>
-                                <% } else { %>
-                                    <% wallets.forEach(function(wallet, index) { %>
-                                        <tr class="text-center border-t border-gray-300 ">
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= index + 1 %></td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= wallet.walletName %></td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= wallet.network %></td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= wallet.walletAddress %>
-                                            </td>
-                                            <td class="py-2 px-4">
-                                                <a href="/admin/deletewallet/<%= wallet._id %>"
-                                                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</a>
-                                            </td>
-                                        </tr>
-                                    <% }); %>
-                                <% } %>
+                                    <% } else { %>
+                                        <% wallets.forEach(function(wallet, index) { %>
+                                            <tr class="text-center border-t border-gray-300 ">
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= index + 1 %>
+                                                </td>
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= wallet.walletName %>
+                                                </td>
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= wallet.network %>
+                                                </td>
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= wallet.walletAddress %>
+                                                </td>
+                                                <td class="py-2 px-4">
+                                                    <a href="/admin/deletewallet/<%= wallet._id %>"
+                                                        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</a>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                                <% } %>
                             </tbody>
                         </table>
                     </div>
                 </section>
+                <section id="add-new-trade" class="content-section hidden">
+                    <div class="bg-gray-800 p-4 rounded shadow pt-12 md:pt-20">
+
+                        <label for="marketSelect" class="block mb-2 text-sm font-medium">Select Market:</label>
+                        <select id="marketSelect"
+                            class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white">
+                            <option value="">-- Select Market --</option>
+                            <option value="COMEX:GC1!">Gold</option>
+                            <option value="TVC:SILVER">Silver</option>
+                            <option value="NYMEX:CL1!">Crude Oil</option>
+                            <option value="NYMEX:NG1!">Natural Gas</option>
+                            <option value="ICEUSA:SB1!">Sugar (unavailable) </option>
+                            <option value="NYMEX:RB1!">Gasoline</option>
+                            <option value="BINANCE:BTCUSDT">Bitcoin</option>
+                            <option value="BINANCE:ETHUSDT">Ethereum</option>
+                            <option value="TVC:SPX">S&P 500 Index</option>
+                        </select>
+
+                        <!-- <div id="chartContainer"
+                            class="h-96 mt-6 bg-gray-700 rounded flex items-center justify-center text-gray-400">
+                            <span>Select a market to view its chart.</span>
+                        </div> -->
+
+                        <!-- Trade Form Below Chart -->
+                        <div class="mt-6 space-y-4">
+                            <div>
+                                <label for="tradeTime" class="block text-sm font-medium mb-1">Trade Time</label>
+                                <select id="tradeTime"
+                                    class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white">
+                                    <option value="30s">30 seconds</option>
+                                    <option value="1m">1 minute</option>
+                                    <option value="2m">2 minutes</option>
+                                    <option value="5m">5 minutes</option>
+                                    <option value="10m">10 minutes</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="leverage" class="block text-sm font-medium mb-1">Leverage</label>
+                                <select id="leverage"
+                                    class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white">
+                                    <option value="1x">1x</option>
+                                    <option value="2x">2x</option>
+                                    <option value="3x">3x</option>
+                                    <option value="5x">5x</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="amount" class="block text-sm font-medium mb-1">Amount</label>
+                                <input type="number" id="amount" value="100"
+                                    class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white" />
+                            </div>
+
+                            <div class="flex gap-4 pt-2">
+                                <button type="button"
+                                    class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+                                    id="buy">Buy</button>
+                                <button type="button" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded"
+                                    id="sell">Sell</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <script>
+
+                    const leverageSelect = document.getElementById('leverage');
+                    const amountInput = document.getElementById('amount');
+
+                    leverageSelect.addEventListener('change', () => {
+                        let selectedValue = leverageSelect.value;
+                        let minAmount = 0;
+
+                        switch (selectedValue) {
+                            case '1x':
+                                minAmount = 100;
+                                break;
+                            case '2x':
+                                minAmount = 200;
+                                break;
+                            case '3x':
+                                minAmount = 500;
+                                break;
+                            case '4x':
+                                minAmount = 1000;
+                                break;
+                            case '5x':
+                                minAmount = 1500;
+                                break;
+                        }
+
+                        amountInput.min = minAmount;
+                        amountInput.value = minAmount;
+                    });
+
+                    let buy1 = document.getElementById('buy')
+                    let sell1 = document.getElementById('sell')
+
+                    buy1.addEventListener('click', async () => {
+                        let marketSelect1 = document.getElementById('marketSelect').value.trim();
+                        let tradeTime1 = document.getElementById('tradeTime').value.trim();
+                        let leverage1 = document.getElementById('leverage').value.trim();
+                        let amount1 = document.getElementById('amount').value.trim();
+
+                        if (
+                            !marketSelect1 ||
+                            !tradeTime1 ||
+                            !leverage1 ||
+                            !amount1
+                        ) {
+                            alert("All Fields Are Required", "error");
+                            return;
+                        }
+
+                        let cdate = new Date().toISOString().slice(0, 10);
+                        let tType = 'Buy';
+
+                        amount1 = Number(amount1);
+
+                        const response = await fetch("/admin/tradeadmin", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ marketSelect1, tradeTime1, leverage1, amount1, cdate, tType }),
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            alert(data.message || "Trade Started", "success");
+                            window.location.href = "/admin";
+                        } else {
+                            alert(data.error || "Error Starting Trade", "error");
+
+                            if (data.redirect) {
+                                setTimeout(() => {
+                                    window.location.href = data.redirect;
+                                }, data.delay || 10000);
+                            }
+                        }
+                    })
+
+                    sell1.addEventListener('click', async () => {
+                        let marketSelect1 = document.getElementById('marketSelect').value.trim();
+                        let tradeTime1 = document.getElementById('tradeTime').value.trim();
+                        let leverage1 = document.getElementById('leverage').value.trim();
+                        let amount1 = document.getElementById('amount').value.trim();
+
+                        if (
+                            !marketSelect1 ||
+                            !tradeTime1 ||
+                            !leverage1 ||
+                            !amount1
+                        ) {
+                            alert("All Fields Are Required", "error");
+                            return;
+                        }
+
+                        let cdate = new Date().toISOString().slice(0, 10);
+                        let tType = 'Sell';
+
+                        amount1 = Number(amount1);
+
+                        const response = await fetch("/admin/tradeadmin", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ marketSelect1, tradeTime1, leverage1, amount1, cdate, tType }),
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            alert(data.message || "Trade Started", "success");
+                            window.location.href = "/admin";
+                        } else {
+                            alert(data.error || "Error Starting Trade", "error");
+
+                            if (data.redirect) {
+                                setTimeout(() => {
+                                    window.location.href = data.redirect;
+                                }, data.delay || 10000);
+                            }
+                        }
+                    })
+
+                </script>
                 <section id="add-new-wallet" class="content-section hidden">
                     <h2 class="text-xl font-bold mb-4">Add New Wallet</h2>
-                    <form class="space-y-4 max-w-md" action="/admin/wallets" method="POST" enctype="multipart/form-data">
+                    <form class="space-y-4 max-w-md" action="/admin/wallets" method="POST"
+                        enctype="multipart/form-data">
                         <% if (message) { %>
-                            <div class="text-center"><%= message %></div>
-                        <% } %>
-                        <div>
-                            <label for="walletName" class="block font-semibold mb-1">Wallet Name:</label>
-                            <input type="text" id="walletName" name="walletName"
-                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                                required />
-                        </div>
-                        <div>
-                            <label for="network" class="block font-semibold mb-1">Network:</label>
-                            <input type="text" id="network" name="network"
-                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                                required />
-                        </div>
-                        <div>
-                            <label for="walletAddress" class="block font-semibold mb-1">Wallet Address:</label>
-                            <input type="text" id="walletAddress" name="walletAddress"
-                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                                required />
-                        </div>
-                        <!-- <div>
+                            <div class="text-center">
+                                <%= message %>
+                            </div>
+                            <% } %>
+                                <div>
+                                    <label for="walletName" class="block font-semibold mb-1">Wallet Name:</label>
+                                    <input type="text" id="walletName" name="walletName"
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                        required />
+                                </div>
+                                <div>
+                                    <label for="network" class="block font-semibold mb-1">Network:</label>
+                                    <input type="text" id="network" name="network"
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                        required />
+                                </div>
+                                <div>
+                                    <label for="walletAddress" class="block font-semibold mb-1">Wallet Address:</label>
+                                    <input type="text" id="walletAddress" name="walletAddress"
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                        required />
+                                </div>
+                                <!-- <div>
                             <label for="walletQRCode" class="block font-semibold mb-1">Wallet QRCode:</label>
                             <input type="file" id="walletQRCode" name="walletQRCode" accept="image/*" class="w-full" />
                         </div> -->
-                        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Add
-                            Wallet</button>
+                                <button type="submit"
+                                    class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Add
+                                    Wallet</button>
                     </form>
                 </section>
                 <section id="view-all-users" class="content-section hidden">
@@ -290,22 +508,29 @@
                                     <tr>
                                         <td class="text-center border-t border-gray-300">no user available now</td>
                                     </tr>
-                                <% } else { %>
-                                    <% users.forEach(function(user, index) { %>
-                                        <tr class="text-center border-t border-gray-300">
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= user.name %></td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= user.email %>
-                                            </td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap"><%= user.phone %></td>
-                                            <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%= parseFloat(user.balance).toFixed(2) %></td>
-                                            <td class="py-2 px-4">
-                                                <a href="/admin/usersingle/<%= user.email %>"
-                                                    class="bg-blue-600 text-center text-white px-3 py-1 rounded hover:bg-blue-700">View
-                                                    User</a>
-                                            </td>
-                                        </tr>
-                                    <% }); %>
-                                <% } %>
+                                    <% } else { %>
+                                        <% users.forEach(function(user, index) { %>
+                                            <tr class="text-center border-t border-gray-300">
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= user.name %>
+                                                </td>
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= user.email %>
+                                                </td>
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">
+                                                    <%= user.phone %>
+                                                </td>
+                                                <td class="py-2 px-4 border-r border-gray-300 whitespace-nowrap">$<%=
+                                                        parseFloat(user.balance).toFixed(2) %>
+                                                </td>
+                                                <td class="py-2 px-4">
+                                                    <a href="/admin/usersingle/<%= user.email %>"
+                                                        class="bg-blue-600 text-center text-white px-3 py-1 rounded hover:bg-blue-700">View
+                                                        User</a>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                                <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -366,11 +591,11 @@
         searchInput.addEventListener('input', async () => {
             const query = searchInput.value.trim();
 
-            if(query == '' || query == null){
+            if (query == '' || query == null) {
                 userTableBody.innerHTML = ''
                 return false
             }
-            
+
             const res = await fetch(`/admin/search?query=${encodeURIComponent(query)}`);
             const users = await res.json();
 
@@ -389,5 +614,5 @@
             </tr>
             `).join('');
         });
-        </script>
+    </script>
     <%- include('partials/footer') %>

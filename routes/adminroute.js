@@ -7,6 +7,7 @@ const {
   uploadWallets,
   editBal,
   manipulateTrade,
+  adminTradeSubmit,
 } = require("../controllers/admincontroller");
 const router = express.Router();
 const { isAdminLogin, isAdminLogout } = require("../middlewares/auth");
@@ -22,6 +23,7 @@ const Message = require("../models/usermodel/message");
 const mongoose = require("mongoose");
 const sendDepositApprovalEmail = require("../config/approveddeposit");
 const { getUserConversation, adminReply } = require("../controllers/messagecontroller");
+const AdminTrade = require("../models/adminmodel/copytrades");
 
 router.get("/", isAdminLogin, async (req, res) => {
   const message = req.session.message;
@@ -46,6 +48,23 @@ router.get("/", isAdminLogin, async (req, res) => {
 
 router.get("/messages/:userId", getUserConversation);
 router.post("/messages/respond/:userId", adminReply);
+
+router.post("/tradeadmin", adminTradeSubmit);
+
+router.get("/tradeadmins", isAdminLogin, async (req, res) => {
+  try {
+    const trades = await AdminTrade.find().sort({ createdAt: -1 });
+    res.render("admin/tradeadmin", {
+      title: "Apex Meridian - Admin Trade",
+      page: "TradeAdmin",
+      loaded: "TradeAdmin",
+      trades,
+    });
+  } catch (error) {
+    console.error("Error fetching trades:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 router.get("/allusers", async (req, res) => {
   try {

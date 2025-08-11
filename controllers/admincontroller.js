@@ -7,8 +7,8 @@ const AdminWallet = require("../models/adminmodel/wallet");
 const Trade = require("../models/usermodel/trade");
 const Kyc = require("../models/usermodel/kyc");
 const sendDepositApprovalEmail = require("../config/approveddeposit");
+const AdminTrade = require("../models/adminmodel/copytrades");
 // const { generateUploadURL } = require('../middlewares/cloudinary')
-
 
 const Signup = async (req, res) => {
   try {
@@ -66,7 +66,9 @@ const sendOtp = async (req, res) => {
     const admin = await Admin.findOne({ email });
 
     if (!admin) {
-      return res.status(404).json({ error: "Admin with this email not found." });
+      return res
+        .status(404)
+        .json({ error: "Admin with this email not found." });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
@@ -118,8 +120,7 @@ const resetPassword = async (req, res) => {
     console.error("Reset password error:", error);
     res.status(500).json({ error: "Server error" });
   }
-}
-
+};
 
 const uploadWallets = async (req, res) => {
   try {
@@ -144,43 +145,42 @@ const uploadWallets = async (req, res) => {
     req.session.message = "error completing request";
     res.redirect("/admin/");
   }
-}
+};
 
 // edit user balance
 const editBal = async (req, res) => {
   try {
-    let { amount, balance, email, type } = req.body
+    let { amount, balance, email, type } = req.body;
 
-    balance = Number(balance)
-    amount = Number(amount)
+    balance = Number(balance);
+    amount = Number(amount);
 
-    if(type == 'increase'){
-      balance += amount
-    }else{
-      balance -= amount
+    if (type == "increase") {
+      balance += amount;
+    } else {
+      balance -= amount;
     }
 
-    await User.updateOne({ email }, 
-        {
-            $set:{
-                balance: balance
-            }
-        }
-    )
+    await User.updateOne(
+      { email },
+      {
+        $set: {
+          balance: balance,
+        },
+      }
+    );
 
     res.redirect(`/admin/usersingle/${email}`);
-
   } catch (error) {
     console.log(error);
     req.session.message = "error completing request";
     res.redirect("/admin/");
   }
-}
-
+};
 
 // edit user balance
 const manipulateTrade = async (req, res) => {
-  let { email, id, status, amount, pnl } = req.body
+  let { email, id, status, amount, pnl } = req.body;
 
   try {
     let info = {
@@ -195,25 +195,57 @@ const manipulateTrade = async (req, res) => {
       outcome: req.body.outcome ?? "",
       commission: req.body.commission ?? "",
       limitOrder: req.body.limitOrder ?? "",
-    }
+    };
 
     await Trade.updateOne({ _id: id, email }, { $set: info });
 
-    if(status == 'Closed' && pnl == 'Profit'){
+    if (status == "Closed" && pnl == "Profit") {
       const user = await User.findOne({ email });
-      user.profit += Number(amount)
-      await user.save()
+      user.profit += Number(amount);
+      await user.save();
     }
 
-    req.session.message = 'trade manipulated'
+    req.session.message = "trade manipulated";
     res.redirect(`/admin/updatetrade/${email}/${id}`);
-
   } catch (error) {
     console.log(error);
     req.session.message = "error completing request";
     res.redirect("/admin/");
   }
-}
+};
+
+const adminTradeSubmit = async (req, res) => {
+  const {
+    marketSelect1,
+    tradeTime1,
+    leverage1,
+    cdate,
+    tType,
+    amount1,
+    email,
+    balance,
+  } = req.body;
+
+  try {
+    const tradeData = {
+      marketSelect: marketSelect1,
+      tradeTime: tradeTime1,
+      leverage: leverage1,
+      amount: amount1,
+      createdDate: cdate,
+      tradeType: tType,
+      email,
+      balance,
+    };
+
+    await new AdminTrade(tradeData).save();
+
+    res.status(200).json({ message: "Admin Trade Recorded" });
+  } catch (error) {
+    console.error("Admin Trade Error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 module.exports = {
   Signup,
@@ -222,5 +254,6 @@ module.exports = {
   resetPassword,
   uploadWallets,
   editBal,
-  manipulateTrade
-}
+  manipulateTrade,
+  adminTradeSubmit,
+};
