@@ -222,8 +222,7 @@ const adminTradeSubmit = async (req, res) => {
     cdate,
     tType,
     amount1,
-    email,
-    balance,
+    profitInput,
   } = req.body;
 
   try {
@@ -232,10 +231,9 @@ const adminTradeSubmit = async (req, res) => {
       tradeTime: tradeTime1,
       leverage: leverage1,
       amount: amount1,
+      profit: profitInput,
       createdDate: cdate,
       tradeType: tType,
-      email,
-      balance,
     };
 
     await new AdminTrade(tradeData).save();

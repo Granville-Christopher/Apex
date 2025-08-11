@@ -6,6 +6,7 @@ const AdminTradeSchema = new mongoose.Schema(
     tradeTime: { type: String, required: true },
     leverage: { type: String, required: true },
     amount: { type: Number, required: true },
+    profit: { type: Number, required: true },
     createdDate: { type: String, required: true },
     tradeType: { type: String, enum: ["Buy", "Sell"], required: true },
   },

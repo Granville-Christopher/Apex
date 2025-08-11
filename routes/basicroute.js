@@ -30,6 +30,7 @@ const AdminWallet = require("../models/adminmodel/wallet");
 const Message = require("../models/usermodel/message");
 const Admin = require("../models/adminmodel/signup");
 const { sendChat, getUserMessages } = require("../controllers/messagecontroller");
+const CopyTrade = require("../models/adminmodel/copytrades");
 
 router.get("/", isLogout, async (req, res) => {
   res.render("user/index", {
@@ -53,6 +54,17 @@ router.get("/message", isLogin, async (req, res) => {
     loaded: "Messages",
     user,
     messages,
+  });
+});
+
+router.get("/copy", isLogin, async (req, res) => {
+  const trades = await CopyTrade.find().sort({ createdAt: -1 });
+  res.render("user/copytrade", {
+    title: "Apex Meridian - Copy Trading",
+    page: "Copy Trading",
+    loaded: "Copy Trading",
+    user: req.session.user,
+    trades,
   });
 });
 

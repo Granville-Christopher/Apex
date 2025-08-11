@@ -22,7 +22,10 @@ const { upload } = require("../middlewares/uploads");
 const Message = require("../models/usermodel/message");
 const mongoose = require("mongoose");
 const sendDepositApprovalEmail = require("../config/approveddeposit");
-const { getUserConversation, adminReply } = require("../controllers/messagecontroller");
+const {
+  getUserConversation,
+  adminReply,
+} = require("../controllers/messagecontroller");
 const AdminTrade = require("../models/adminmodel/copytrades");
 
 router.get("/", isAdminLogin, async (req, res) => {
@@ -50,6 +53,23 @@ router.get("/chatting/:userId", getUserConversation);
 router.post("/chatting/respond/:userId", adminReply);
 
 router.post("/tradeadmin", adminTradeSubmit);
+
+router.delete("/trades/:id", async (req, res) => {
+  try {
+    const tradeId = req.params.id;
+
+    const deletedTrade = await AdminTrade.findByIdAndDelete(tradeId);
+
+    if (!deletedTrade) {
+      return res.status(404).json({ error: "Trade not found" });
+    }
+
+    res.status(201).json({ message: "Trade deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 router.get("/tradeadmins", isAdminLogin, async (req, res) => {
   try {
