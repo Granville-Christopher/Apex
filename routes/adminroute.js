@@ -46,8 +46,8 @@ router.get("/", isAdminLogin, async (req, res) => {
   });
 });
 
-router.get("/messages/:userId", getUserConversation);
-router.post("/messages/respond/:userId", adminReply);
+router.get("/chatting/:userId", getUserConversation);
+router.post("/chatting/respond/:userId", adminReply);
 
 router.post("/tradeadmin", adminTradeSubmit);
 

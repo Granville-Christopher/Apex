@@ -237,7 +237,7 @@
                 // Load messages for selected user
                 async function loadMessages(userId) {
                     try {
-                        const response = await fetch(`/admin/messages/${userId}`);
+                        const response = await fetch(`/admin/chatting/${userId}`);
                         const data = await response.json();
 
                         if (response.ok) {
@@ -265,7 +265,7 @@
                     sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
                     try {
-                        const response = await fetch(`/admin/messages/respond/${currentUserId}`, {
+                        const response = await fetch(`/admin/chatting/respond/${currentUserId}`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
