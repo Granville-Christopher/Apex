@@ -29,6 +29,7 @@ const User = require("../models/usermodel/signup");
 const AdminWallet = require("../models/adminmodel/wallet");
 const Message = require("../models/usermodel/message");
 const Admin = require("../models/adminmodel/signup");
+const { sendChat, getUserMessages } = require("../controllers/messagecontroller");
 
 router.get("/", isLogout, async (req, res) => {
   res.render("user/index", {
@@ -37,6 +38,26 @@ router.get("/", isLogout, async (req, res) => {
     loaded: "Home",
   });
 });
+
+router.get("/message", isLogin, async (req, res) => {
+  const user = await User.findOne({ email: req.session.user.email });
+  const messages = await Message.find({
+    $or: [
+      { sender: user.id, to: "admin" },
+      { sender: "admin", to: user.id },
+    ],
+  }).sort({ timestamp: -1 });
+  res.render("user/messages", {
+    title: "Apex Meridian - Messages",
+    page: "Messages",
+    loaded: "Messages",
+    user,
+    messages,
+  });
+});
+
+router.post("/messages/send", isLogin, sendChat);
+router.get("/user/messages", isLogin, getUserMessages);
 
 router.get("/chat-history", async (req, res) => {
   try {

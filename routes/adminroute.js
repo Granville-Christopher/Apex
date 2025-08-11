@@ -21,6 +21,7 @@ const { upload } = require("../middlewares/uploads");
 const Message = require("../models/usermodel/message");
 const mongoose = require("mongoose");
 const sendDepositApprovalEmail = require("../config/approveddeposit");
+const { getUserConversation, adminReply } = require("../controllers/messagecontroller");
 
 router.get("/", isAdminLogin, async (req, res) => {
   const message = req.session.message;
@@ -43,6 +44,38 @@ router.get("/", isAdminLogin, async (req, res) => {
   });
 });
 
+router.get("/messages/:userId", getUserConversation);
+router.post("/messages/respond/:userId", adminReply);
+
+router.get("/allusers", async (req, res) => {
+  try {
+    const users = await User.find({}, "name email _id").sort({ name: 1 });
+    // The second argument 'name email _id' limits the returned fields
+    res.status(200).json({ users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+});
+
+router.get("/chats", async (req, res) => {
+  try {
+    // const conversations = await Message.find().populate("user").sort({ updatedAt: -1 });
+
+    res.render("admin/adminmessages", {
+      title: "Apex Meridian - Admin Messages",
+      page: "AdminMessages",
+      loaded: "AdminMessages",
+      // conversations,
+    });
+  } catch (error) {
+    console.error("❌ Failed to load admin messages:", error);
+    res.status(500).send("Error loading admin messages");
+  }
+});
+
+// router.get("/admin/users/messages",  )
+
 router.get("/login", isAdminLogout, async (req, res) => {
   res.render("admin/login", {
     title: "Apex Meridian - Admin Login",
@@ -53,17 +86,6 @@ router.get("/login", isAdminLogout, async (req, res) => {
 
 router.get("/messages", async (req, res) => {
   try {
-    // const uniqueSenders = await Message.aggregate([
-    //   { $match: { sender: { $ne: "admin" } } },
-    //   { $group: { _id: "$sender" } },
-    // ]);
-
-    // const senderIds = uniqueSenders
-    //   .map((u) => u._id)
-    //   .filter((id) => id && mongoose.Types.ObjectId.isValid(id));
-
-    // const users = await User.find({ _id: { $in: senderIds } });
-
     res.render("admin/messages", {
       title: "Apex Meridian - Admin Messages",
       page: "Messages",

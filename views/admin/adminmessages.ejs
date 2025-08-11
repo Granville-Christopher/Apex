@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Messages - Support Chat</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+</head>
+
+<body class="bg-gray-900 text-white dark:text-white">
+    <%- include('./partials/header.ejs') %>
+
+        <div class="flex min-h-screen mt-16">
+            <!-- Sidebar - Users List -->
+            <div id="usersSidebar" class="w-80 bg-gray-800 border-r border-gray-700 transition-all duration-300">
+                <div class="p-4 border-b border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-semibold">Users</h2>
+                        <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="mt-3">
+                        <input type="text" id="userSearch" placeholder="Search users..."
+                            class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div class="overflow-y-auto" style="height: calc(100vh - 120px);">
+                    <div id="usersList" class="divide-y divide-gray-700">
+                        <!-- Users will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Chat Area -->
+            <div class="flex-1 flex flex-col">
+                <!-- Chat Header -->
+                <div
+                    class="bg-gray-800 fixed w-full border-b border-gray-700 px-6 py-4 md:mt-4 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <button onclick="toggleSidebar()" class=" text-gray-400 hover:text-white mr-4">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div id="chatHeader" class="flex items-center">
+                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <div>
+                                <h3 id="chatUserName" class="text-lg font-semibold">Select a user</h3>
+                                <p id="chatUserEmail" class="text-sm text-gray-400">Click on a user to start chatting
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span id="userStatus" class="text-sm text-gray-400">Offline</span>
+                    </div>
+                </div>
+
+                <!-- Messages Area -->
+                <div class="flex-1 overflow-y-auto p-6 pt-32" id="messagesContainer">
+                    <div class="flex justify-center items-center h-full" id="emptyState">
+                        <div class="text-center">
+                            <i class="fas fa-comments text-gray-600 text-6xl mb-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-400 mb-2">Select a user to start chatting</h3>
+                            <p class="text-gray-500">Choose a user from the sidebar to view and send messages</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message Input -->
+                <div class="bg-gray-800     fixed bottom-0 left-0 right-0 z-30 border-t border-gray-700 px-6 py-4"
+                    id="messageInputArea" style="display: none;">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-1 relative">
+                            <textarea id="messageInput" placeholder="Type your message here..."
+                                class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 pr-12 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                rows="2" maxlength="1000"></textarea>
+                            <button class="absolute right-3 top-3 text-gray-400 hover:text-blue-400">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                        </div>
+                        <button id="sendButton" onclick="sendMessage()"
+                            class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <p class="text-xs text-gray-400">
+                            <span id="charCount">0</span>/1000 characters
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('./partials/footer.ejs') %>
+
+            <script>
+                let currentUserId = null;
+                let users = [];
+
+                // Toggle sidebar
+                function toggleSidebar() {
+                    const sidebar = document.getElementById('usersSidebar');
+                    sidebar.classList.toggle('w-0');
+                    sidebar.classList.toggle('w-80');
+                }
+
+                // Load all users
+                async function loadUsers() {
+                    try {
+                        const response = await fetch('/admin/allusers');
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            users = data.users;
+                            displayUsers(users);
+                        }
+                    } catch (error) {
+                        console.error('Error loading users:', error);
+                    }
+                }
+
+                // Display users in sidebar
+                function displayUsers(usersList) {
+                    const usersListDiv = document.getElementById('usersList');
+                    usersListDiv.innerHTML = '';
+
+                    usersList.forEach(user => {
+                        const userDiv = document.createElement('div');
+                        userDiv.className = 'p-4 hover:bg-gray-700 cursor-pointer transition duration-200';
+                        userDiv.onclick = () => selectUser(user);
+
+                        const lastMessage = user.lastMessage ? user.lastMessage.substring(0, 50) + '...' : 'No messages yet';
+                        const unreadCount = user.unreadCount || 0;
+
+                        userDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-semibold truncate">${user.name || 'Unknown User'}</h4>
+                                ${unreadCount > 0 ? `<span class="bg-blue-600 text-white text-xs rounded-full px-2 py-1">${unreadCount}</span>` : ''}
+                            </div>
+                            <p class="text-xs text-gray-400 truncate">${user.email}</p>
+                            <p class="text-xs text-gray-500 truncate">${lastMessage}</p>
+                        </div>
+                    </div>
+                `;
+
+                        usersListDiv.appendChild(userDiv);
+                    });
+                }
+
+                // Search users
+                document.getElementById('userSearch').addEventListener('input', function (e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const filteredUsers = users.filter(user =>
+                        user.name.toLowerCase().includes(searchTerm) ||
+                        user.email.toLowerCase().includes(searchTerm)
+                    );
+                    displayUsers(filteredUsers);
+                });
+
+                // Select user for chat
+                async function selectUser(user) {
+                    const sidebar = document.getElementById('usersSidebar');
+                    sidebar.classList.toggle('w-0');
+                    currentUserId = user._id;
+
+                    document.getElementById('chatUserName').textContent = user.name || 'Unknown User';
+                    document.getElementById('chatUserEmail').textContent = user.email;
+                    document.getElementById('userStatus').textContent = user.online ? 'Online' : 'Offline';
+                    document.getElementById('userStatus').className = user.online ? 'text-sm text-green-400' : 'text-sm text-gray-400';
+
+                    document.getElementById('emptyState').style.display = 'none';
+                    document.getElementById('messageInputArea').style.display = 'block';
+
+                    await loadMessages(currentUserId);
+
+                    await markMessagesAsRead(currentUserId);
+                }
+
+                function displayMessages(messages) {
+                    const container = document.getElementById('messagesContainer');
+                    container.innerHTML = '';
+
+                    if (!messages || messages.length === 0) {
+                        container.innerHTML = `
+                    <div class="flex justify-center items-center h-full">
+                        <div class="text-center">
+                            <i class="fas fa-comment-dots text-gray-600 text-4xl mb-4"></i>
+                            <h3 class="text-lg font-semibold text-gray-400 mb-2">No messages yet</h3>
+                            <p class="text-gray-500">Start a conversation with this user</p>
+                        </div>
+                    </div>
+                `;
+                        return;
+                    }
+
+                    messages.forEach(msg => {
+                        const messageDiv = document.createElement('div');
+                        const isAdmin = msg.senderType === 'admin';
+
+                        messageDiv.className = `flex ${isAdmin ? 'justify-end' : 'justify-start'} mb-4`;
+
+                        const contentClass = isAdmin
+                            ? 'bg-blue-600 text-white rounded-lg px-4 py-3 max-w-xs lg:max-w-md'
+                            : 'bg-gray-700 text-white rounded-lg px-4 py-3 max-w-xs lg:max-w-md';
+
+                        const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                        messageDiv.innerHTML = `
+                    <div class="${contentClass}">
+                        <p class="text-sm">${msg.message}</p>
+                        <p class="text-xs mt-1 ${isAdmin ? 'text-blue-200' : 'text-gray-400'}">${time}</p>
+                    </div>
+                `;
+
+                        container.appendChild(messageDiv);
+                    });
+
+                    container.scrollTop = container.scrollHeight;
+                }
+
+                // Load messages for selected user
+                async function loadMessages(userId) {
+                    try {
+                        const response = await fetch(`/admin/messages/${userId}`);
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            setTimeout(() => {
+                                displayMessages(data.messages);
+                            }, 100);
+                        }
+                    } catch (error) {
+                        console.error('Error loading messages:', error);
+                    }
+                }
+
+                // Display messages
+
+                // Send message
+                async function sendMessage() {
+                    if (!currentUserId) return;
+
+                    const messageInput = document.getElementById('messageInput');
+                    const message = messageInput.value.trim();
+                    if (!message) return;
+
+                    const sendButton = document.getElementById('sendButton');
+                    sendButton.disabled = true;
+                    sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                    try {
+                        const response = await fetch(`/admin/messages/respond/${currentUserId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ message })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            // Add message to chat
+                            const messageDiv = document.createElement('div');
+                            messageDiv.className = 'flex justify-end mb-4';
+
+                            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                            messageDiv.innerHTML = `
+                        <div class="bg-blue-600 text-white rounded-lg px-4 py-3 max-w-xs lg:max-w-md">
+                            <p class="text-sm">${message}</p>
+                            <p class="text-xs mt-1 text-blue-200">${time}</p>
+                        </div>
+                    `;
+
+                            document.getElementById('messagesContainer').appendChild(messageDiv);
+                            document.getElementById('messagesContainer').scrollTop = document.getElementById('messagesContainer').scrollHeight;
+
+                            // Clear input
+                            messageInput.value = '';
+                            document.getElementById('charCount').textContent = '0';
+
+                            // Update last message in sidebar
+                            updateLastMessage(currentUserId, message);
+                        } else {
+                            alert('Failed to send message: ' + data.error);
+                        }
+                    } catch (error) {
+                        console.error('Error sending message:', error);
+                        alert('Network error. Please try again.');
+                    } finally {
+                        sendButton.disabled = false;
+                        sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    }
+                }
+
+                // Mark messages as read
+                async function markMessagesAsRead(userId) {
+                    try {
+                        await fetch(`/api/admin/messages/${userId}/read`, {
+                            method: 'POST'
+                        });
+
+                        // Update unread count in sidebar
+                        const userDiv = document.querySelector(`[onclick*="${userId}"]`);
+                        if (userDiv) {
+                            const badge = userDiv.querySelector('.bg-blue-600');
+                            if (badge) badge.remove();
+                        }
+                    } catch (error) {
+                        console.error('Error marking messages as read:', error);
+                    }
+                }
+
+                // Update last message in sidebar
+                function updateLastMessage(userId, message) {
+                    const userDiv = document.querySelector(`[onclick*="${userId}"]`);
+                    if (userDiv) {
+                        const lastMessageEl = userDiv.querySelector('.text-xs.text-gray-500');
+                        if (lastMessageEl) {
+                            lastMessageEl.textContent = message.substring(0, 50) + '...';
+                        }
+                    }
+                }
+
+                // Clear chat
+                function clearChat() {
+                    if (!currentUserId) return;
+
+                    if (confirm('Are you sure you want to clear this chat?')) {
+                        document.getElementById('messagesContainer').innerHTML = `
+                    <div class="flex justify-center items-center h-full">
+                        <div class="text-center">
+                            <i class="fas fa-comment-dots text-gray-600 text-4xl mb-4"></i>
+                            <h3 class="text-lg font-semibold text-gray-400 mb-2">Chat cleared</h3>
+                            <p class="text-gray-500">Start a new conversation</p>
+                        </div>
+                    </div>
+                `;
+                    }
+                }
+
+                // Character counter
+                document.getElementById('messageInput').addEventListener('input', function () {
+                    const length = this.value.length;
+                    document.getElementById('charCount').textContent = length;
+                    document.getElementById('sendButton').disabled = length === 0 || length > 1000;
+                });
+
+                // Handle Enter key
+                document.getElementById('messageInput').addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+
+                // Load users on page load
+                document.addEventListener('DOMContentLoaded', function () {
+                    loadUsers();
+                });
+
+                // Auto-refresh messages every 30 seconds
+                setInterval(() => {
+                    if (currentUserId) {
+                        loadMessages(currentUserId);
+                    }
+                }, 100);
+            </script>
+</body>
+
+</html>

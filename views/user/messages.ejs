@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <%- include('./partials/dashboardhead.ejs') %>
+</head>
+
+<body class="bg-gray-900 text-white dark:text-white">
+    <div class="flex min-h-screen">
+        <div class="flex-1 flex flex-col md:ml-64 pt-40">
+            <header class="fixed top-50 z-40 items-center w-full m-0 p-4 bg-gray-800 dark:bg-gray-900 shadow">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-bold text-white">Support Messages</h1>
+                    <div class="flex items-center space-x-4">
+                        <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-circle mr-1"></i>Online
+                        </span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="flex-1 flex flex-col mt-16">
+                <div class="bg-gray-800 border-b border-gray-700 px-6 py-4">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-headset text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">Support Team</h3>
+                            <p class="text-sm text-green-400">Typically replies within minutes</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-6 space-y-4" id="messagesContainer">
+                    <div class="flex justify-center">
+                        <div class="bg-gray-800 rounded-lg p-4 max-w-md text-center">
+                            <i class="fas fa-comments text-blue-400 text-2xl mb-2"></i>
+                            <p class="text-gray-300">Welcome to our support chat! How can we help you today?</p>
+                        </div>
+                    </div>
+
+                    <!-- Sample Messages -->
+                    <!-- <div class="flex justify-start">
+                        <div class="max-w-xs lg:max-w-md">
+                            <div class="bg-gray-700 rounded-lg px-4 py-3">
+                                <div class="flex items-start">
+                                    <div
+                                        class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                                        <i class="fas fa-headset text-white text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-white">Hello! I'm here to help you with any questions or
+                                            issues you might have.</p>
+                                        <p class="text-xs text-gray-400 mt-1">2 minutes ago</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <div class="max-w-xs lg:max-w-md">
+                            <div class="bg-blue-600 rounded-lg px-4 py-3">
+                                <p class="text-sm text-white">Hi, I need help with my deposit. It's been pending for 2
+                                    hours.</p>
+                                <p class="text-xs text-blue-200 mt-1">Just now</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-start">
+                        <div class="max-w-xs lg:max-w-md">
+                            <div class="bg-gray-700 rounded-lg px-4 py-3">
+                                <div class="flex items-start">
+                                    <div
+                                        class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                                        <i class="fas fa-headset text-white text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-white">I understand your concern. Let me check your
+                                            deposit status right away.</p>
+                                        <p class="text-xs text-gray-400 mt-1">1 minute ago</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                    <!-- Message Input -->
+                    <div class="bg-gray-800 border-t border-gray-700 px-6 py-4 fixed bottom-0 left-0 right-0 z-30">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-1 relative">
+                                <input type="text" id="messageInput" placeholder="Type your message here..."
+                                    class="w-full bg-gray-700 text-white rounded-full py-3 px-6 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    maxlength="1000">
+                                <button
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-400">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                            </div>
+                            <button id="sendButton"
+                                class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                onclick="sendMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between mt-2">
+                            <p class="text-xs text-gray-400">
+                                <span id="charCount">0</span>/1000 characters
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/js/userdashboard.js"></script>
+
+
+        <script>
+            // Character counter
+            const messageInput = document.getElementById('messageInput');
+            const charCount = document.getElementById('charCount');
+            const sendButton = document.getElementById('sendButton');
+
+            messageInput.addEventListener('input', function () {
+                const length = this.value.length;
+                charCount.textContent = length;
+                sendButton.disabled = length === 0 || length > 1000;
+            });
+
+            // Send message function
+            async function sendMessage() {
+                const message = messageInput.value.trim();
+                if (!message) return;
+
+                // Disable send button during API call
+                sendButton.disabled = true;
+                sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                try {
+                    addMessage(message, 'user');
+
+                    // Clear input
+                    messageInput.value = '';
+                    charCount.textContent = '0';
+
+                    // Send message to backend
+                    const response = await fetch('/messages/send', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            text: message,
+                            recipient: 'admin'
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        console.log('Message sent successfully:', data);
+                        // Optionally show success notification
+                    } else {
+                        console.error('Failed to send message:', data);
+                        // Show error to user
+                        addMessage('Failed to send message. Please try again.', 'system');
+                    }
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    addMessage('Network error. Please check your connection.', 'system');
+                } finally {
+                    sendButton.disabled = true;
+                    sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                }
+            }
+
+            // Load existing messages
+            async function loadMessages() {
+                try {
+                    const response = await fetch('/user/messages');
+                    const data = await response.json();
+
+                    if (response.ok && data.messages && data.messages.length > 0) {
+                        const emptyState = document.getElementById('emptyState');
+                        if (emptyState) {
+                            emptyState.style.display = 'none';
+                        }
+
+                        data.messages.forEach(msg => {
+                            const sender = msg.sender === 'user' ? 'user' : 'admin';
+                            addMessage(msg.message, sender, msg.createdAt);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading messages:', error);
+                }
+            }
+
+            // Add message to chat
+            function addMessage(text, sender, timestamp = null) {
+                const messagesContainer = document.getElementById('messagesContainer');
+                const emptyState = document.getElementById('emptyState');
+
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : sender === 'admin' ? 'justify-start' : 'justify-center'} mb-4`;
+
+                let contentClass;
+                if (sender === 'user') {
+                    contentClass = 'bg-blue-600 text-white rounded-lg px-4 py-3 max-w-xs lg:max-w-md';
+                } else if (sender === 'admin') {
+                    contentClass = 'bg-gray-700 text-white rounded-lg px-4 py-3 max-w-xs lg:max-w-md';
+                } else {
+                    contentClass = 'bg-red-600 text-white rounded-lg px-4 py-2 text-sm';
+                }
+
+                const time = timestamp
+                    ? new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                if (sender === 'system') {
+                    messageDiv.innerHTML = `
+                    <div class="${contentClass}">
+                        <p class="text-sm">${text}</p>
+                    </div>
+                `;
+                } else {
+                    messageDiv.innerHTML = `
+                    <div class="${contentClass}">
+                        <p class="text-sm">${text}</p>
+                        <p class="text-xs mt-1 ${sender === 'user' ? 'text-blue-200' : 'text-gray-400'}">${time}</p>
+                    </div>
+                `;
+                }
+
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            // Handle Enter key
+            messageInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Load messages on page load
+            document.addEventListener('DOMContentLoaded', function () {
+                loadMessages();
+            });
+
+            // Initialize
+            sendButton.disabled = true;
+        </script>
+</body>
+
+</html>
