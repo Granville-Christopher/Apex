@@ -27,6 +27,8 @@ const {
   adminReply,
 } = require("../controllers/messagecontroller");
 const AdminTrade = require("../models/adminmodel/copytrades");
+const sendKycEmail = require("../config/verifiedkyc");
+const sendKycRejectedEmail = require("../config/kycrejected");
 
 router.get("/", isAdminLogin, async (req, res) => {
   const message = req.session.message;
@@ -298,30 +300,91 @@ router.get("/usersingle/:email", isAdminLogin, async (req, res) => {
   });
 });
 
-// approve and reject kyc
-router.get("/kyc/:email/:id", isAdminLogin, async (req, res) => {
-  let email = req.params.email;
-  let id = req.params.id;
-  let type = req.query.type;
+// // approve and reject kyc
+// router.get("/kyc/:email/:id", isAdminLogin, async (req, res) => {
+//   let email = req.params.email;
+//   let id = req.params.id;
+//   let type = req.query.type;
 
-  if (type == "approve") {
-    await Kyc.updateOne(
-      { _id: id },
-      {
-        $set: {
-          status: "approved",
-        },
+//   if (type == "approve") {
+//     await Kyc.updateOne(
+//       { _id: id },
+//       {
+//         $set: {
+//           status: "approved",
+//         },
+//       }
+//     );
+//     try {
+//       await sendKycEmail(email);
+//     } catch (err) {
+//       console.error("Email send failed:", err);
+//     }
+//   } else {
+//     await Kyc.updateOne(
+//       { _id: id },
+//       {
+//         $set: {
+//           status: "rejected",
+//         },
+//       }
+//     );
+//     try {
+//       await sendKycRejectedEmail(email);
+//       await Kyc.deleteOne({ _id: id });
+//     } catch (err) {
+//       console.error("Email send failed:", err);
+//     }
+//   }
+
+//   res.redirect(`/admin/usersingle/${email}`);
+// });
+
+const fs = require("fs");
+const path = require("path");
+
+router.get("/kyc/:email/:id", isAdminLogin, async (req, res) => {
+  const { email, id } = req.params;
+  const { type } = req.query;
+
+  try {
+    if (type === "approve") {
+      await Kyc.updateOne({ _id: id }, { $set: { status: "approved" } });
+      console.log(`KYC ${id} approved for ${email}`);
+      await sendKycEmail(email);
+    } else {
+      // 1. Find the KYC record
+      const kycRecord = await Kyc.findById(id);
+      if (!kycRecord) {
+        console.error(`KYC ${id} not found for deletion`);
+        return res.redirect(`/admin/usersingle/${email}`);
       }
-    );
-  } else {
-    await Kyc.updateOne(
-      { _id: id },
-      {
-        $set: {
-          status: "rejected",
-        },
-      }
-    );
+
+      // 2. Try deleting the associated images
+      const deleteFile = (filePath) => {
+        if (!filePath) return;
+        const absolutePath = path.join(__dirname, "../uploads", filePath);
+        fs.unlink(absolutePath, (err) => {
+          if (err) {
+            console.error(`Failed to delete file: ${absolutePath}`, err);
+          } else {
+            console.log(`Deleted file: ${absolutePath}`);
+          }
+        });
+      };
+
+      deleteFile(kycRecord.cardFront);
+      deleteFile(kycRecord.cardBack);
+
+      // 3. Send rejection email
+      await sendKycRejectedEmail(email);
+
+      // 4. Delete the KYC record
+      await Kyc.deleteOne({ _id: id });
+      console.log(`Deleted KYC ${id} and related files for ${email}`);
+    }
+  } catch (err) {
+    console.error("Error processing KYC:", err);
   }
 
   res.redirect(`/admin/usersingle/${email}`);

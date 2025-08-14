@@ -189,7 +189,7 @@ const submitKyc = (req, res) => {
 
         res.status(200).json({
           message:
-            "KYC submitted successfully! Your details are under review, we'll get back to you within 24 hours with a response.",
+            "KYC submitted successfully! Your details are under review, we'll get back to you within 24 hours with a response.... If our email isn’t in your inbox, check your Spam or Junk folder and mark it as “Not Spam” to ensure you receive future updates from us.",
         });
       } catch (error) {
         console.error("❌ KYC internal error:", error);

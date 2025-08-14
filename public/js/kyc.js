@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (response.ok) {
           showAlert(
             data.message ||
-              "KYC submitted successfully! Your details are under review, we'll get back to you within 24 hours with a response.",
+              "KYC submitted successfully! Your details are under review, we'll get back to you within 24 hours with a response.... If our email isn’t in your inbox, check your or Junk folder and mark it as “Not Spam” to ensure you receive future updates from us.",
             "success"
           );
         } else {
