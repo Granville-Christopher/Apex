@@ -41,12 +41,19 @@ const Signup = async (req, res) => {
 };
 
 const Login = async (req, res) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
 
   try {
     const admin = await Admin.findOne({ email });
     if (!admin) {
       return res.status(400).json({ error: "admin not found" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, admin.password);
+
+    if (!passwordMatch) {
+      console.log("Password mismatch for admin:", email, req.body);
+      return res.status(400).json({ error: "invalid credentials" });
     }
 
     req.session.admin = {
