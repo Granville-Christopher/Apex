@@ -60,3 +60,48 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("The form with ID 'reviewForm' was not found on the page.");
   }
 });
+
+// document.addEventListener("DOMContentLoaded", async () => {
+//   const reviewsDisplay = document.getElementById("reviewsDisplay");
+
+//   if (!reviewsDisplay) {
+//     console.error("The element with ID 'reviewsDisplay' was not found.");
+//     return;
+//   }
+
+//   try {
+//     const response = await fetch("/fetch-reviews");
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch reviews");
+//     }
+
+//     const reviews = await response.json();
+
+//     reviewsDisplay.innerHTML = "";
+
+//     if (reviews.length === 0) {
+//       reviewsDisplay.innerHTML = `<p class="text-gray-600">No reviews available yet.</p>`;
+//       return;
+//     }
+
+//     reviews.forEach((review) => {
+//       const reviewCard = document.createElement("div");
+//       reviewCard.className =
+//         "swiper-review bg-white p-6 rounded-lg shadow-lg min-w-[320px] max-w-xs flex-shrink-0";
+
+//       reviewCard.innerHTML = `
+//           <h3 class="text-xl font-semibold text-gray-800">
+//             ${review.reviewerName || "Anonymous"}
+//           </h3>
+//           <p class="text-gray-600 mt-2">
+//             "${review.reviewText}"
+//           </p>
+//         `;
+
+//       reviewsDisplay.appendChild(reviewCard);
+//     });
+//   } catch (error) {
+//     console.error("Error loading reviews:", error);
+//     reviewsDisplay.innerHTML = `<p class="text-red-500">Unable to load reviews. Please try again later.</p>`;
+//   }
+// });

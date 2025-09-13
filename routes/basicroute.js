@@ -35,6 +35,7 @@ const {
 } = require("../controllers/messagecontroller");
 const CopyTrade = require("../models/adminmodel/copytrades");
 const { createReview } = require("../controllers/reviewcontroller");
+const Review = require("../models/usermodel/review");
 
 router.get("/", isLogout, async (req, res) => {
   res.render("user/index", {
@@ -45,6 +46,15 @@ router.get("/", isLogout, async (req, res) => {
 });
 
 router.post("/submit-review", createReview);
+router.get("/fetch-reviews", async (req, res) => {
+  try {
+    const reviews = await Review.find().sort({ timestamp: -1 });
+    res.status(200).json(reviews);
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ message: "Failed to fetch reviews." });
+  }
+});
 
 router.get("/message", isLogin, async (req, res) => {
   const user = await User.findOne({ email: req.session.user.email });
