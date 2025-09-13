@@ -29,8 +29,12 @@ const User = require("../models/usermodel/signup");
 const AdminWallet = require("../models/adminmodel/wallet");
 const Message = require("../models/usermodel/message");
 const Admin = require("../models/adminmodel/signup");
-const { sendChat, getUserMessages } = require("../controllers/messagecontroller");
+const {
+  sendChat,
+  getUserMessages,
+} = require("../controllers/messagecontroller");
 const CopyTrade = require("../models/adminmodel/copytrades");
+const { createReview } = require("../controllers/reviewcontroller");
 
 router.get("/", isLogout, async (req, res) => {
   res.render("user/index", {
@@ -39,6 +43,8 @@ router.get("/", isLogout, async (req, res) => {
     loaded: "Home",
   });
 });
+
+router.post("/submit-review", createReview);
 
 router.get("/message", isLogin, async (req, res) => {
   const user = await User.findOne({ email: req.session.user.email });
