@@ -255,25 +255,26 @@ const login = async (req, res) => {
       });
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
+    // const otp = Math.floor(100000 + Math.random() * 900000);
+    // const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
 
-    user.otp = {
-      code: otp,
-      expiresAt: otpExpires,
-      otpCreatedAt: new Date(),
-    };
+    // user.otp = {
+    //   code: otp,
+    //   expiresAt: otpExpires,
+    //   otpCreatedAt: new Date(),
+    // };
 
-    try {
-      await sendOtpEmail(email, otp);
-    } catch (mailError) {
-      console.error("Email error:", mailError);
-      return res.status(500).json({ error: "Failed to send OTP email" });
-    }
+    // try {
+    //   await sendOtpEmail(email, otp);
+    // } catch (mailError) {
+    //   console.error("Email error:", mailError);
+    //   return res.status(500).json({ error: "Failed to send OTP email" });
+    // }
 
-    await user.save();
+    // await user.save();
 
-    res.status(200).json({ message: "Login successful, OTP sent" });
+    res.status(200).json({ message: "Login successful" });
+    // res.status(200).json({ message: "Login successful, OTP sent" });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Server error" });
