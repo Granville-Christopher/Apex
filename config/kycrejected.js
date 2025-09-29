@@ -22,7 +22,7 @@ const sendKycRejectedEmail = async (to) => {
   const randomTip = tips[Math.floor(Math.random() * tips.length)];
 
   const mailOptions = {
-    from: `"Apex Meridian" <${process.env.MAIL_USER}>`,
+    from: `"Stratium" <${process.env.MAIL_USER}>`,
     to,
     subject: "Account verification failed",
     html: `
@@ -55,13 +55,13 @@ const sendKycRejectedEmail = async (to) => {
             </p>
 
             <div style="text-align:center;margin:30px 0;">
-              <a href="https://apexmeridianctd.us/login" style="display:inline-block;padding:12px 24px;font-size:16px;color:#fff;background-color:#e74c3c;text-decoration:none;border-radius:5px;font-weight:bold;">
+              <a href="https://Stratiumct.com/login" style="display:inline-block;padding:12px 24px;font-size:16px;color:#fff;background-color:#e74c3c;text-decoration:none;border-radius:5px;font-weight:bold;">
                 Resubmit Documents
               </a>
             </div>
 
             <p style="font-size:12px;color:#888;margin-top:20px;">
-              — Apex Meridian Team
+              — Stratium Team
             </p>
 
           </div>
@@ -74,4 +74,3 @@ const sendKycRejectedEmail = async (to) => {
 };
 
 module.exports = sendKycRejectedEmail;
-

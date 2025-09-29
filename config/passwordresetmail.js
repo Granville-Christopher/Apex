@@ -10,7 +10,7 @@ const sendOtpResetEmail = async (to, otp) => {
   });
 
   const mailOptions = {
-    from: `"Apex Meridian" <${process.env.MAIL_USER}>`,
+    from: `"Stratium" <${process.env.MAIL_USER}>`,
     to,
     subject: "Your OTP for Password Reset",
     html: `
@@ -22,7 +22,7 @@ const sendOtpResetEmail = async (to, otp) => {
             <span style="font-size: 32px; color: #2c3e50; font-weight: bold;">${otp}</span>
           </div>
           <p style="font-size: 14px; color: #888;">If you didn’t sign up on our platform, please ignore this email.</p>
-          <p style="font-size: 14px; color: #aaa; margin-top: 30px;">— Apex Meridian Copy Trading</p>
+          <p style="font-size: 14px; color: #aaa; margin-top: 30px;">— Stratium Copy Trading</p>
 
         </div>
       </div>

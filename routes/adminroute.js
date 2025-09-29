@@ -40,7 +40,7 @@ router.get("/", isAdminLogin, async (req, res) => {
   let withdraws = await Withdraw.find();
 
   res.render("admin/index", {
-    title: "Apex Meridian - Admin Dashboard",
+    title: "Stratium - Admin Dashboard",
     page: "Dashboard",
     loaded: "Dashboard",
     users,
@@ -77,7 +77,7 @@ router.get("/tradeadmins", isAdminLogin, async (req, res) => {
   try {
     const trades = await AdminTrade.find().sort({ createdAt: -1 });
     res.render("admin/tradeadmin", {
-      title: "Apex Meridian - Admin Trade",
+      title: "Stratium - Admin Trade",
       page: "TradeAdmin",
       loaded: "TradeAdmin",
       trades,
@@ -104,7 +104,7 @@ router.get("/chats", async (req, res) => {
     // const conversations = await Message.find().populate("user").sort({ updatedAt: -1 });
 
     res.render("admin/adminmessages", {
-      title: "Apex Meridian - Admin Messages",
+      title: "Stratium - Admin Messages",
       page: "AdminMessages",
       loaded: "AdminMessages",
       // conversations,
@@ -119,7 +119,7 @@ router.get("/chats", async (req, res) => {
 
 router.get("/login", isAdminLogout, async (req, res) => {
   res.render("admin/login", {
-    title: "Apex Meridian - Admin Login",
+    title: "Stratium - Admin Login",
     page: "Login",
     loaded: "Login",
   });
@@ -128,7 +128,7 @@ router.get("/login", isAdminLogout, async (req, res) => {
 router.get("/messages", async (req, res) => {
   try {
     res.render("admin/messages", {
-      title: "Apex Meridian - Admin Messages",
+      title: "Stratium - Admin Messages",
       page: "Messages",
       loaded: "Messages",
       // users,
@@ -220,7 +220,7 @@ router.post("/messages/reply", async (req, res) => {
 
 router.get("/signup", isAdminLogout, async (req, res) => {
   res.render("admin/signup", {
-    title: "Apex Meridian - Admin Signup",
+    title: "Stratium - Admin Signup",
     page: "SignUp",
     loaded: "SignUp",
   });
@@ -233,7 +233,7 @@ router.get("/trades/:email", isAdminLogin, async (req, res) => {
   const trades = await Trade.find({ email });
 
   res.render("admin/usertrade", {
-    title: "Apex Meridian - Admin User Trades",
+    title: "Stratium - Admin User Trades",
     page: "usertrades",
     loaded: "usertrades",
     user,
@@ -252,7 +252,7 @@ router.get("/updatetrade/:email/:id", isAdminLogin, async (req, res) => {
   const trade = await Trade.findOne({ _id: id });
 
   res.render("admin/usersingletrade", {
-    title: "Apex Meridian - Admin User Trade",
+    title: "Stratium - Admin User Trade",
     page: "usertrade",
     loaded: "usertrade",
     user,
@@ -291,7 +291,7 @@ router.get("/usersingle/:email", isAdminLogin, async (req, res) => {
   transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
   res.render("admin/usersingle", {
-    title: "Apex Meridian - Admin usersingle",
+    title: "Stratium - Admin usersingle",
     page: "usersingle",
     loaded: "usersingle",
     user,
@@ -449,7 +449,7 @@ router.get("/search", async (req, res) => {
 
 router.get("/resetpassword", isAdminLogout, async (req, res) => {
   res.render("admin/resetpassword", {
-    title: "Apex Meridian - Admin resetpassword",
+    title: "Stratium - Admin resetpassword",
     page: "resetpassword",
     loaded: "resetpassword",
   });

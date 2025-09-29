@@ -1,5 +1,5 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://apexmeridianctd.us/sitemap.xml
-Sitemap: https://www.apexmeridianctd.us/sitemap.xml
+Sitemap: https://Stratiumct.com/sitemap.xml
+Sitemap: https://www.Stratiumct.com/sitemap.xml

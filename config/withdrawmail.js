@@ -24,7 +24,7 @@ const sendWithdrawEmail = async (to, amount) => {
   });
 
   const mailOptions = {
-    from: `"Apex Meridian" <${process.env.MAIL_USER}>`,
+    from: `"Stratium" <${process.env.MAIL_USER}>`,
     to,
     subject: "Withdrawal Request Confirmation",
     html: `
@@ -44,7 +44,7 @@ const sendWithdrawEmail = async (to, amount) => {
           </p>
           <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
           <p style="font-size: 14px; color: #888; margin-top: 20px;">
-            — Apex Meridian Copy Trading<br>
+            — Stratium Copy Trading<br>
             This is an automated message. Please do not reply.
           </p>
         </div>

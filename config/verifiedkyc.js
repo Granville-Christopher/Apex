@@ -16,13 +16,13 @@ const sendKycEmail = async (to) => {
   const openers = [
     "Great news is always worth sharing!",
     "This is the email you’ve been waiting for.",
-    "Your journey with Apex Meridian just got a green light.",
+    "Your journey with Stratium just got a green light.",
     "We’re excited to welcome you onboard!",
   ];
   const randomOpener = openers[Math.floor(Math.random() * openers.length)];
 
   const mailOptions = {
-    from: `"Apex Meridian" <${process.env.MAIL_USER}>`,
+    from: `"Stratium" <${process.env.MAIL_USER}>`,
     to,
     subject: "Account verification successful",
     html: `
@@ -40,7 +40,7 @@ const sendKycEmail = async (to) => {
             </p>
 
             <div style="text-align:center;margin:30px 0;">
-              <a href="https://apexmeridianctd.us/login" style="display:inline-block;padding:12px 24px;font-size:16px;color:#fff;background-color:#2c3e50;text-decoration:none;border-radius:5px;font-weight:bold;">
+              <a href="https://Stratiumct.com/login" style="display:inline-block;padding:12px 24px;font-size:16px;color:#fff;background-color:#2c3e50;text-decoration:none;border-radius:5px;font-weight:bold;">
                 Make a fast, safe deposit now!
               </a>
             </div>
@@ -57,7 +57,7 @@ const sendKycEmail = async (to) => {
             </ul>
 
             <p style="font-size:12px;color:#888;margin-top:20px;">
-              — Apex Meridian Team
+              — Stratium Team
             </p>
 
           </div>

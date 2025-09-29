@@ -39,7 +39,7 @@ const Review = require("../models/usermodel/review");
 
 router.get("/", isLogout, async (req, res) => {
   res.render("user/index", {
-    title: "Apex Meridian copy trading",
+    title: "Stratium copy trading",
     page: "Home",
     loaded: "Home",
   });
@@ -65,7 +65,7 @@ router.get("/message", isLogin, async (req, res) => {
     ],
   }).sort({ timestamp: -1 });
   res.render("user/messages", {
-    title: "Apex Meridian - Messages",
+    title: "Stratium - Messages",
     page: "Messages",
     loaded: "Messages",
     user,
@@ -76,7 +76,7 @@ router.get("/message", isLogin, async (req, res) => {
 router.get("/copy", isLogin, async (req, res) => {
   const trades = await CopyTrade.find().sort({ createdAt: -1 });
   res.render("user/copytrade", {
-    title: "Apex Meridian - Copy Trading",
+    title: "Stratium - Copy Trading",
     page: "Copy Trading",
     loaded: "Copy Trading",
     user: req.session.user,
@@ -115,7 +115,7 @@ router.get("/deposit", isLogin, async (req, res) => {
   const user = await User.findOne({ email: req.session.user.email });
 
   res.render("user/deposit", {
-    title: "Apex Meridian - deposit",
+    title: "Stratium - deposit",
     page: "deposit",
     loaded: "deposit",
     message,
@@ -128,7 +128,7 @@ router.get("/markets", isLogin, async (req, res) => {
   const user = await User.findOne({ email: req.session.user.email });
 
   res.render("user/markets", {
-    title: "Apex Meridian - markets",
+    title: "Stratium - markets",
     page: "markets",
     loaded: "markets",
     user,
@@ -164,7 +164,7 @@ router.get("/settings", isLogin, async (req, res) => {
   const totalWithdraw = totalWithdrawResult[0]?.total || 0;
 
   res.render("user/settings", {
-    title: "Apex Meridian - settings",
+    title: "Stratium - settings",
     page: "settings",
     loaded: "settings",
     message,
@@ -178,7 +178,7 @@ router.get("/trade", isLogin, async (req, res) => {
   const user = await User.findOne({ email: req.session.user.email });
 
   res.render("user/trade", {
-    title: "Apex Meridian - trade",
+    title: "Stratium - trade",
     page: "trade",
     loaded: "trade",
     user,
@@ -191,7 +191,7 @@ router.get("/trades", isLogin, async (req, res) => {
   const trades = await Trade.find({ email: req.session.user.email });
 
   res.render("user/opentrades", {
-    title: "Apex Meridian - trades",
+    title: "Stratium - trades",
     page: "trades",
     loaded: "trades",
     user,
@@ -208,7 +208,7 @@ router.get("/tradeshistory", isLogin, async (req, res) => {
   });
 
   res.render("user/tradeshistory", {
-    title: "Apex Meridian - trades",
+    title: "Stratium - trades",
     page: "trades",
     loaded: "trades",
     user,
@@ -242,7 +242,7 @@ router.get("/transactions", isLogin, async (req, res) => {
   transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
   res.render("user/transactions", {
-    title: "Apex Meridian - transactions",
+    title: "Stratium - transactions",
     page: "transactions",
     loaded: "transactions",
     user,
@@ -259,7 +259,7 @@ router.get("/wallets", isLogin, async (req, res) => {
     let wallets = await Wallet.find({ email: req.session.user.email });
 
     res.render("user/wallets", {
-      title: "Apex Meridian - wallets",
+      title: "Stratium - wallets",
       page: "wallets",
       loaded: "wallets",
       message,
@@ -282,7 +282,7 @@ router.get("/withdrawals", isLogin, async (req, res) => {
   let withdrawals = await Withdraw.find({ email: req.session.user.email });
 
   res.render("user/withdrawals", {
-    title: "Apex Meridian - withdrawals",
+    title: "Stratium - withdrawals",
     page: "withdrawals",
     loaded: "withdrawals",
     message,
@@ -319,7 +319,7 @@ router.get("/analytics", isLogin, async (req, res) => {
   const totalLoss = totalLossResult[0]?.total || 0;
 
   res.render("user/analytics", {
-    title: "Apex Meridian - analytics",
+    title: "Stratium - analytics",
     page: "analytics",
     loaded: "analytics",
     user,
@@ -330,7 +330,7 @@ router.get("/analytics", isLogin, async (req, res) => {
 
 router.get("/login", isLogout, async (req, res) => {
   res.render("user/login", {
-    title: "Apex Meridian - Login",
+    title: "Stratium - Login",
     page: "Login",
     loaded: "Login",
   });
@@ -338,7 +338,7 @@ router.get("/login", isLogout, async (req, res) => {
 
 router.get("/signup", isLogout, async (req, res) => {
   res.render("user/signup", {
-    title: "Apex Meridian - Signup",
+    title: "Stratium - Signup",
     page: "SignUp",
     loaded: "SignUp",
   });
@@ -346,7 +346,7 @@ router.get("/signup", isLogout, async (req, res) => {
 
 router.get("/otp", async (req, res) => {
   res.render("user/otp", {
-    title: "Apex Meridian - Auth",
+    title: "Stratium - Auth",
     page: "Otp",
     loaded: "Otp",
   });
@@ -354,7 +354,7 @@ router.get("/otp", async (req, res) => {
 
 router.get("/kycverification", async (req, res) => {
   res.render("user/kycverification", {
-    title: "Apex Meridian - Auth",
+    title: "Stratium - Auth",
     page: "Otp",
     loaded: "Otp",
   });
@@ -398,7 +398,7 @@ router.post("/trade", tradeSub);
 
 router.get("/resetpassword", isLogout, async (req, res) => {
   res.render("user/resetpassword", {
-    title: "Apex Meridian - Auth",
+    title: "Stratium - Auth",
     page: "Resetpassword",
     loaded: "Resetpassword",
   });
@@ -453,7 +453,7 @@ router.get("/dashboard", isLogin, async (req, res) => {
   const totalLoss = totalLossResult[0]?.total || 0;
   const useridentity = await User.findOne({ id: user.id });
   res.render("user/dashboard", {
-    title: "Apex Meridian - Dashboard",
+    title: "Stratium - Dashboard",
     page: "Dashboard",
     loaded: "Dashboard",
     user,
